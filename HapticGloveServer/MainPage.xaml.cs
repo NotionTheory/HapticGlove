@@ -36,9 +36,13 @@ namespace HapticGloveServer
         {
             var devices = await DeviceInformation.FindAllAsync();
             var names = from device in devices select device.Name;
-            var description = string.Join("\n", names);
+            var description = string.Join("\n", names.Distinct()
+                .OrderBy(_=>_));
+            await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                textBlock.Text = description;
+            });
 
-            textBlock.Text = description;
         }
     }
 }

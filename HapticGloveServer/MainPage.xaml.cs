@@ -25,24 +25,41 @@ namespace HapticGloveServer
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        private string name = "Sean";
         public MainPage()
         {
             this.InitializeComponent();
-            textBlock.Text = "What";
+
             Task.Run(Do);
+        }
+
+        public string Description
+        {
+            get
+            {
+                return this.name;
+            }
+            set
+            {
+                this.name = value;
+            }
         }
 
         async Task Do()
         {
-            var devices = await DeviceInformation.FindAllAsync();
+            var devices = await DeviceInformation.FindAllAsync(GattDeviceService.GetDeviceSelectorFromUuid(GattServiceUuids.GenericAccess));
             var names = from device in devices select device.Name;
-            var description = string.Join("\n", names.Distinct()
-                .OrderBy(_=>_));
+            this.Description = string.Join("\n", names.Distinct()
+                .OrderBy(_ => _)) + "\n\n<done>";
+            await UpdateDisplay();
+        }
+
+        private async Task UpdateDisplay()
+        {
             await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
-                textBlock.Text = description;
+                this.Bindings.Update();
             });
-
         }
     }
 }

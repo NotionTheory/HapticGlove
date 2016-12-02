@@ -8,7 +8,14 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" TextWrapping="Wrap" Text="(Nothing)" VerticalAlignment="Top" Height="630" Width="350"/>
-
+        <ScrollViewer
+            IsVerticalRailEnabled="True"
+            VerticalScrollMode="Enabled"
+            VerticalScrollBarVisibility="Visible">
+            <TextBlock 
+                x:Name="textBlock" 
+                TextWrapping="Wrap"
+                Text="{x:Bind Description, Mode=OneWay}"/>
+        </ScrollViewer>
     </Grid>
 </Page>

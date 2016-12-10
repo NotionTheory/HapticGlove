@@ -1,4 +1,13 @@
-Links
+You'll need to install this library in C:\Users\<Your User Name>\Documents\Arduino\libraries. Create the libraries directory if it doesn't already exist.
+
+https://learn.adafruit.com/adafruit-feather-m0-bluefruit-le/installing-ble-library
+
+https://learn.adafruit.com/adafruit-feather-m0-bluefruit-le/configuration
+
+# Links
+
+https://learn.adafruit.com/introduction-to-bluetooth-low-energy?view=all
+
 
 http://reedcopsey.com/series/windows-forms-to-mvvm/
 

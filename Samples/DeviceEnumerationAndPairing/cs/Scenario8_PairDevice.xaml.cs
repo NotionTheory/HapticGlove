@@ -9,6 +9,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using SDKTemplate;
+using System.Threading.Tasks;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -62,6 +63,10 @@ namespace DeviceEnumeration
             StopWatcher();
         }
 
+        private async void GetGATT(DeviceInformation deviceInfo)
+        {
+        }
+
         private void StartWatcher()
         {
             startWatcherButton.IsEnabled = false;
@@ -78,13 +83,22 @@ namespace DeviceEnumeration
             handlerAdded = new TypedEventHandler<DeviceWatcher, DeviceInformation>(async (watcher, deviceInfo) =>
             {
                 // Since we have the collection databound to a UI element, we need to update the collection on the UI thread.
-                await rootPage.Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
+                await rootPage.Dispatcher.RunAsync(CoreDispatcherPriority.Low, async () =>
                 {
                     ResultCollection.Add(new DeviceInformationDisplay(deviceInfo));
 
                     rootPage.NotifyUser(
                         String.Format("{0} devices found.", ResultCollection.Count),
                         NotifyType.StatusMessage);
+
+                    if (deviceInfo.Name == "Adafruit Bluefruit LE")
+                    {
+                        if (!deviceInfo.Pairing.IsPaired)
+                        {
+                            await PairDevice(deviceInfo);
+                        }
+                        GetGATT(deviceInfo);
+                    }
                 });
             });
             deviceWatcher.Added += handlerAdded;
@@ -195,13 +209,18 @@ namespace DeviceEnumeration
         private async void PairButton_Click(object sender, RoutedEventArgs e)
         {
             // Gray out the pair button and results view while pairing is in progress.
-            resultsListView.IsEnabled = false;
-            pairButton.IsEnabled = false;
             rootPage.NotifyUser("Pairing started. Please wait...", NotifyType.StatusMessage);
 
             DeviceInformationDisplay deviceInfoDisp = resultsListView.SelectedItem as DeviceInformationDisplay;
+            DeviceInformation deviceInfo = deviceInfoDisp.DeviceInformation;
+            await PairDevice(deviceInfo);
+        }
 
-            DevicePairingResult dpr = await deviceInfoDisp.DeviceInformation.Pairing.PairAsync();
+        private async Task PairDevice(DeviceInformation deviceInfo)
+        {
+            resultsListView.IsEnabled = false;
+            pairButton.IsEnabled = false;
+            DevicePairingResult dpr = await deviceInfo.Pairing.PairAsync();
 
             rootPage.NotifyUser(
                 "Pairing result = " + dpr.Status.ToString(),

@@ -46,6 +46,7 @@ namespace DeviceEnumeration
             ResultCollection = new ObservableCollection<DeviceInformationDisplay>();
 
             DataContext = this;
+            StartWatcher();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -65,6 +66,7 @@ namespace DeviceEnumeration
 
         private async void GetGATT(DeviceInformation deviceInfo)
         {
+            StopWatcher();
         }
 
         private void StartWatcher()

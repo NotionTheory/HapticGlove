@@ -9,10 +9,6 @@
     mc:Ignorable="d">
 
     <Page.Resources>
-
-        <DataTemplate x:Key="ComboBoxItemTemplate">
-            <TextBlock Margin="0,0,10,0" Text="{Binding Path=DisplayName}" />
-        </DataTemplate>
         
         <DataTemplate x:Key="ResultsListViewTemplate">
             <Grid Margin="5">
@@ -66,13 +62,6 @@
                         <LineBreak />This method can be used to pair devices like WiFiDirect, WSD, UPnP, Bluetooth or Bluetooth LE devices.
                         <LineBreak />Pairing can only be performed on DeviceInformation objects of kind DeviceInformationKind.AssociationEndpoint.
                     </TextBlock>
-
-                    <TextBlock Margin="0,0,0,2" Text="Choose a device selector:" />
-                    <ComboBox x:Name="selectorComboBox" 
-                              Margin="0,0,0,5"
-                              HorizontalAlignment="Left" 
-                              ItemTemplate="{StaticResource ComboBoxItemTemplate}"
-                              ItemsSource="{Binding}" />
 
                     <VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="60">
                         <Button x:Name="startWatcherButton"

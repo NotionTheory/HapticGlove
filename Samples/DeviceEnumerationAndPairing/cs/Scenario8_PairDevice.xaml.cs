@@ -44,9 +44,6 @@ namespace DeviceEnumeration
             rootPage = MainPage.Current;
             ResultCollection = new ObservableCollection<DeviceInformationDisplay>();
 
-            selectorComboBox.ItemsSource = DeviceSelectorChoices.PairingSelectors;
-            selectorComboBox.SelectedIndex = 0;
-
             DataContext = this;
         }
 
@@ -70,28 +67,11 @@ namespace DeviceEnumeration
             startWatcherButton.IsEnabled = false;
             ResultCollection.Clear();
 
-            // Get the device selector chosen by the UI then add additional constraints for devices that 
-            // can be paired or are already paired.
-            DeviceSelectorInfo deviceSelectorInfo = (DeviceSelectorInfo)selectorComboBox.SelectedItem;
-            //string selector = "(" + deviceSelectorInfo.Selector + ")" + " AND (System.Devices.Aep.CanPair:=System.StructuredQueryType.Boolean#True OR System.Devices.Aep.IsPaired:=System.StructuredQueryType.Boolean#True)";
-            string selector = deviceSelectorInfo.Selector;
-
-            if (deviceSelectorInfo.Kind == DeviceInformationKind.Unknown)
-            {
-                // Kind will be determined by the selector
-                deviceWatcher = DeviceInformation.CreateWatcher(
-                    selector,
-                    null // don't request additional properties for this sample
-                    );
-            }
-            else
-            {
-                // Kind is specified in the selector info
-                deviceWatcher = DeviceInformation.CreateWatcher(
-                    selector,
-                    null, // don't request additional properties for this sample
-                    deviceSelectorInfo.Kind);
-            }
+            // Kind is specified in the selector info
+            deviceWatcher = DeviceInformation.CreateWatcher(
+                "System.Devices.Aep.ProtocolId:=\"{bb7bb05e-5972-42b5-94fc-76eaa7084d49}\"", 
+                null, 
+                DeviceInformationKind.AssociationEndpoint);
 
             // Hook up handlers for the watcher events before starting the watcher
 
@@ -150,9 +130,9 @@ namespace DeviceEnumeration
                             break;
                         }
                     }
-                    
+
                     rootPage.NotifyUser(
-                        String.Format("{0} devices found.", ResultCollection.Count), 
+                        String.Format("{0} devices found.", ResultCollection.Count),
                         NotifyType.StatusMessage);
                 });
             });
@@ -174,7 +154,7 @@ namespace DeviceEnumeration
                 await rootPage.Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
                 {
                     rootPage.NotifyUser(
-                        String.Format("{0} devices found. Watcher {1}.", 
+                        String.Format("{0} devices found. Watcher {1}.",
                             ResultCollection.Count,
                             DeviceWatcherStatus.Aborted == watcher.Status ? "aborted" : "stopped"),
                         NotifyType.StatusMessage);
@@ -224,7 +204,7 @@ namespace DeviceEnumeration
             DevicePairingResult dpr = await deviceInfoDisp.DeviceInformation.Pairing.PairAsync();
 
             rootPage.NotifyUser(
-                "Pairing result = " + dpr.Status.ToString(), 
+                "Pairing result = " + dpr.Status.ToString(),
                 dpr.Status == DevicePairingResultStatus.Paired ? NotifyType.StatusMessage : NotifyType.ErrorMessage);
 
             UpdatePairingButtons();
@@ -239,7 +219,7 @@ namespace DeviceEnumeration
             rootPage.NotifyUser("Unpairing started. Please wait...", NotifyType.StatusMessage);
 
             DeviceInformationDisplay deviceInfoDisp = resultsListView.SelectedItem as DeviceInformationDisplay;
-            
+
             DeviceUnpairingResult dupr = await deviceInfoDisp.DeviceInformation.Pairing.UnpairAsync();
 
             rootPage.NotifyUser(

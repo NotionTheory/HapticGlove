@@ -56,11 +56,16 @@ namespace DeviceEnumeration
 
         private async void GetGATT(DeviceInformation deviceInfo)
         {
-            StopWatcher();
+        }
+
+        private async void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            StartWatcher();
         }
 
         private void StartWatcher()
         {
+            refreshButton.IsEnabled = false;
             ResultCollection.Clear();
 
             // Kind is specified in the selector info
@@ -151,6 +156,7 @@ namespace DeviceEnumeration
                         String.Format("{0} devices found. Enumeration completed. Watching for updates...", ResultCollection.Count),
                         NotifyType.StatusMessage);
                 });
+                StopWatcher();
             });
             deviceWatcher.EnumerationCompleted += handlerEnumCompleted;
 
@@ -190,16 +196,8 @@ namespace DeviceEnumeration
                     deviceWatcher.Stop();
                 }
             }
-        }
 
-        private async void PairButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Gray out the pair button and results view while pairing is in progress.
-            rootPage.NotifyUser("Pairing started. Please wait...", NotifyType.StatusMessage);
-
-            DeviceInformationDisplay deviceInfoDisp = resultsListView.SelectedItem as DeviceInformationDisplay;
-            DeviceInformation deviceInfo = deviceInfoDisp.DeviceInformation;
-            await PairDevice(deviceInfo);
+            refreshButton.IsEnabled = true;
         }
 
         private async Task PairDevice(DeviceInformation deviceInfo)
@@ -230,6 +228,7 @@ namespace DeviceEnumeration
                 "Unpairing result = " + dupr.Status.ToString(),
                 dupr.Status == DeviceUnpairingResultStatus.Unpaired ? NotifyType.StatusMessage : NotifyType.ErrorMessage);
 
+            StopWatcher();
             UpdatePairingButtons();
             resultsListView.IsEnabled = true;
         }

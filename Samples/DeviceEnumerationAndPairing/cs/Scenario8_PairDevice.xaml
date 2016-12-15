@@ -64,6 +64,15 @@
                     </TextBlock>
 
                     <VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="60">
+                        <Button x:Name="refreshButton"
+                                            Margin="1"
+                                            IsEnabled="True"
+                                            Click="RefreshButton_Click"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Stretch"
+                                            VariableSizedWrapGrid.ColumnSpan="3">
+                          Refresh Device List
+                        </Button>
                         <Button x:Name="unpairButton"
                                 Margin="1"
                                 IsEnabled="False"

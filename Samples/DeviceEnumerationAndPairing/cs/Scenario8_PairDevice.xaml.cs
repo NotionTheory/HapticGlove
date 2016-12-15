@@ -54,16 +54,6 @@ namespace DeviceEnumeration
             StopWatcher();
         }
 
-        private void StartWatcherButton_Click(object sender, RoutedEventArgs e)
-        {
-            StartWatcher();
-        }
-
-        private void StopWatcherButton_Click(object sender, RoutedEventArgs e)
-        {
-            StopWatcher();
-        }
-
         private async void GetGATT(DeviceInformation deviceInfo)
         {
             StopWatcher();
@@ -71,7 +61,6 @@ namespace DeviceEnumeration
 
         private void StartWatcher()
         {
-            startWatcherButton.IsEnabled = false;
             ResultCollection.Clear();
 
             // Kind is specified in the selector info
@@ -180,13 +169,10 @@ namespace DeviceEnumeration
 
             rootPage.NotifyUser("Starting Watcher...", NotifyType.StatusMessage);
             deviceWatcher.Start();
-            stopWatcherButton.IsEnabled = true;
         }
 
         private void StopWatcher()
         {
-            stopWatcherButton.IsEnabled = false;
-
             if (null != deviceWatcher)
             {
                 // First unhook all event handlers except the stopped handler. This ensures our
@@ -204,8 +190,6 @@ namespace DeviceEnumeration
                     deviceWatcher.Stop();
                 }
             }
-
-            startWatcherButton.IsEnabled = true;
         }
 
         private async void PairButton_Click(object sender, RoutedEventArgs e)
@@ -221,7 +205,6 @@ namespace DeviceEnumeration
         private async Task PairDevice(DeviceInformation deviceInfo)
         {
             resultsListView.IsEnabled = false;
-            pairButton.IsEnabled = false;
             DevicePairingResult dpr = await deviceInfo.Pairing.PairAsync();
 
             rootPage.NotifyUser(
@@ -259,17 +242,6 @@ namespace DeviceEnumeration
         private void UpdatePairingButtons()
         {
             DeviceInformationDisplay deviceInfoDisp = (DeviceInformationDisplay)resultsListView.SelectedItem;
-
-            if (null != deviceInfoDisp &&
-                deviceInfoDisp.DeviceInformation.Pairing.CanPair &&
-                !deviceInfoDisp.DeviceInformation.Pairing.IsPaired)
-            {
-                pairButton.IsEnabled = true;
-            }
-            else
-            {
-                pairButton.IsEnabled = false;
-            }
 
             if (null != deviceInfoDisp &&
                 deviceInfoDisp.DeviceInformation.Pairing.IsPaired)

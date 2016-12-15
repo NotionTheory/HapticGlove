@@ -64,32 +64,6 @@
                     </TextBlock>
 
                     <VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="60">
-                        <Button x:Name="startWatcherButton"
-                                Margin="1"
-                                Click="StartWatcherButton_Click"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch"
-                                VariableSizedWrapGrid.ColumnSpan="2">
-                            Start Watcher
-                        </Button>
-                        <Button x:Name="stopWatcherButton"
-                                Margin="1"
-                                IsEnabled="False"
-                                Click="StopWatcherButton_Click"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch"
-                                VariableSizedWrapGrid.ColumnSpan="2">
-                            Stop Watcher
-                        </Button>
-                        <Button x:Name="pairButton"
-                                Margin="1"
-                                IsEnabled="False"
-                                Click="PairButton_Click"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch"
-                                VariableSizedWrapGrid.ColumnSpan="3">
-                            Pair Selected Device
-                        </Button>
                         <Button x:Name="unpairButton"
                                 Margin="1"
                                 IsEnabled="False"

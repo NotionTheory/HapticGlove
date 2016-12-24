@@ -16,7 +16,7 @@
 Adafruit_BluefruitLE_SPI ble(BLUEFRUIT_SPI_CS, BLUEFRUIT_SPI_IRQ, BLUEFRUIT_SPI_RST);
 Adafruit_BLEGatt gatt(ble);
 
-uint8_t serviceID, char1ID, char2ID;
+uint8_t serviceID, char1ID, char2ID, char2Value;
 
 void stop(){
   while(1);
@@ -36,21 +36,28 @@ void setup(void)
     stop();
   }
   ble.echo(false);
+  
   ble.factoryReset(true);
+  atcommand(F("AT+GAPDEVNAME=NotionTheory Haptic Glove"), 1000);
+  
   gatt.clear();
   serviceID = gatt.addService(0x180D);
   char1ID = gatt.addCharacteristic(0x2A37, 0x10, 2, 3, BLE_DATATYPE_BYTEARRAY);
   char2ID = gatt.addCharacteristic(0x2A38, 0x02, 1, 1, BLE_DATATYPE_INTEGER);
   gatt.setChar(char1ID, {0x00, 0x40}, 2);
-  gatt.setChar(char2ID, 3);
-  ble.setAdvData({0x02, 0x01, 0x06, 0x05, 0x02, 0x0d, 0x18, 0x0a, 0x18}, 9);
+  char2Value = 0;
+  
+  //ble.setAdvData({0x02, 0x01, 0x06, 0x05, 0x02, 0x0d, 0x18, 0x0a, 0x18}, 9);
+  
   ble.reset(true);
 }
 
 void loop(void)
 {
-  char command[BUFSIZE+1];
-  // getUserInput(command, BUFSIZE);
-  ble.println(command);
-  ble.waitForOK();
+  //char command[BUFSIZE+1];
+  //getUserInput(command, BUFSIZE);
+  //ble.println(command);
+  //ble.waitForOK();
+  char2Value = (char2Value + 1) % 256;
+  gat.setChar(char2ID, char2Value);
 }

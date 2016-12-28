@@ -5,94 +5,25 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HapticGloveServer", "HapticGloveServer\HapticGloveServer.csproj", "{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wav2H", "Wav2H\Wav2H.csproj", "{5E29738D-48DC-47C5-B301-C7A420CFC4AF}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{3E082A38-C6FC-48D1-989F-02CBFA12FDA1}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{6F1D100E-00F8-4C4B-8ACC-324247DBB87A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeviceEnumerationCS", "Samples\DeviceEnumerationAndPairing\cs\DeviceEnumerationCS.csproj", "{DC30CE66-DAEE-4CCF-BD02-8837FE918B6F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Debug|ARM = Debug|ARM
 		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
-		Release|Any CPU = Release|Any CPU
-		Release|ARM = Release|ARM
 		Release|x64 = Release|x64
-		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Debug|ARM.Build.0 = Debug|Any CPU
-		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Debug|ARM.Deploy.0 = Debug|Any CPU
 		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Debug|x64.ActiveCfg = Debug|x64
 		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Debug|x64.Build.0 = Debug|x64
 		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Debug|x64.Deploy.0 = Debug|x64
-		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Debug|x86.ActiveCfg = Debug|x86
-		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Debug|x86.Build.0 = Debug|x86
-		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Debug|x86.Deploy.0 = Debug|x86
-		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Release|ARM.ActiveCfg = Release|Any CPU
-		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Release|ARM.Build.0 = Release|Any CPU
-		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Release|ARM.Deploy.0 = Release|Any CPU
 		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Release|x64.ActiveCfg = Release|x64
 		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Release|x64.Build.0 = Release|x64
 		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Release|x64.Deploy.0 = Release|x64
-		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Release|x86.ActiveCfg = Release|x86
-		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Release|x86.Build.0 = Release|x86
-		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Release|x86.Deploy.0 = Release|x86
-		{5E29738D-48DC-47C5-B301-C7A420CFC4AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5E29738D-48DC-47C5-B301-C7A420CFC4AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5E29738D-48DC-47C5-B301-C7A420CFC4AF}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{5E29738D-48DC-47C5-B301-C7A420CFC4AF}.Debug|ARM.Build.0 = Debug|Any CPU
-		{5E29738D-48DC-47C5-B301-C7A420CFC4AF}.Debug|x64.ActiveCfg = Debug|x64
-		{5E29738D-48DC-47C5-B301-C7A420CFC4AF}.Debug|x64.Build.0 = Debug|x64
-		{5E29738D-48DC-47C5-B301-C7A420CFC4AF}.Debug|x86.ActiveCfg = Debug|x86
-		{5E29738D-48DC-47C5-B301-C7A420CFC4AF}.Debug|x86.Build.0 = Debug|x86
-		{5E29738D-48DC-47C5-B301-C7A420CFC4AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5E29738D-48DC-47C5-B301-C7A420CFC4AF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5E29738D-48DC-47C5-B301-C7A420CFC4AF}.Release|ARM.ActiveCfg = Release|Any CPU
-		{5E29738D-48DC-47C5-B301-C7A420CFC4AF}.Release|ARM.Build.0 = Release|Any CPU
-		{5E29738D-48DC-47C5-B301-C7A420CFC4AF}.Release|x64.ActiveCfg = Release|x64
-		{5E29738D-48DC-47C5-B301-C7A420CFC4AF}.Release|x64.Build.0 = Release|x64
-		{5E29738D-48DC-47C5-B301-C7A420CFC4AF}.Release|x86.ActiveCfg = Release|x86
-		{5E29738D-48DC-47C5-B301-C7A420CFC4AF}.Release|x86.Build.0 = Release|x86
-		{DC30CE66-DAEE-4CCF-BD02-8837FE918B6F}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{DC30CE66-DAEE-4CCF-BD02-8837FE918B6F}.Debug|ARM.ActiveCfg = Debug|ARM
-		{DC30CE66-DAEE-4CCF-BD02-8837FE918B6F}.Debug|ARM.Build.0 = Debug|ARM
-		{DC30CE66-DAEE-4CCF-BD02-8837FE918B6F}.Debug|ARM.Deploy.0 = Debug|ARM
-		{DC30CE66-DAEE-4CCF-BD02-8837FE918B6F}.Debug|x64.ActiveCfg = Debug|x64
-		{DC30CE66-DAEE-4CCF-BD02-8837FE918B6F}.Debug|x64.Build.0 = Debug|x64
-		{DC30CE66-DAEE-4CCF-BD02-8837FE918B6F}.Debug|x64.Deploy.0 = Debug|x64
-		{DC30CE66-DAEE-4CCF-BD02-8837FE918B6F}.Debug|x86.ActiveCfg = Debug|x86
-		{DC30CE66-DAEE-4CCF-BD02-8837FE918B6F}.Debug|x86.Build.0 = Debug|x86
-		{DC30CE66-DAEE-4CCF-BD02-8837FE918B6F}.Debug|x86.Deploy.0 = Debug|x86
-		{DC30CE66-DAEE-4CCF-BD02-8837FE918B6F}.Release|Any CPU.ActiveCfg = Release|x86
-		{DC30CE66-DAEE-4CCF-BD02-8837FE918B6F}.Release|ARM.ActiveCfg = Release|ARM
-		{DC30CE66-DAEE-4CCF-BD02-8837FE918B6F}.Release|ARM.Build.0 = Release|ARM
-		{DC30CE66-DAEE-4CCF-BD02-8837FE918B6F}.Release|ARM.Deploy.0 = Release|ARM
-		{DC30CE66-DAEE-4CCF-BD02-8837FE918B6F}.Release|x64.ActiveCfg = Release|x64
-		{DC30CE66-DAEE-4CCF-BD02-8837FE918B6F}.Release|x64.Build.0 = Release|x64
-		{DC30CE66-DAEE-4CCF-BD02-8837FE918B6F}.Release|x64.Deploy.0 = Release|x64
-		{DC30CE66-DAEE-4CCF-BD02-8837FE918B6F}.Release|x86.ActiveCfg = Release|x86
-		{DC30CE66-DAEE-4CCF-BD02-8837FE918B6F}.Release|x86.Build.0 = Release|x86
-		{DC30CE66-DAEE-4CCF-BD02-8837FE918B6F}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{DC30CE66-DAEE-4CCF-BD02-8837FE918B6F} = {6F1D100E-00F8-4C4B-8ACC-324247DBB87A}
 	EndGlobalSection
 EndGlobal

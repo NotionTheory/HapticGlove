@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.Devices.Enumeration;
+using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using System.Threading.Tasks;
 
@@ -27,12 +28,23 @@ namespace HapticGloveServer
     public sealed partial class MainPage : Page
     {
         private const string BLE_DEVICE_FILTER = "System.Devices.Aep.ProtocolId:=\"{bb7bb05e-5972-42b5-94fc-76eaa7084d49}\"";
-        private const string DEVICE_NAME = "Adafruit Bluefruit LE"; // "NotionTheory Haptic Glove";
-        private static readonly ushort SERVICE_ID = 0x180D;
-        //private static readonly Guid SERVICE_ID = new Guid("{3A3A0D8C-20FE-4F2B-9F06-0E3D09A54E69}");
+        private const string DEVICE_NAME = "NotionTheory Haptic Glove";
+        //private static readonly ushort SERVICE_ID = 0x1800;
+        private static readonly Guid SERVICE_ID = new Guid("{40792AF0-B0A9-4173-B72D-5488AB301DB5}");
+
+        private static string MakeGATTFilter(Guid guid)
+        {
+            return GattDeviceService.GetDeviceSelectorFromUuid(guid);
+        }
+
+        private static string MakeGATTFilter(ushort value)
+        {
+            return GattDeviceService.GetDeviceSelectorFromShortId(value);
+        }
 
         DeviceWatcher watcher;
         Dictionary<string, DeviceInformation> devices;
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -85,6 +97,56 @@ namespace HapticGloveServer
             });
         }
 
+        private async Task GetServices(DeviceInformation deviceInfo, string op)
+        {
+            var serviceFilter = MakeGATTFilter(SERVICE_ID);
+            await Print("\nWhile {1} a device, finding services [filter = {0}]", serviceFilter, op);
+            var serviceDevices = (from device in await DeviceInformation.FindAllAsync(serviceFilter)
+                                  where device.Name == DEVICE_NAME
+                                  select device).ToArray();
+            await Print("{0} services found.", serviceDevices.Length);
+            foreach(var serviceDevice in serviceDevices)
+            {
+                await EnumerateService(serviceDevice);
+            }
+        }
+
+        private async Task EnumerateService(DeviceInformation device)
+        {
+            await Print("Service Device {0} ({1})", device.Name, device.Id);
+            try
+            {
+                var deviceService = await GattDeviceService.FromIdAsync(device.Id);
+                if(deviceService == null)
+                {
+                    await Print("No device service found.");
+                }
+                else
+                {
+                    await EnumerateCharacteristics(deviceService);
+                }
+            }
+            catch(FileNotFoundException exp)
+            {
+                await Print("Failed to acquire device information. {0}", exp.Message);
+            }
+        }
+
+        private async Task EnumerateCharacteristics(GattDeviceService deviceService)
+        {
+            await Print("Service UUID {0}", deviceService.Uuid);
+            var characteristics = deviceService.GetAllCharacteristics();
+            await Print("{0} characteristics found.", characteristics.Count);
+            foreach(var c in characteristics)
+            {
+                await Print("Characteristic [{0,4:X}]: {1}.", c.AttributeHandle, c.UserDescription);
+                //var descrip = await c.ReadClientCharacteristicConfigurationDescriptorAsync();
+                //await Print("\tDescription [{0}]: {1}", descrip.Status, descrip.ClientCharacteristicConfigurationDescriptor);
+                var value = await c.ReadValueAsync();
+                await Print("\tValue [{0}, {2} of {1}]: <{3}>", value.Status, value.Value.Capacity, value.Value.Length, string.Join("|", value.Value.ToArray().Select(b => b.ToString("X"))));
+            }
+        }
+
         private async void Watcher_Added(DeviceWatcher watcher, DeviceInformation deviceInfo)
         {
             if(!devices.ContainsKey(deviceInfo.Id))
@@ -104,38 +166,9 @@ namespace HapticGloveServer
                         await Print("Device {0} already paired.", deviceInfo.Name);
                     }
 
-                    var serviceFilter = MakeGATTFilter(SERVICE_ID);
-                    await Print("Finding services [filter = {0}]", serviceFilter);
-                    var serviceDevices = (from device in await DeviceInformation.FindAllAsync(serviceFilter)
-                                   where device.Name == DEVICE_NAME
-                                   select device).ToArray();
-                    await Print("{0} services found.", serviceDevices.Length);
-                    foreach(var serviceDevice in serviceDevices)
-                    {
-                        await Print("Service Device {0} ({1})", serviceDevice.Name, serviceDevice.Id);
-                        var deviceService = await GattDeviceService.FromIdAsync(serviceDevice.Id);
-                        await Print("Service UUID {0}", deviceService?.Uuid);
-                        var services = deviceService.GetAllIncludedServices();
-                        await Print("{0} additional services found.", services.Count);
-                        var characteristics = deviceService.GetAllCharacteristics();
-                        await Print("{0} characteristics found.", characteristics.Count);
-                        foreach(var c in characteristics)
-                        {
-                            await Print("Characteristic [{0,4:X}]: {1}.", c.AttributeHandle, c.UserDescription);
-                        }
-                    }
+                    await GetServices(deviceInfo, "adding");
                 }
             }
-        }
-
-        private string MakeGATTFilter(Guid guid)
-        {
-            return GattDeviceService.GetDeviceSelectorFromUuid(guid);
-        }
-
-        private string MakeGATTFilter(ushort value)
-        {
-            return GattDeviceService.GetDeviceSelectorFromShortId(value);
         }
 
         private async void Watcher_Updated(DeviceWatcher sender, DeviceInformationUpdate deviceUpdate)
@@ -146,6 +179,7 @@ namespace HapticGloveServer
                 var descrip = string.Join("\n", from kv in deviceUpdate.Properties
                                                 select string.Format("\t{0}: {1}", kv.Key, kv.Value));
                 await Print("Device updated {0}\n{1}.", deviceInfo.Name, descrip);
+                //await GetServices(deviceInfo, "updating");
             }
         }
 

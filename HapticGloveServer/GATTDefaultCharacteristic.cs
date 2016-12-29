@@ -14,32 +14,51 @@ namespace HapticGloveServer
             get;
         }
 
-        public ushort ID
+        public ushort? ID
         {
             private set;
             get;
         }
 
-        public Guid Uuid
+        public Guid UUID
         {
             private set;
             get;
         }
 
-        public GATTDefaultCharacteristic(string description, ushort id)
+        public GATTDefaultCharacteristic(string description, Guid uuid)
         {
-
             this.Description = description;
+            this.UUID = uuid;
+            lookup.Add(this.UUID, this);
+        }
+
+        private GATTDefaultCharacteristic(string description, ushort id)
+            : this(description, new Guid(string.Format("{{0000{0,4:X}-0000-1000-8000-00805f9b34fb}}", id)))
+        {
             this.ID = id;
-            this.Uuid = new Guid(string.Format("{{0000{0,4:X}-0000-1000-8000-00805f9b34fb}}", id));
-            lookup.Add(this.Uuid, this);
         }
 
         static Dictionary<Guid, GATTDefaultCharacteristic> lookup;
 
         public static GATTDefaultCharacteristic Find(Guid uuid)
         {
-            return lookup[uuid];
+            if(lookup.ContainsKey(uuid))
+            {
+                return lookup[uuid];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public static IEnumerable<GATTDefaultCharacteristic> All
+        {
+            get
+            {
+                return lookup.Values;
+            }
         }
 
         static GATTDefaultCharacteristic()

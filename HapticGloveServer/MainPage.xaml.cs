@@ -19,6 +19,7 @@ using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using System.Threading.Tasks;
 using Windows.Storage.Streams;
 using System.Text;
+using System.Threading;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -32,34 +33,31 @@ namespace HapticGloveServer
         private const string BLE_DEVICE_FILTER = "System.Devices.Aep.ProtocolId:=\"{bb7bb05e-5972-42b5-94fc-76eaa7084d49}\"";
         private const string DEVICE_NAME = "NotionTheory Haptic Glove";
 
-        private static GATTDefaultService[] SERVICES;
-
         static MainPage()
         {
-            SERVICES = new GATTDefaultService[] {
-                GATTDefaultService.BatteryService,
-                GATTDefaultService.DeviceInformation,
-                GATTDefaultService.GenericAccess,
-                GATTDefaultService.GenericAttribute,
-                new GATTDefaultService("Custom", GATTDefaultService.MakeGATTFilter(new Guid("{40792AF0-B0A9-4173-B72D-5488AB301DB5}")))
-            };
+            //new GATTDefaultService("Nordic Serial Emulator", new Guid("{6e400001-b5a3-f393-e0a9-e50e24dcca9e}"));
+            //new GATTDefaultService("Custom", new Guid("{40792AF0-B0A9-4173-B72D-5488AB301DB5}"));
+            //new GATTDefaultService("Unknown 1", new Guid("{00001530-1212-efde-1523-785feabcd123}"));
+            //new GATTDefaultService("Unknown 2", new Guid("{ee0c2080-8786-40ba-ab96-99b91ac981d8}"));
         }
 
         DeviceWatcher watcher;
         Dictionary<string, DeviceInformation> devices;
+        Dictionary<string, GattCharacteristic> watchedCharacteristics;
 
         public MainPage()
         {
             this.InitializeComponent();
             devices = new Dictionary<string, DeviceInformation>();
+            watchedCharacteristics = new Dictionary<string, GattCharacteristic>();
             Task.Run(StartWatcher);
         }
 
         private void Write(string msg = "")
         {
-            this.Description += msg;
             this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
+                this.Description += msg;
                 this.Bindings.Update();
             }).AsTask().Wait();
         }
@@ -81,7 +79,6 @@ namespace HapticGloveServer
 
         private async Task StartWatcher()
         {
-            WriteLine("Watching for devices.");
             devices.Clear();
             watcher = DeviceInformation.CreateWatcher(BLE_DEVICE_FILTER, null, DeviceInformationKind.AssociationEndpoint);
             watcher.Added += Watcher_Added;
@@ -110,46 +107,36 @@ namespace HapticGloveServer
             get; set;
         }
 
-        private bool running = false;
         private async Task GetServices(DeviceInformation deviceInfo)
         {
-            if(!running)
+            try
             {
-                running = true;
-                try
+                if(!deviceInfo.Pairing.IsPaired)
                 {
-                    if(!deviceInfo.Pairing.IsPaired)
+                    WriteLine(" not paired.");
+                }
+                else
+                {
+                    WriteLine("For device {0}:", deviceInfo.Name);
+                    foreach(var service in GATTDefaultService.All)
                     {
-                        WriteLine(" not paired.");
-                    }
-                    else
-                    {
-                        foreach(var service in SERVICES)
+                        var serviceDevices = (from device in await DeviceInformation.FindAllAsync(service.Filter)
+                                              where device.Name == DEVICE_NAME
+                                              select device).ToArray();
+                        if(serviceDevices.Length > 0)
                         {
-                            Write("\nFinding services [{0}]... ", service.Description);
-                            var serviceDevices = (from device in await DeviceInformation.FindAllAsync(service.Filter)
-                                                  where device.Name == DEVICE_NAME
-                                                  select device).ToArray();
-                            if(serviceDevices.Length == 0)
+                            WriteLine("\n\t{0}:", service.Description);
+                            foreach(var serviceDevice in serviceDevices)
                             {
-                                WriteLine("not found.");
-                            }
-                            else
-                            {
-                                WriteLine("found.");
-                                foreach(var serviceDevice in serviceDevices)
-                                {
-                                    await EnumerateService(serviceDevice);
-                                }
+                                await EnumerateService(serviceDevice);
                             }
                         }
                     }
                 }
-                catch(Exception exp)
-                {
-                    WriteLine("ERROR: {0}", exp.Message);
-                }
-                running = false;
+            }
+            catch(Exception exp)
+            {
+                WriteLine("ERROR1: {0}", exp.Message);
             }
         }
 
@@ -175,72 +162,112 @@ namespace HapticGloveServer
 
         private async Task EnumerateCharacteristics(GattDeviceService deviceService)
         {
-            var characteristics = deviceService.GetAllCharacteristics();
-            WriteLine("{0} characteristics found.", characteristics.Count);
-            foreach(var c in characteristics)
+            var cs = deviceService.GetAllCharacteristics();
+            if(cs.Count == 0)
             {
-                GattReadResult result = null;
-                if(c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Read))
+                WriteLine("\t\t<No characteristics found>");
+            }
+            else
+            {
+                for(int i = 0; i < cs.Count; ++i)
                 {
-                    result = await c.ReadValueAsync();
-                }
+                    try
+                    {
+                        var c = cs[i];
+                        GattReadResult result = null;
+                        if(c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Read))
+                        {
+                            result = await c.ReadValueAsync();
+                        }
 
-                PrintResult("\t", c.Uuid, result);
+                        Write("\t\t");
 
-                var descriptors = c.GetAllDescriptors();
-                foreach(var descriptor in descriptors)
-                {
-                    PrintResult("\t\t", descriptor.Uuid, await descriptor.ReadValueAsync());
+                        var name = string.Format("{0}_{1}", GATTDefaultCharacteristic.Find(c.Uuid)?.Description ?? c.Uuid.ToString(), i);
+
+                        if(c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Notify))
+                        {
+                            Write("[watch] ");
+                            watchedCharacteristics.Add(name, c);
+                            c.ValueChanged += (GattCharacteristic sender, GattValueChangedEventArgs args) =>
+                            {
+                                WriteLine("[{1}]: {0}", TranslateStream(args.CharacteristicValue), name);
+                            };
+                            await c.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.Notify);
+                        }
+
+                        PrintResult("", c.Uuid, result);
+                    }
+                    catch(Exception exp)
+                    {
+                        WriteLine("ERROR3: {0}", exp.Message);
+                    }
                 }
             }
         }
 
-        private void PrintResult(string pre, Guid uuid, GattReadResult result)
+        private string PrintResult(string pre, Guid? uuid, GattReadResult result)
         {
-            Write("{0}[{1}]: ", pre, GATTDefaultCharacteristic.Find(uuid)?.Description ?? uuid.ToString());
+            Write(pre);
+            if(uuid.HasValue)
+            {
+                Write("{0}: ", GATTDefaultCharacteristic.Find(uuid.Value)?.Description ?? uuid.ToString());
+            }
+
             var str = "";
             if(result == null)
             {
-                str = "Not readable";
+                str = "<Not readable>";
             }
             else
             {
                 try
                 {
-                    var buffer = new byte[result.Value.Length];
-                    DataReader.FromBuffer(result.Value).ReadBytes(buffer);
-                    if(buffer.Length > 0 && buffer[0] >= 0x20)
-                    {
-                        str = Encoding.ASCII.GetString(buffer);
-                    }
-                    else
-                    {
-                        switch(buffer.Length)
-                        {
-                        case 1:
-                            str = buffer[0].ToString();
-                            break;
-                        case 2:
-                            ushort shortVal = (ushort)(buffer[0] << 8 | buffer[1]);
-                            str = shortVal.ToString();
-                            break;
-                        case 4:
-                            uint intVal = (uint)(buffer[0] << 24 | buffer[1] << 16 | buffer[2] << 8 | buffer[3]);
-                            str = intVal.ToString();
-                            break;
-                        default:
-                            str = "<" + string.Join("|", buffer.Select(b => b.ToString("X2"))) + ">";
-                            break;
-                        }
-                    }
+                    str = TranslateStream(result.Value);
                 }
                 catch(Exception exp)
                 {
-                    str = "ERROR: " + exp.Message;
+                    str = "ERROR2: " + exp.Message;
                 }
             }
 
-            WriteLine("[{0}] {1}", result?.Status.ToString() ?? "Failed", str);
+            WriteLine(str);
+            return str;
+        }
+
+        private static string TranslateStream(IBuffer stream)
+        {
+            string str;
+            var buffer = new byte[stream.Length];
+            DataReader.FromBuffer(stream).ReadBytes(buffer);
+            switch(buffer.Length)
+            {
+            case 0:
+                str = "<no data>";
+                break;
+            case 1:
+                str = buffer[0].ToString();
+                break;
+            case 2:
+                ushort shortVal = (ushort)(buffer[0] << 8 | buffer[1]);
+                str = shortVal.ToString();
+                break;
+            case 4:
+                uint intVal = (uint)(buffer[0] << 24 | buffer[1] << 16 | buffer[2] << 8 | buffer[3]);
+                str = intVal.ToString();
+                break;
+            default:
+                if(buffer[0] >= 0x20)
+                {
+                    str = Encoding.ASCII.GetString(buffer);
+                }
+                else
+                {
+                    str = "<" + string.Join("|", buffer.Select(b => b.ToString("X2"))) + ">";
+                }
+                break;
+            }
+
+            return str;
         }
 
         private async void Watcher_Added(DeviceWatcher watcher, DeviceInformation deviceInfo)
@@ -248,18 +275,13 @@ namespace HapticGloveServer
             if(!devices.ContainsKey(deviceInfo.Id))
             {
                 devices.Add(deviceInfo.Id, deviceInfo);
-                Write("New device => {0}... ", deviceInfo.Name);
                 if(deviceInfo.Name == DEVICE_NAME)
                 {
                     if(!deviceInfo.Pairing.IsPaired)
                     {
-                        Write("Pairing... ");
+                        Write("New device {0} pairing... ", deviceInfo.Name);
                         await deviceInfo.Pairing.PairAsync();
                         WriteLine("paired.");
-                    }
-                    else
-                    {
-                        WriteLine("already paired.", deviceInfo.Name);
                     }
 
                     await GetServices(deviceInfo);
@@ -272,8 +294,6 @@ namespace HapticGloveServer
             if(devices.ContainsKey(deviceUpdate.Id))
             {
                 var deviceInfo = devices[deviceUpdate.Id];
-                Write("Device updated => {0}", deviceInfo.Name);
-                await GetServices(deviceInfo);
             }
         }
 
@@ -282,7 +302,6 @@ namespace HapticGloveServer
             if(devices.ContainsKey(deviceUpdate.Id))
             {
                 var deviceInfo = devices[deviceUpdate.Id];
-                WriteLine("Device removed {0}: Paired => {1}.", deviceInfo.Name, deviceInfo.Pairing.IsPaired);
                 devices.Remove(deviceUpdate.Id);
             }
         }

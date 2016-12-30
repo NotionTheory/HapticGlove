@@ -3,7 +3,6 @@
 // These settings are used in both SW UART, HW UART and SPI mode
 // ----------------------------------------------------------------------------------------------
 #define BUFSIZE                        160   // Size of the read buffer for incoming data
-#define VERBOSE_MODE                   false  // If set to 'true' enables debug output
 
 
 // SOFTWARE UART SETTINGS

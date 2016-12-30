@@ -35,22 +35,50 @@ namespace HapticGloveServer
 
         static MainPage()
         {
-            //new GATTDefaultService("Nordic Serial Emulator", new Guid("{6e400001-b5a3-f393-e0a9-e50e24dcca9e}"));
-            //new GATTDefaultService("Custom", new Guid("{40792AF0-B0A9-4173-B72D-5488AB301DB5}"));
-            //new GATTDefaultService("Unknown 1", new Guid("{00001530-1212-efde-1523-785feabcd123}"));
-            //new GATTDefaultService("Unknown 2", new Guid("{ee0c2080-8786-40ba-ab96-99b91ac981d8}"));
+            new GATTDefaultService("Nordic UART", new Guid("{6e400001-b5a3-f393-e0a9-e50e24dcca9e}"));
+            new GATTDefaultCharacteristic("RX Buffer", new Guid("{6e400003-b5a3-f393-e0a9-e50e24dcca9e}"));
+            new GATTDefaultCharacteristic("TX Buffer", new Guid("{6e400002-b5a3-f393-e0a9-e50e24dcca9e}"));
+            new GATTDefaultService("Nordic Device Firmware Update Service", new Guid("{00001530-1212-efde-1523-785feabcd123}"));
+            new GATTDefaultCharacteristic("DFU Packet", new Guid("{00001532-1212-efde-1523-785feabcd123}"));
+            new GATTDefaultCharacteristic("DFU Control Point", new Guid("{00001531-1212-efde-1523-785feabcd123}"));
+            new GATTDefaultCharacteristic("DFU Version", new Guid("{00001534-1212-efde-1523-785feabcd123}"));
         }
 
         DeviceWatcher watcher;
         Dictionary<string, DeviceInformation> devices;
-        Dictionary<string, GattCharacteristic> watchedCharacteristics;
+        List<GattCharacteristic> watchedCharacteristics;
+        GattCharacteristic writable;
+        byte counter = 0;
+        Timer t;
 
         public MainPage()
         {
             this.InitializeComponent();
             devices = new Dictionary<string, DeviceInformation>();
-            watchedCharacteristics = new Dictionary<string, GattCharacteristic>();
+            watchedCharacteristics = new List<GattCharacteristic>();
+            t = new Timer(Tick, this, 3000, 1000);
             Task.Run(StartWatcher);
+        }
+
+        private async void Tick(object state)
+        {
+            try
+            {
+                if(writable != null)
+                {
+                    using(var x = new DataWriter())
+                    {
+                        x.WriteByte(counter);
+                        var buffer = x.DetachBuffer();
+                        await writable.WriteValueAsync(buffer, GattWriteOption.WriteWithoutResponse);
+                        WriteLine("Wrote counter {0}", counter++);
+                    }
+                }
+            }
+            catch(Exception exp)
+            {
+                WriteLine("ERROR5: {0}", exp.Message);
+            }
         }
 
         private void Write(string msg = "")
@@ -111,25 +139,18 @@ namespace HapticGloveServer
         {
             try
             {
-                if(!deviceInfo.Pairing.IsPaired)
+                WriteLine("For device {0}:", deviceInfo.Name);
+                foreach(var service in GATTDefaultService.All)
                 {
-                    WriteLine(" not paired.");
-                }
-                else
-                {
-                    WriteLine("For device {0}:", deviceInfo.Name);
-                    foreach(var service in GATTDefaultService.All)
+                    var serviceDevices = (from device in await DeviceInformation.FindAllAsync(service.Filter)
+                                          where device.Name == DEVICE_NAME
+                                          select device).ToArray();
+                    if(serviceDevices.Length > 0)
                     {
-                        var serviceDevices = (from device in await DeviceInformation.FindAllAsync(service.Filter)
-                                              where device.Name == DEVICE_NAME
-                                              select device).ToArray();
-                        if(serviceDevices.Length > 0)
+                        WriteLine("\n\t{0}:", service.Description);
+                        foreach(var serviceDevice in serviceDevices)
                         {
-                            WriteLine("\n\t{0}:", service.Description);
-                            foreach(var serviceDevice in serviceDevices)
-                            {
-                                await EnumerateService(serviceDevice);
-                            }
+                            await EnumerateService(serviceDevice);
                         }
                     }
                 }
@@ -180,22 +201,35 @@ namespace HapticGloveServer
                             result = await c.ReadValueAsync();
                         }
 
-                        Write("\t\t");
+                        Write("\t\t[{0}] ", c.CharacteristicProperties);
 
-                        var name = string.Format("{0}_{1}", GATTDefaultCharacteristic.Find(c.Uuid)?.Description ?? c.Uuid.ToString(), i);
+                        var desc = GATTDefaultCharacteristic.Find(c.Uuid)?.Description;
+                        var name = string.Format("{0}_{1}", desc ?? c.Uuid.ToString(), i);
 
-                        if(c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Notify))
+                        if(c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Notify) && desc != "DFU Control Point")
                         {
-                            Write("[watch] ");
-                            watchedCharacteristics.Add(name, c);
                             c.ValueChanged += (GattCharacteristic sender, GattValueChangedEventArgs args) =>
                             {
                                 WriteLine("[{1}]: {0}", TranslateStream(args.CharacteristicValue), name);
                             };
                             await c.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.Notify);
+                            watchedCharacteristics.Add(c);
+                        }
+
+                        if(c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.WriteWithoutResponse) && c.Uuid == GATTDefaultCharacteristic.Analog.UUID && writable == null)
+                        {
+                            writable = c;
+                            Write(" (saved as output line) ");
                         }
 
                         PrintResult("", c.Uuid, result);
+
+
+                        foreach(var descriptor in c.GetAllDescriptors())
+                        {
+                            result = await descriptor.ReadValueAsync();
+                            PrintResult("\t\t\t", descriptor.Uuid, result);
+                        }
                     }
                     catch(Exception exp)
                     {
@@ -277,14 +311,14 @@ namespace HapticGloveServer
                 devices.Add(deviceInfo.Id, deviceInfo);
                 if(deviceInfo.Name == DEVICE_NAME)
                 {
-                    if(!deviceInfo.Pairing.IsPaired)
+                    if(deviceInfo.Pairing.IsPaired)
                     {
-                        Write("New device {0} pairing... ", deviceInfo.Name);
-                        await deviceInfo.Pairing.PairAsync();
-                        WriteLine("paired.");
+                        await GetServices(deviceInfo);
                     }
-
-                    await GetServices(deviceInfo);
+                    else
+                    {
+                        WriteLine("Not paired. Pair and restart!");
+                    }
                 }
             }
         }

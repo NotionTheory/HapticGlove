@@ -279,15 +279,15 @@ namespace HapticGloveServer
                 str = "<no data>";
                 break;
             case 1:
-                str = buffer[0].ToString();
-                break;
             case 2:
-                ushort shortVal = (ushort)(buffer[0] << 8 | buffer[1]);
-                str = shortVal.ToString();
-                break;
             case 4:
-                uint intVal = (uint)(buffer[0] << 24 | buffer[1] << 16 | buffer[2] << 8 | buffer[3]);
-                str = intVal.ToString();
+                UInt32 val = 0;
+                for(int i = buffer.Length - 1; i >= 0; --i)
+                {
+                    val <<= 8;
+                    val |= buffer[i];
+                }
+                str = val.ToString();
                 break;
             default:
                 if(buffer[0] >= 0x20)

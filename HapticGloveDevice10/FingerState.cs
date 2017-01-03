@@ -21,6 +21,11 @@ namespace HapticGlove
             this.sensors = new List<GattCharacteristic>();
         }
 
+        public bool HasFinger(int index)
+        {
+            return 0 <= index && index < this.sensors.Count && this.sensors[index] != null;
+        }
+
         public int Count
         {
             get
@@ -69,30 +74,20 @@ namespace HapticGlove
                     while(index >= this.sensors.Count)
                     {
                         this.sensors.Add(null);
+                        this.values.Add(0f);
                     }
                     if(this.sensors[index] == null)
                     {
                         this.sensors[index] = sensor;
-                        while(this.values.Count < this.sensors.Count)
-                        {
-                            this.values.Add(0f);
-                        }
                         this.values[index] = await Glove.GetValue(sensor) / 256f;
 
                         await sensor.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.Notify);
-                        sensor.ValueChanged += Sensor_ValueChanged;
+                        sensor.ValueChanged += (GattCharacteristic sender, GattValueChangedEventArgs args) =>
+                        {
+                            this.values[index] = Glove.GetByte(args.CharacteristicValue) / 256f;
+                        };
                     }
                 }
-            }
-        }
-
-        private async void Sensor_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args)
-        {
-            string name = await Glove.GetDescription(sender);
-            int index = GetIndex(name);
-            if(0 <= index && index < this.Count)
-            {
-                this.values[index] = Glove.GetByte(args.CharacteristicValue) / 256f;
             }
         }
     }

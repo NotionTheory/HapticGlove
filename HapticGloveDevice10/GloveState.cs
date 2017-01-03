@@ -6,14 +6,18 @@ namespace HapticGlove
     public enum GloveState
     {
         NotReady = 0,
-        Searching = 1,
-        DeviceInformationFound = 2,
+        Watching = 1,
+        Searching = 2,
         DeviceFound = 4,
-        ServiceFound = 8,
-        CharacteristicsFound = 16,
+        DeviceInformationServiceFound = 8,
+        BatteryServiceFound = 16,
         BatteryFound = 32,
-        FingersFound = 64,
-        MotorsFound = 128,
-        Ready = 0xFE
+        MotorsFound = 64,
+        Finger1Found = 128,
+        Finger2Found = 256,
+        Finger3Found = 512,
+        Finger4Found = 1024,
+        Finger5Found = 2048,
+        Ready = 0xFFC
     }
 }

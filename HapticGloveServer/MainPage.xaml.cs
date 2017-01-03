@@ -16,33 +16,53 @@ namespace HapticGloveServer
         public MainPage()
         {
             this.InitializeComponent();
-            HapticGlove.Glove.Search();
             t = new Timer(Tick, this, 3000, 1000);
         }
+
+        private HapticGlove.GloveState lastState = HapticGlove.GloveState.NotReady;
 
         private void Tick(object state)
         {
             var glove = HapticGlove.Glove.DEFAULT;
             if(glove != null)
             {
-                Write("Finger ({0}% Battery) [{1}] state: [{2}", glove.Battery, glove.State, glove.Fingers.Count);
-                for(int i = 0; i < glove.Fingers.Count; ++i)
+                if(!glove.State.HasFlag(HapticGlove.GloveState.Ready))
                 {
-                    Write(", {0}", glove.Fingers[i]);
-                }
-                Write("] Motor State: [{0}", glove.Motors.Count);
-                for(int i = 0; i < glove.Motors.Count; ++i)
-                {
-                    Write(", {0}", glove.Motors[i]);
-                }
-                Write("]");
+                    if(glove.State != lastState)
+                    {
+                        lastState = glove.State;
+                        WriteLine(glove.State.ToString());
+                    }
 
-                if(glove.Error != null)
-                {
-                    Write(" ERROR: {0}", glove.Error.Message);
-                    t.Change(Timeout.Infinite, Timeout.Infinite);
+                    if(!glove.State.HasFlag(HapticGlove.GloveState.Searching) && glove.State.HasFlag(HapticGlove.GloveState.DeviceFound))
+                    {
+                        glove.Connect();
+                    }
                 }
-                WriteLine();
+                else
+                {
+                    Write("Finger [Battery: {0}%, Fingers: ",
+                        glove.Battery,
+                        glove.State == HapticGlove.GloveState.Ready ? "Ready" : glove.State.ToString(),
+                        glove.Fingers.Count);
+                    for(int i = 0; i < glove.Fingers.Count; ++i)
+                    {
+                        Write(", {0}", glove.Fingers[i]);
+                    }
+                    Write(" Motors: {0}", glove.Motors.Count);
+                    for(int i = 0; i < glove.Motors.Count; ++i)
+                    {
+                        Write(", {0}", glove.Motors[i]);
+                    }
+                    Write("]");
+
+                    if(glove.Error != null)
+                    {
+                        Write(" ERROR: {0}", glove.Error.Message);
+                        t.Change(Timeout.Infinite, Timeout.Infinite);
+                    }
+                    WriteLine();
+                }
             }
         }
 

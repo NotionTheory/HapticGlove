@@ -61,12 +61,12 @@ const uint8_t OUTPUT_PROPERTIES = GATT_CHARS_PROPERTIES_READ | GATT_CHARS_PROPER
 
 
 const PINS SENSOR_PINS[] = {
-  ANALOG0, // wrist
-  ANALOG1, // thumb
-  ANALOG2, // forefinger
-  ANALOG3, // middle finger
-  ANALOG4, // ring finger
-  ANALOG5  // pinkie finger
+  ANALOG0, // thumb
+  ANALOG1, // forefinger
+  ANALOG2, // middle finger
+  ANALOG3, // ring finger
+  ANALOG4,  // pinkie finger
+  //ANALOG5 // wrist
 };
 
 const size_t NUM_SENSORS = sizeof(SENSOR_PINS) / sizeof(uint8_t);
@@ -96,12 +96,13 @@ void stop()
 }
 
 
-uint8_t addChar(uint16_t id, const char* name, uint8_t size, uint8_t props)
+uint8_t addChar(const char* name, uint8_t props)
 {
-  return gatt.addCharacteristic( id, props, size, size, BLE_DATATYPE_INTEGER, name );
+  // This is the Analog characteristic, which is supposed to be a 16-bit integer, but I have it configured as an 8-bit integer, because this was the only configuration I was able to get to work reliably.
+  return gatt.addCharacteristic( 0x2a58, props, 1, 1, BLE_DATATYPE_INTEGER, name );
 }
 
-char sensorName[9];
+char sensorName[3];
 void setup(void)
 {
 #ifdef DEBUG
@@ -121,49 +122,46 @@ void setup(void)
 
   check("Setting device name", ble.sendCommandCheckOK(F("AT+GAPDEVNAME=NotionTheory Haptic Glove")));
 
-  check("Analog 0", ANALOG0 == A0);
-  check("Analog 1", ANALOG1 == A1);
-  check("Analog 2", ANALOG2 == A2);
-  check("Analog 3", ANALOG3 == A3);
-  check("Analog 4", ANALOG4 == A4);
-  check("Analog 5", ANALOG5 == A5);
-  check("Number of Sensors", NUM_SENSORS == 6);
-  check("Number of Motors", NUM_MOTORS == 5);
-
   // Create a service onto which we can attach characteristics. This is the Battery service, which I am using because I wasn't able to get any other services to work. We don't need to save the service index because there is no point where we ever use it.
   check("Service", gatt.addService( 0x180F ) == 1);
 
-  // Setup the characteristics for outputting the sensor values
-  for(size_t i = 0; i < NUM_SENSORS; ++i) {
-
-#ifdef DEBUG
-    Serial.print("sensor index ");
-    Serial.println(i);
-#endif
-
-    // This is the Analog characteristic, which is supposed to be a 16-bit integer, but I have it configured as an 8-bit integer, because this was the only configuration I was able to get to work reliably.
-    sprintf(sensorName, "Sensor %d", i);
-    SENSOR_OUTPUT_CHAR_IDXS[i] = addChar( 0x2A58, sensorName, 1, OUTPUT_PROPERTIES );
-    check(sensorName, SENSOR_OUTPUT_CHAR_IDXS[i] == i + 1);
-    // Make sure we don't have random garbage in the array.
-    lastSensorState[i] = 0;
-    // we don't need to configure a pin mode for these pins because they are analog inputs.
-  }
+  // Tell the host computer how many haptic motors we have available.
+  const uint8_t motorCountCharIdx = addChar("Motor Count", OUTPUT_PROPERTIES);
 
   // Setup the characteristic for receiving the motor state. We use the `Write without Response` property because the host PC doesn't care when the write operation finishes, we just want it to happen as fast as possible.
-  motorCharIdx = addChar( 0x2A58, "Motor State", 1, GATT_CHARS_PROPERTIES_WRITE_WO_RESP );
-  check("Motor", motorCharIdx == NUM_SENSORS + 1);
+  motorCharIdx = addChar("Motor State", GATT_CHARS_PROPERTIES_WRITE_WO_RESP );
+
   lastMotorState = 0;
   // setup the pins for outputting the motor state.
   for(size_t i = 0; i < NUM_MOTORS; ++i) {
     pinMode(MOTOR_PINS[i], OUTPUT);
   }
 
-  // Setup complete. Reset the Bluetooth chip and go.
-  ble.reset(true);
-  ble.verbose(false);
+  // Setup the characteristics for outputting the sensor values
+  for(size_t i = 0; i < NUM_SENSORS; ++i) {
+    sprintf(sensorName, "Sensor %d", i);
 
 #ifdef DEBUG
+    Serial.print("sensor index ");
+    Serial.println(i);
+#endif
+
+    SENSOR_OUTPUT_CHAR_IDXS[i] = addChar(sensorName, OUTPUT_PROPERTIES );
+
+    // Make sure we don't have random garbage in the array.
+    lastSensorState[i] = 0;
+    // we don't need to configure a pin mode for these pins because they are analog inputs.
+  }
+
+  delay(500);
+
+  // Setup complete. Reset the Bluetooth chip and go.
+  ble.reset(true);
+
+  delay(500);
+
+#ifdef DEBUG
+  ble.verbose(false);
   Serial.println("Ready!");
 
   // Wait for a device to connect
@@ -173,6 +171,8 @@ void setup(void)
     delay(1000);
   }
 #endif
+
+  gatt.setChar(motorCountCharIdx, (uint8_t)NUM_MOTORS);
 }
 
 void loop(void)

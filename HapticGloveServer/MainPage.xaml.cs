@@ -47,7 +47,7 @@ namespace HapticGloveServer
             var glove = HapticGlove.Glove.DEFAULT;
             if(glove != null)
             {
-                Write("Finger [{1}found, {2}ready] state: [{0}", glove.Fingers.Count, glove.Found ? "" : "not ", glove.Ready ? "" : "not ");
+                Write("Finger [{1}] state: [{0}", glove.Fingers.Count, glove.State);
                 for(int i = 0; i < glove.Fingers.Count; ++i)
                 {
                     Write(", {0}", glove.Fingers[i]);

@@ -111,6 +111,7 @@
     <Compile Include="GATTDefaultCharacteristic.cs" />
     <Compile Include="GATTDefaultService.cs" />
     <Compile Include="Glove.cs" />
+    <Compile Include="GloveState.cs" />
     <Compile Include="MotorState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\HapticGloveDevice10.rd.xml" />

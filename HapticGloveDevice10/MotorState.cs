@@ -24,6 +24,14 @@ namespace HapticGlove
             this.state = 0;
         }
 
+        public bool Ready
+        {
+            get
+            {
+                return this.Count > 0 && this.motor != null;
+            }
+        }
+
         public async Task Connect(string description, GattCharacteristic c)
         {
             switch(description)

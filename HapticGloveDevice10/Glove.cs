@@ -12,6 +12,7 @@ namespace HapticGlove
     public class Glove
     {
         private const string BLE_DEVICE_FILTER = "System.Devices.Aep.ProtocolId:=\"{bb7bb05e-5972-42b5-94fc-76eaa7084d49}\"";
+        public const string DEVICE_NAME = "NotionTheory Haptic Glove";
 
         public static Glove DEFAULT;
 
@@ -42,6 +43,43 @@ namespace HapticGlove
             watcher.Start();
         }
 
+        private static void Watcher_Added(DeviceWatcher sender, DeviceInformation device)
+        {
+            if(!devices.ContainsKey(device.Id))
+            {
+                devices.Add(device.Id, device);
+            }
+        }
+
+        private static void Watcher_Updated(DeviceWatcher sender, DeviceInformationUpdate deviceUpdate)
+        {
+            if(devices.ContainsKey(deviceUpdate.Id))
+            {
+                devices[deviceUpdate.Id].Update(deviceUpdate);
+            }
+        }
+
+        private static void Watcher_Removed(DeviceWatcher sender, DeviceInformationUpdate deviceUpdate)
+        {
+            if(devices.ContainsKey(deviceUpdate.Id))
+            {
+                devices[deviceUpdate.Id].Update(deviceUpdate);
+                devices.Remove(deviceUpdate.Id);
+            }
+        }
+
+        private static void Watcher_EnumerationCompleted(DeviceWatcher sender, object args)
+        {
+            watcher.Added -= Watcher_Added;
+            watcher.Updated -= Watcher_Updated;
+            watcher.Removed -= Watcher_Removed;
+            watcher.EnumerationCompleted -= Watcher_EnumerationCompleted;
+            if(watcher.Status == DeviceWatcherStatus.Started || watcher.Status == DeviceWatcherStatus.EnumerationCompleted)
+            {
+                watcher.Stop();
+            }
+        }
+
         private static async void Watcher_Stopped(DeviceWatcher sender, object args)
         {
             watcher.Stopped -= Watcher_Stopped;
@@ -57,48 +95,6 @@ namespace HapticGlove
                     await DEFAULT.Connect();
                     var props = device.Properties.ToArray();
                 }
-            }
-        }
-
-        private static void Watcher_EnumerationCompleted(DeviceWatcher sender, object args)
-        {
-            StopWatcher();
-        }
-
-        private static void StopWatcher()
-        {
-            watcher.Added -= Watcher_Added;
-            watcher.Updated -= Watcher_Updated;
-            watcher.Removed -= Watcher_Removed;
-            watcher.EnumerationCompleted -= Watcher_EnumerationCompleted;
-            if(watcher.Status == DeviceWatcherStatus.Started || watcher.Status == DeviceWatcherStatus.EnumerationCompleted)
-            {
-                watcher.Stop();
-            }
-        }
-
-        private static void Watcher_Removed(DeviceWatcher sender, DeviceInformationUpdate deviceUpdate)
-        {
-            if(devices.ContainsKey(deviceUpdate.Id))
-            {
-                devices[deviceUpdate.Id].Update(deviceUpdate);
-                devices.Remove(deviceUpdate.Id);
-            }
-        }
-
-        private static void Watcher_Updated(DeviceWatcher sender, DeviceInformationUpdate deviceUpdate)
-        {
-            if(devices.ContainsKey(deviceUpdate.Id))
-            {
-                devices[deviceUpdate.Id].Update(deviceUpdate);
-            }
-        }
-
-        private static void Watcher_Added(DeviceWatcher sender, DeviceInformation device)
-        {
-            if(!devices.ContainsKey(device.Id))
-            {
-                devices.Add(device.Id, device);
             }
         }
 
@@ -137,15 +133,13 @@ namespace HapticGlove
             return GetByte(result.Value);
         }
 
-        public const string DEVICE_NAME = "NotionTheory Haptic Glove";
-
-        public bool Found
+        public GloveState State
         {
             get;
             private set;
         }
 
-        public bool Ready
+        public float Battery
         {
             get;
             private set;
@@ -169,11 +163,13 @@ namespace HapticGlove
             private set;
         }
 
+        private GattCharacteristic batteryCharacteristic;
+
         public Glove()
         {
             this.Fingers = new FingerState();
             this.Motors = new MotorState();
-            this.Ready = true;
+            this.State = GloveState.NotReady;
         }
 
         private static GATTDefaultService[] SERVICES = new GATTDefaultService[]
@@ -183,29 +179,18 @@ namespace HapticGlove
 
         public async Task Connect()
         {
-            this.Ready = false;
-            this.Found = false;
             this.Error = null;
+            this.State = GloveState.Searching;
             try
             {
-                foreach(var service in GATTDefaultService.All)
+                var deviceService = (from dev in await DeviceInformation.FindAllAsync(GATTDefaultService.BatteryService.Filter)
+                                     where dev.Id == DEVICE_NAME
+                                     select dev).FirstOrDefault();
+                if(deviceService != null)
                 {
-                    var deviceService = (from dev in await DeviceInformation.FindAllAsync(service.Filter)
-                                         where dev.Id == DEVICE_NAME
-                                         select dev).FirstOrDefault();
-                    if(deviceService != null)
-                    {
-                        if(service == GATTDefaultService.BatteryService)
-                        {
-                            await FindFingersAndMotors(await GattDeviceService.FromIdAsync(deviceService.Id));
-                        }
-                        else
-                        {
-
-                        }
-                    }
+                    this.State |= GloveState.ServiceFound;
+                    await FindFingersAndMotors(await GattDeviceService.FromIdAsync(deviceService.Id));
                 }
-                this.Found = this.Fingers.Count > 0;
             }
             catch(Exception exp)
             {
@@ -213,44 +198,55 @@ namespace HapticGlove
             }
             finally
             {
-                this.Ready = !this.Found;
+                this.State ^= GloveState.Searching;
             }
         }
 
         private async Task FindFingersAndMotors(GattDeviceService deviceService)
         {
-            var cs = deviceService.GetCharacteristics(GATTDefaultCharacteristic.Analog.UUID);
-            var numChars = cs.Count;
-            if(numChars == 0)
+            var characteristics = deviceService.GetAllCharacteristics();
+            if(characteristics.Count > 0)
             {
-                //throw new Exception("Didn't find any characteristics");
+                this.State |= GloveState.CharacteristicsFound;
             }
-            else
+            foreach(var characteristic in characteristics)
             {
-
-            }
-            foreach(var c in cs)
-            {
-                try
+                if(characteristic.Uuid == GATTDefaultCharacteristic.BatteryLevel.UUID)
                 {
-                    var description = await GetDescription(c);
+                    this.batteryCharacteristic = characteristic;
+                    await this.batteryCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.Notify);
+                    this.batteryCharacteristic.ValueChanged += BatteryCharacteristic_ValueChanged;
+                    this.State |= GloveState.BatteryFound;
+                }
+                else
+                {
+                    var description = await GetDescription(characteristic);
                     if(description != null)
                     {
                         if(description.StartsWith("Motor "))
                         {
-                            await this.Motors.Connect(description, c);
+                            await this.Motors.Connect(description, characteristic);
+                            if(this.Motors.Ready)
+                            {
+                                this.State |= GloveState.MotorsFound;
+                            }
                         }
                         else if(description.StartsWith("Sensor "))
                         {
-                            await this.Fingers.Connect(description, c);
+                            await this.Fingers.Connect(description, characteristic);
+                            if(this.Fingers.Ready)
+                            {
+                                this.State |= GloveState.FingersFound;
+                            }
                         }
                     }
                 }
-                catch(Exception exp)
-                {
-                    // skip processing the error;
-                }
             }
+        }
+
+        private void BatteryCharacteristic_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args)
+        {
+            this.Battery = GetByte(args.CharacteristicValue) / 100f;
         }
     }
 }

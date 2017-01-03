@@ -214,7 +214,7 @@ void loop(void)
             Serial.print(i);
             Serial.print(F(" = "));
             Serial.print(value);
-            Serial.print(F(" ... "));
+            Serial.println(F(" ... "));
 
             gatt.setChar(SENSOR_OUTPUT_CHAR_IDXS[i], value);
         }

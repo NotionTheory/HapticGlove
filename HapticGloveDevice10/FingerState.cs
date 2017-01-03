@@ -41,6 +41,14 @@ namespace HapticGlove
             }
         }
 
+        public bool Ready
+        {
+            get
+            {
+                return this.Count >= 5;
+            }
+        }
+
         private static int GetIndex(string description)
         {
             var match = indexPattern.Match(description);

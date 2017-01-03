@@ -11,8 +11,6 @@ namespace HapticGlove
 {
     public class Glove
     {
-        private const string BLE_DEVICE_FILTER = "System.Devices.Aep.ProtocolId:=\"{bb7bb05e-5972-42b5-94fc-76eaa7084d49}\"";
-
         public static Glove DEFAULT;
 
         private static DeviceWatcher watcher;
@@ -38,10 +36,11 @@ namespace HapticGlove
             watcher.Updated += Watcher_Updated;
             watcher.Removed += Watcher_Removed;
             watcher.EnumerationCompleted += Watcher_EnumerationCompleted;
+            watcher.Stopped += Watcher_Stopped;
             watcher.Start();
         }
 
-        private static void Watcher_EnumerationCompleted(DeviceWatcher sender, object args)
+        private static void Watcher_Stopped(DeviceWatcher sender, object args)
         {
             foreach(var device in devices.Values)
             {
@@ -49,6 +48,18 @@ namespace HapticGlove
                 {
                     DEFAULT.Connect();
                 }
+            }
+        }
+
+        private static void Watcher_EnumerationCompleted(DeviceWatcher sender, object args)
+        {
+            watcher.Added -= Watcher_Added;
+            watcher.Updated -= Watcher_Updated;
+            watcher.Removed -= Watcher_Removed;
+            watcher.EnumerationCompleted -= Watcher_EnumerationCompleted;
+            if(watcher.Status == DeviceWatcherStatus.Started || watcher.Status == DeviceWatcherStatus.EnumerationCompleted)
+            {
+                watcher.Stop();
             }
         }
 

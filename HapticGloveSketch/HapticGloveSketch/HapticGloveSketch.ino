@@ -9,7 +9,7 @@
 #include "Adafruit_BLEGatt.h"
 #include "BluefruitConfig.h"
 
-#define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
     #define VERBOSE_MODE true
@@ -59,10 +59,10 @@ const uint8_t OUTPUT_PROPERTIES = GATT_CHARS_PROPERTIES_READ | GATT_CHARS_PROPER
 
 const PINS SENSOR_PINS[] = {
     ANALOG0, // thumb
-    ANALOG1, // forefinger
-    ANALOG2, // middle finger
-    ANALOG3, // ring finger
-    ANALOG4,  // pinkie finger
+    //ANALOG1, // forefinger
+    //ANALOG2, // middle finger
+    //ANALOG3, // ring finger
+    //ANALOG4,  // pinkie finger
     //ANALOG5 // wrist
 };
 

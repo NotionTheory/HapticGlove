@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 
-namespace HapticGloveServer
+namespace HapticGlove
 {
 
     public class GATTDefaultService

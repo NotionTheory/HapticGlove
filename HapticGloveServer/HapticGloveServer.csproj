@@ -49,9 +49,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GATTDefaultCharacteristic.cs" />
-    <Compile Include="GATTDefaultService.cs" />
-    <Compile Include="Glove.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -82,6 +79,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HapticGloveDevice\HapticGloveDevice.csproj">
+      <Project>{6c65283e-f5a9-4954-b5e4-9c8fc764513a}</Project>
+      <Name>HapticGloveDevice</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

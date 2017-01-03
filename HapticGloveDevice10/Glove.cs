@@ -33,22 +33,47 @@ namespace HapticGlove
             new GATTDefaultCharacteristic("DFU Control Point", new Guid("{00001531-1212-efde-1523-785feabcd123}"));
             new GATTDefaultCharacteristic("DFU Version", new Guid("{00001534-1212-efde-1523-785feabcd123}"));
 
-            watcher = DeviceInformation.CreateWatcher();
+            watcher = DeviceInformation.CreateWatcher(BLE_DEVICE_FILTER, null, DeviceInformationKind.AssociationEndpoint);
             watcher.Added += Watcher_Added;
             watcher.Updated += Watcher_Updated;
             watcher.Removed += Watcher_Removed;
             watcher.EnumerationCompleted += Watcher_EnumerationCompleted;
+            watcher.Stopped += Watcher_Stopped;
             watcher.Start();
         }
 
-        private static void Watcher_EnumerationCompleted(DeviceWatcher sender, object args)
+        private static async void Watcher_Stopped(DeviceWatcher sender, object args)
         {
+            watcher.Stopped -= Watcher_Stopped;
+            watcher = null;
             foreach(var device in devices.Values)
             {
                 if(device.Name == Glove.DEVICE_NAME)
                 {
-                    DEFAULT.Connect();
+                    if(!device.Pairing.IsPaired)
+                    {
+                        await device.Pairing.PairAsync(DevicePairingProtectionLevel.None);
+                    }
+                    await DEFAULT.Connect();
+                    var props = device.Properties.ToArray();
                 }
+            }
+        }
+
+        private static void Watcher_EnumerationCompleted(DeviceWatcher sender, object args)
+        {
+            StopWatcher();
+        }
+
+        private static void StopWatcher()
+        {
+            watcher.Added -= Watcher_Added;
+            watcher.Updated -= Watcher_Updated;
+            watcher.Removed -= Watcher_Removed;
+            watcher.EnumerationCompleted -= Watcher_EnumerationCompleted;
+            if(watcher.Status == DeviceWatcherStatus.Started || watcher.Status == DeviceWatcherStatus.EnumerationCompleted)
+            {
+                watcher.Stop();
             }
         }
 

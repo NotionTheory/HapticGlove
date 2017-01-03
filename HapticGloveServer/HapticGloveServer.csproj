@@ -81,9 +81,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HapticGloveDevice\HapticGloveDevice.csproj">
-      <Project>{6c65283e-f5a9-4954-b5e4-9c8fc764513a}</Project>
-      <Name>HapticGloveDevice</Name>
+    <ProjectReference Include="..\HapticGloveDevice10\HapticGloveDevice10.csproj">
+      <Project>{9784a20c-9543-44dd-bc9d-c0e535dfadd1}</Project>
+      <Name>HapticGloveDevice10</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

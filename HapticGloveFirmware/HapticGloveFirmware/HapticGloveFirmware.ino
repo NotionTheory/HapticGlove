@@ -83,7 +83,7 @@ const PINS MOTOR_PINS[] = {
 };
 
 const size_t NUM_MOTORS = sizeof(MOTOR_PINS) / sizeof(uint8_t);
-uint8_t motorCharIdx, lastMotorState;
+uint8_t motorCharIdx, lastMotorState, batteryLevelCharIndex, lastBatteryLevel;
 
 void stop()
 {
@@ -130,6 +130,8 @@ void setup(void)
 
   // Setup the characteristic for receiving the motor state. We use the `Write without Response` property because the host PC doesn't care when the write operation finishes, we just want it to happen as fast as possible.
   motorCharIdx = addChar("Motor State", GATT_CHARS_PROPERTIES_WRITE_WO_RESP );
+
+  batteryLevelCharIndex = addChar("Battery Level", OUTPUT_PROPERTIES);
 
   lastMotorState = 0;
   // setup the pins for outputting the motor state.
@@ -179,6 +181,12 @@ void setup(void)
 
 void loop(void)
 {
+  uint8_t batteryLevel = (uint8_t)(analogRead(BATTERY_LEVEL) / 4);
+  if(batteryLevel != lastBatteryLevel) {
+    lastBatteryLevel = batteryLevel;
+    gatt.setChar(batteryLevelCharIndex, batteryLevel);
+  }
+
   // update the sensors
   for(size_t i = 0; i < NUM_SENSORS; ++i)
   {

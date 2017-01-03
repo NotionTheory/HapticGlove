@@ -47,24 +47,34 @@ namespace HapticGlove
             {
                 if(device.Name == Glove.DEVICE_NAME)
                 {
-                    DEFAULT.Connect(device);
+                    DEFAULT.Connect();
                 }
             }
         }
 
         private static void Watcher_Removed(DeviceWatcher sender, DeviceInformationUpdate deviceUpdate)
         {
-            devices.Remove(deviceUpdate.Id);
+            if(devices.ContainsKey(deviceUpdate.Id))
+            {
+                devices[deviceUpdate.Id].Update(deviceUpdate);
+                devices.Remove(deviceUpdate.Id);
+            }
         }
 
         private static void Watcher_Updated(DeviceWatcher sender, DeviceInformationUpdate deviceUpdate)
         {
-            devices[deviceUpdate.Id].Update(deviceUpdate);
+            if(devices.ContainsKey(deviceUpdate.Id))
+            {
+                devices[deviceUpdate.Id].Update(deviceUpdate);
+            }
         }
 
         private static void Watcher_Added(DeviceWatcher sender, DeviceInformation device)
         {
-            devices.Add(device.Id, device);
+            if(!devices.ContainsKey(device.Id))
+            {
+                devices.Add(device.Id, device);
+            }
         }
 
         public static byte GetByte(IBuffer stream)

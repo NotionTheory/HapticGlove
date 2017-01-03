@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <SPI.h>
 #if not defined (_VARIANT_ARDUINO_DUE_X_) && not defined (_VARIANT_ARDUINO_ZERO_)
-  #include <SoftwareSerial.h>
+    #include <SoftwareSerial.h>
 #endif
 
 #include "Adafruit_BLE.h"
@@ -12,42 +12,39 @@
 #define DEBUG
 
 #ifdef DEBUG
-  #define check(pre, cond) Serial.print(pre); Serial.print("... "); if(cond) { Serial.println(" OK!"); } else { Serial.println(" failed!"); stop(); }
-  #define MIN_DELAY 250
-  #define VERBOSE_MODE true
+    #define VERBOSE_MODE true
 #else
-  #define check(pre, cond) cond
-  #define VERBOSE_MODE false
+    #define VERBOSE_MODE false
 #endif
 
 // https://learn.adafruit.com/adafruit-feather-m0-bluefruit-le/pinouts
 // Generally speaking, don't use any pins that are prefixed with `_`
 enum PINS {
-  _UART_RX,
-  _UART_TX,
-  _GPIO2_NOT_AVAILABLE, // included for completeness, these pins can't be used.
-  _GPIO3_NOT_AVAILABLE, // included for completeness, these pins can't be used.
-  _BLE_RST,
-  GPIO5,
-  GPIO6,
-  _BLE_IRQ,
-  _BLE_CS,
-  BATTERY_LEVEL,
-  GPIO10,
-  GPIO11,
-  GPIO12,
-  ON_BOARD_LED,
-  ANALOG0, // also true analog output
-  ANALOG1,
-  ANALOG2,
-  ANALOG3,
-  ANALOG4,
-  ANALOG5,
-  _I2C_SDA,
-  _I2C_SCL,
-  _SPI_MISO,
-  _SPI_MOSI,
-  _SPI_SCK
+    _UART_RX,
+    _UART_TX,
+    _GPIO2_NOT_AVAILABLE, // included for completeness, these pins can't be used.
+    _GPIO3_NOT_AVAILABLE, // included for completeness, these pins can't be used.
+    _BLE_RST,
+    GPIO5,
+    GPIO6,
+    _BLE_IRQ,
+    _BLE_CS,
+    BATTERY_LEVEL,
+    GPIO10,
+    GPIO11,
+    GPIO12,
+    ON_BOARD_LED,
+    ANALOG0, // also true analog output
+    ANALOG1,
+    ANALOG2,
+    ANALOG3,
+    ANALOG4,
+    ANALOG5,
+    _I2C_SDA,
+    _I2C_SCL,
+    _SPI_MISO,
+    _SPI_MOSI,
+    _SPI_SCK
 };
 
 // The API for basic Bluetooth LE operation, including Generic Access Profile, used to initialize the device and set the device name .
@@ -61,12 +58,12 @@ const uint8_t OUTPUT_PROPERTIES = GATT_CHARS_PROPERTIES_READ | GATT_CHARS_PROPER
 
 
 const PINS SENSOR_PINS[] = {
-  ANALOG0, // thumb
-  ANALOG1, // forefinger
-  ANALOG2, // middle finger
-  ANALOG3, // ring finger
-  ANALOG4,  // pinkie finger
-  //ANALOG5 // wrist
+    ANALOG0, // thumb
+    ANALOG1, // forefinger
+    ANALOG2, // middle finger
+    ANALOG3, // ring finger
+    ANALOG4,  // pinkie finger
+    //ANALOG5 // wrist
 };
 
 const size_t NUM_SENSORS = sizeof(SENSOR_PINS) / sizeof(uint8_t);
@@ -75,11 +72,11 @@ uint8_t SENSOR_OUTPUT_CHAR_IDXS[NUM_SENSORS];
 uint8_t lastSensorState[NUM_SENSORS];
 
 const PINS MOTOR_PINS[] = {
-  GPIO5,
-  GPIO6,
-  GPIO10,
-  GPIO11,
-  GPIO12
+    GPIO5,
+    GPIO6,
+    GPIO10,
+    GPIO11,
+    GPIO12
 };
 
 const size_t NUM_MOTORS = sizeof(MOTOR_PINS) / sizeof(uint8_t);
@@ -87,162 +84,161 @@ uint8_t motorCharIdx, lastMotorState, batteryLevelCharIndex, lastBatteryLevel;
 
 void stop()
 {
-  ble.sendCommandCheckOK(F("AT+GAPDEVNAME=ERROR"));
-  while(1)
-  {
-    if(Serial) Serial.println("ERROR STOP ERROR STOP!");
-    delay(5000);
-  }
+    ble.sendCommandCheckOK(F("AT+GAPDEVNAME=ERROR"));
+    while(1)
+    {
+        Serial.println(F("ERROR STOP ERROR STOP!"));
+        delay(5000);
+    }
 }
 
-
-uint8_t addChar(const char* name, uint8_t props)
-{
-  // This is the Analog characteristic, which is supposed to be a 16-bit integer, but I have it configured as an 8-bit integer, because this was the only configuration I was able to get to work reliably.
-  return gatt.addCharacteristic( 0x2A58, props, 1, 1, BLE_DATATYPE_INTEGER, name );
-}
-
-char sensorName[9];
 void setup(void)
 {
-#ifdef DEBUG
-  Serial.begin(115200);
-  while(!Serial);
-  delay(500);
-  Serial.println("OK!");
-#endif
+    #ifdef DEBUG
+        Serial.begin(115200);
+        while(!Serial);
+        delay(500);
+    #endif
 
-  check("Starting BLE", ble.begin(VERBOSE_MODE));
-  // I don't know what echo is, but all the examples show disabling it.
-  check("Disabling echo", ble.echo(false));
-  // Put the Bluetooth chip into a known state.
-  check("Factory reset", ble.factoryReset(true));
-  // The factory reset does not clear the GATT flash.
-  check("Clearing GATT", gatt.clear());
+    Serial.println(F("Starting BLE"));
+    if(!ble.begin(VERBOSE_MODE)) {
+        stop();
+    }
 
-  check("Setting device name", ble.sendCommandCheckOK(F("AT+GAPDEVNAME=NotionTheory Haptic Glove")));
+    Serial.println(F("Disabling echo"));
+    if(!ble.echo(false)) {
+        stop();
+    }
 
-  // Create a service onto which we can attach characteristics. This is the Battery service, which I am using because I wasn't able to get any other services to work. We don't need to save the service index because there is no point where we ever use it.
-  check("Service", gatt.addService( 0x180F ) == 1);
+    // Put the Bluetooth chip into a known state.
+    Serial.println(F("Factory reset"));
+    if(!ble.factoryReset(true)) {
+       stop();
+    }
 
-  // Tell the host computer how many haptic motors we have available.
-  const uint8_t motorCountCharIdx = addChar("Motor Count", OUTPUT_PROPERTIES);
+    // The factory reset does not clear the GATT flash.
+    Serial.println(F("Clearing GATT"));
+    if(!gatt.clear()) {
+        stop();
+    }
 
-  // Setup the characteristic for receiving the motor state. We use the `Write without Response` property because the host PC doesn't care when the write operation finishes, we just want it to happen as fast as possible.
-  motorCharIdx = addChar("Motor State", GATT_CHARS_PROPERTIES_WRITE_WO_RESP );
+    Serial.println(F("Setting device name"));
+    if(!ble.sendCommandCheckOK(F("AT+GAPDEVNAME=NotionTheory Haptic Glove"))) {
+        stop();
+    }
 
-  batteryLevelCharIndex = addChar("Battery Level", OUTPUT_PROPERTIES);
+    // Create a service onto which we can attach characteristics. 0x180F is the Battery service, which I am using because I wasn't able to get any other services to work. We don't need to save the service index because there is no point where we ever use it. The full list of pre-defined services is available here: https://www.bluetooth.com/specifications/gatt/services. You can also create custom services, but I wasn't able to get that to work reliably.
+    Serial.println(F("Service"));
+    if(!gatt.addService( 0x180F ) == 1) {
+        stop();
+    }
 
-  lastMotorState = 0;
-  // setup the pins for outputting the motor state.
-  for(size_t i = 0; i < NUM_MOTORS; ++i) {
-    pinMode(MOTOR_PINS[i], OUTPUT);
-  }
+    // Tell the host computer how many haptic motors we have available.
+    const uint8_t motorCountCharIdx = gatt.addCharacteristic( 0x2A58, OUTPUT_PROPERTIES, 1, 1, BLE_DATATYPE_INTEGER, "Motor Count" );
+    // Setup the characteristic for receiving the motor state. We use the `Write without Response` property because the host PC doesn't care when the write operation finishes, we just want it to happen as fast as possible.
+    motorCharIdx = gatt.addCharacteristic( 0x2A58, OUTPUT_PROPERTIES, 1, 1, BLE_DATATYPE_INTEGER, "Motor State" );
+    lastMotorState = 0;
 
-  // Setup the characteristics for outputting the sensor values
-  for(size_t i = 0; i < NUM_SENSORS; ++i) {
-    sprintf(sensorName, "Sensor %d", i);
+    // Setup the characteristic for reporting the battery level.
+    batteryLevelCharIndex = gatt.addCharacteristic( 0x2A19, OUTPUT_PROPERTIES, 1, 1, BLE_DATATYPE_INTEGER );
+    lastBatteryLevel = 0;
 
-#ifdef DEBUG
-    Serial.print("sensor index ");
-    Serial.print(i);
-    Serial.print(", name: ");
-    Serial.println(sensorName);
-#endif
+    // setup the pins for outputting the motor state.
+    for(size_t i = 0; i < NUM_MOTORS; ++i) {
+        pinMode(MOTOR_PINS[i], OUTPUT);
+    }
 
-    SENSOR_OUTPUT_CHAR_IDXS[i] = addChar(sensorName, OUTPUT_PROPERTIES );
+    char sensorName[9];
+    // Setup the characteristics for outputting the sensor values
+    for(size_t i = 0; i < NUM_SENSORS; ++i) {
+        sprintf(sensorName, "Sensor %d", i);
 
-    // Make sure we don't have random garbage in the array.
-    lastSensorState[i] = 0;
-    // we don't need to configure a pin mode for these pins because they are analog inputs.
-  }
+        Serial.print(F("sensor index "));
+        Serial.print(i);
+        Serial.print(F(", name: "));
+        Serial.println(sensorName);
 
-  delay(500);
+        SENSOR_OUTPUT_CHAR_IDXS[i] = gatt.addCharacteristic( 0x2A58, OUTPUT_PROPERTIES, 1, 1, BLE_DATATYPE_INTEGER, sensorName );
 
-  // Setup complete. Reset the Bluetooth chip and go.
-  ble.reset(true);
+        // Make sure we don't have random garbage in the array.
+        lastSensorState[i] = 0;
+        // we don't need to configure a pin mode for these pins because they are analog inputs.
+    }
 
-  delay(500);
+    delay(500);
 
-#ifdef DEBUG
-  ble.verbose(false);
-  Serial.println("Ready!");
+    // Setup complete. Reset the Bluetooth chip and go.
+    ble.reset(true);
 
-  // Wait for a device to connect
-  while(!ble.isConnected())
-  {
-    Serial.println("Waiting for connection.");
-    delay(1000);
-  }
-#endif
+    delay(500);
 
-  gatt.setChar(motorCountCharIdx, (uint8_t)NUM_MOTORS);
+    #ifdef DEBUG
+        ble.verbose(false);
+        Serial.println(F("Ready!"));
+
+        // Wait for a device to connect
+        while(!ble.isConnected())
+        {
+            Serial.println(F("Waiting for connection."));
+            delay(1000);
+        }
+    #endif
+
+    gatt.setChar(motorCountCharIdx, (uint8_t)NUM_MOTORS);
 }
 
 void loop(void)
 {
-  uint8_t batteryLevel = (uint8_t)(analogRead(BATTERY_LEVEL) / 4);
-  if(batteryLevel != lastBatteryLevel) {
-    lastBatteryLevel = batteryLevel;
-    gatt.setChar(batteryLevelCharIndex, batteryLevel);
-  }
-
-  // update the sensors
-  for(size_t i = 0; i < NUM_SENSORS; ++i)
-  {
-    // read the sensor value, and convert from the range [0, 1024), to [0, 256)
-    uint8_t value = (uint8_t)(analogRead(SENSOR_PINS[i]) / 4);
-    // don't do anything if the value didn't change
-    if(value != lastSensorState[i])
+    // read the battery level, and convert from the range [0, 1023], to [0, 100]
+    uint16_t batteryLevel = analogRead(BATTERY_LEVEL);
+    // performing the conversion in this way avoids precision loss while also avoiding integer overflow.
+    batteryLevel *= 25;
+    batteryLevel /= 256;
+    if(batteryLevel != lastBatteryLevel)
     {
-      lastSensorState[i] = value;
-      sprintf(sensorName, "Sensor %d", i);
-
-#ifdef DEBUG
-      Serial.print("Writing ");
-      Serial.print(sensorName);
-      Serial.print(" = ");
-      Serial.print(value);
-      Serial.print("...");
-#endif
-
-      gatt.setChar(SENSOR_OUTPUT_CHAR_IDXS[i], value);
-
-#ifdef DEBUG
-      delay(MIN_DELAY);
-      Serial.println(" OK");
-#endif
+        lastBatteryLevel = batteryLevel;
+        gatt.setChar(batteryLevelCharIndex, (uint8_t)batteryLevel);
     }
-  }
 
-  // update the motors.
-#ifdef DEBUG
-  Serial.print("Reading motor state... ");
-#endif
+    // update the sensors
+    for(size_t i = 0; i < NUM_SENSORS; ++i)
+    {
+        // read the sensor value, and convert from the range [0, 1024), to [0, 256)
+        uint8_t value = (uint8_t)(analogRead(SENSOR_PINS[i]) / 4);
+        // don't do anything if the value didn't change
+        if(value != lastSensorState[i])
+        {
+            lastSensorState[i] = value;
 
-  uint8_t motorState = gatt.getCharInt8(motorCharIdx);
+            Serial.print(F("Writing Sensor "));
+            Serial.print(i);
+            Serial.print(F(" = "));
+            Serial.print(value);
+            Serial.print(F(" ... "));
 
-#ifdef DEBUG
-  Serial.print(motorState);
-  Serial.print("...");
-  delay(MIN_DELAY);
-  Serial.println("OK");
-#endif
-
-  if(motorState != lastMotorState)
-  {
-    lastMotorState = motorState;
-    // the motor state is a bitfield, so we iterate over the bitfield destructively to be able to get at the individual values very quickly.
-    for(size_t i = 0; i < NUM_MOTORS; ++i) {
-      // check the least-significant bit for whether it's 0 or 1
-      digitalWrite(MOTOR_PINS[i], motorState & 0x1);
-      // shift the value over, setting up the next pin to be written.
-      motorState = motorState >> 1;
+            gatt.setChar(SENSOR_OUTPUT_CHAR_IDXS[i], value);
+        }
     }
-  }
 
-#ifdef DEBUG
-  Serial.println("Delay 1000 ms");
-  delay(1000);
-#endif
+    Serial.print(F("Reading motor state... "));
+    uint8_t motorState = gatt.getCharInt8(motorCharIdx);
+    Serial.println(motorState);
+
+    if(motorState != lastMotorState)
+    {
+        lastMotorState = motorState;
+        // the motor state is a bitfield, so we iterate over the bitfield destructively to be able to get at the individual values very quickly.
+        for(size_t i = 0; i < NUM_MOTORS; ++i)
+        {
+            // check the least-significant bit for whether it's 0 or 1
+            digitalWrite(MOTOR_PINS[i], motorState & 0x1);
+            // shift the value over, setting up the next pin to be written.
+            motorState = motorState >> 1;
+        }
+    }
+
+    #ifdef DEBUG
+        Serial.println(F("Delay 1000 ms"));
+        delay(1000);
+    #endif
 }

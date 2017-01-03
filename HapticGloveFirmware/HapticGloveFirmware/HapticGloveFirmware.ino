@@ -9,7 +9,7 @@
 #include "Adafruit_BLEGatt.h"
 #include "BluefruitConfig.h"
 
-//#define DEBUG
+#define DEBUG
 
 #ifdef DEBUG
   #define check(pre, cond) Serial.print(pre); Serial.print("... "); if(cond) { Serial.println(" OK!"); } else { Serial.println(" failed!"); stop(); }
@@ -102,7 +102,7 @@ uint8_t addChar(const char* name, uint8_t props)
   return gatt.addCharacteristic( 0x2A58, props, 1, 1, BLE_DATATYPE_INTEGER, name );
 }
 
-char sensorName[3];
+char sensorName[9];
 void setup(void)
 {
 #ifdef DEBUG
@@ -143,7 +143,9 @@ void setup(void)
 
 #ifdef DEBUG
     Serial.print("sensor index ");
-    Serial.println(i);
+    Serial.print(i);
+    Serial.print(", name: ");
+    Serial.println(sensorName);
 #endif
 
     SENSOR_OUTPUT_CHAR_IDXS[i] = addChar(sensorName, OUTPUT_PROPERTIES );

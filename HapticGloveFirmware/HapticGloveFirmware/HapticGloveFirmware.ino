@@ -99,7 +99,7 @@ void stop()
 uint8_t addChar(const char* name, uint8_t props)
 {
   // This is the Analog characteristic, which is supposed to be a 16-bit integer, but I have it configured as an 8-bit integer, because this was the only configuration I was able to get to work reliably.
-  return gatt.addCharacteristic( 0x2a58, props, 1, 1, BLE_DATATYPE_INTEGER, name );
+  return gatt.addCharacteristic( 0x2A58, props, 1, 1, BLE_DATATYPE_INTEGER, name );
 }
 
 char sensorName[3];

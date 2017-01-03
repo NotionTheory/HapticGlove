@@ -59,11 +59,11 @@ const uint8_t OUTPUT_PROPERTIES = GATT_CHARS_PROPERTIES_READ | GATT_CHARS_PROPER
 
 const PINS SENSOR_PINS[] = {
     ANALOG0, // thumb
-    //ANALOG1, // forefinger
-    //ANALOG2, // middle finger
-    //ANALOG3, // ring finger
-    //ANALOG4,  // pinkie finger
-    //ANALOG5 // wrist
+    ANALOG1, // forefinger
+    ANALOG2, // middle finger
+    ANALOG3, // ring finger
+    ANALOG4,  // pinkie finger
+    // ANALOG5 // wrist
 };
 
 const size_t NUM_SENSORS = sizeof(SENSOR_PINS) / sizeof(uint8_t);

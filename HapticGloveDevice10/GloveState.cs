@@ -7,12 +7,13 @@ namespace HapticGlove
     {
         NotReady = 0,
         Searching = 1,
-        DeviceFound = 2,
-        ServiceFound = 4,
-        CharacteristicsFound = 8,
-        BatteryFound = 16,
-        FingersFound = 32,
-        MotorsFound = 64,
-        Ready = 0xffffffe
+        DeviceInformationFound = 2,
+        DeviceFound = 4,
+        ServiceFound = 8,
+        CharacteristicsFound = 16,
+        BatteryFound = 32,
+        FingersFound = 64,
+        MotorsFound = 128,
+        Ready = 0xFE
     }
 }

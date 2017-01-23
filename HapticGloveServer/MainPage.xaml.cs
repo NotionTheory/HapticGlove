@@ -78,6 +78,7 @@ namespace HapticGloveServer
         private void WriteLine(string msg = "")
         {
             Write(msg + "\n");
+          glove.Motors.Test();
         }
 
         private void Write(string format, params object[] args)

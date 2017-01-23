@@ -9,7 +9,7 @@
 #include "Adafruit_BLEGatt.h"
 #include "BluefruitConfig.h"
 
-//#define DEBUG
+#define DEBUG
 
 #ifdef DEBUG
     #define VERBOSE_MODE true
@@ -44,7 +44,12 @@ enum PINS {
     _I2C_SCL,
     _SPI_MISO,
     _SPI_MOSI,
-    _SPI_SCK
+    _SPI_SCK,
+    GPIO9 = BATTERY_LEVEL,
+    GPIO13 = ON_BOARD_LED,
+    DAC_OUTPUT = ANALOG0,
+    GPIO20 = _I2C_SDA,
+    GPIO21 = _I2C_SCL
 };
 
 // The API for basic Bluetooth LE operation, including Generic Access Profile, used to initialize the device and set the device name .
@@ -80,6 +85,8 @@ const PINS MOTOR_PINS[] = {
 };
 
 const size_t NUM_MOTORS = sizeof(MOTOR_PINS) / sizeof(uint8_t);
+
+const uint8_t LOW_BATTERY_THRESHOLD = 125;
 uint8_t motorCharIdx, lastMotorState, batteryLevelCharIndex, lastBatteryLevel;
 
 void stop()
@@ -187,24 +194,30 @@ void setup(void)
     gatt.setChar(motorCountCharIdx, (uint8_t)NUM_MOTORS);
 }
 
+// convert the values read on analog pins from range [0, 1023] to [0, 255]
+uint8_t readAnalog(PINS pin) {
+    return (uint8_t)(analogRead(pin) >> 2);
+}
+
 void loop(void)
 {
-    // read the battery level, and convert from the range [0, 1023], to [0, 100]
-    uint16_t batteryLevel = analogRead(BATTERY_LEVEL);
-    // performing the conversion in this way avoids precision loss while also avoiding integer overflow.
-    batteryLevel *= 25;
-    batteryLevel /= 256;
+    uint8_t batteryLevel = readAnalog(BATTERY_LEVEL);
     if(batteryLevel != lastBatteryLevel)
     {
         lastBatteryLevel = batteryLevel;
-        gatt.setChar(batteryLevelCharIndex, (uint8_t)batteryLevel);
+
+        Serial.print(F("Battery level = "));
+        Serial.print(batteryLevel);
+        Serial.println();
+
+        gatt.setChar(batteryLevelCharIndex, batteryLevel);
+        digitalWrite(ON_BOARD_LED, batteryLevel < LOW_BATTERY_THRESHOLD);
     }
 
     // update the sensors
     for(size_t i = 0; i < NUM_SENSORS; ++i)
     {
-        // read the sensor value, and convert from the range [0, 1024), to [0, 256)
-        uint8_t value = (uint8_t)(analogRead(SENSOR_PINS[i]) / 4);
+        uint8_t value = readAnalog(SENSOR_PINS[i]);
         // don't do anything if the value didn't change
         if(value != lastSensorState[i])
         {
@@ -214,7 +227,7 @@ void loop(void)
             Serial.print(i);
             Serial.print(F(" = "));
             Serial.print(value);
-            Serial.println(F(" ... "));
+            Serial.println();
 
             gatt.setChar(SENSOR_OUTPUT_CHAR_IDXS[i], value);
         }

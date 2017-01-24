@@ -10,6 +10,11 @@
 #include "BluefruitConfig.h"
 
 #define DEBUG
+#define DEBUG_BATTERY
+/*
+#define DEBUG_MOTOR
+#define DEBUG_SENSOR
+*/
 
 #ifdef DEBUG
     #define VERBOSE_MODE true
@@ -208,9 +213,11 @@ void loop(void)
     {
         lastBatteryLevel = batteryLevel;
 
-        Serial.print(F("Battery level = "));
-        Serial.print(batteryLevel);
-        Serial.println();
+        #ifdef DEBUG_BATTERY
+            Serial.print(F("Battery level = "));
+            Serial.print(batteryLevel);
+            Serial.println();
+        #endif
 
         gatt.setChar(batteryLevelCharIndex, batteryLevel);
         digitalWrite(ON_BOARD_LED, batteryLevel < LOW_BATTERY_THRESHOLD);
@@ -225,19 +232,24 @@ void loop(void)
         {
             lastSensorState[i] = value;
 
-            Serial.print(F("Writing Sensor "));
-            Serial.print(i);
-            Serial.print(F(" = "));
-            Serial.print(value);
-            Serial.println();
+            #ifdef DEBUG_SENSOR
+                Serial.print(F("Sensor "));
+                Serial.print(i);
+                Serial.print(F(" = "));
+                Serial.print(value);
+                Serial.println();
+            #endif
 
             gatt.setChar(SENSOR_OUTPUT_CHAR_IDXS[i], value);
         }
     }
 
-    Serial.print(F("Reading motor state... "));
     uint8_t motorState = gatt.getCharInt8(motorCharIdx);
-    Serial.println(motorState);
+
+    #ifdef DEBUG_MOTOR
+        Serial.print(F("Motor state = "));
+        Serial.println(motorState);
+    #endif
 
     if(motorState != lastMotorState)
     {

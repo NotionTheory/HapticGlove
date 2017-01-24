@@ -357,9 +357,15 @@ namespace HapticGlove
             GloveState.Finger5Found
         };
 
+
+        const float MIN_BATTERY = 125;
+        const float MAX_BATTERY = 167;
+        const float DELTA_BATTERY = MAX_BATTERY - MIN_BATTERY;
         private void BatteryCharacteristic_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args)
         {
             this.Battery = GetByte(args.CharacteristicValue);
+            this.Battery -= MIN_BATTERY;
+            this.Battery /= DELTA_BATTERY;
         }
     }
 }

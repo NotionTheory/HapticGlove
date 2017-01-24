@@ -11,10 +11,8 @@
 
 #define DEBUG
 #define DEBUG_BATTERY
-/*
 #define DEBUG_MOTOR
 #define DEBUG_SENSOR
-*/
 
 #ifdef DEBUG
     #define VERBOSE_MODE true
@@ -106,6 +104,33 @@ void stop()
     }
 }
 
+void setMotorState(uint8_t motorState) {
+
+    #ifdef DEBUG_MOTOR
+        Serial.print(F("Motor state = "));
+        Serial.println(motorState);
+    #endif
+
+    if(motorState != lastMotorState)
+    {
+        lastMotorState = motorState;
+        uint8_t mask = 0;
+        // the motor state is a bitfield, so we iterate over the bitfield destructively to be able to get at the individual values very quickly.
+        for(size_t i = 0; i < NUM_MOTORS; ++i)
+        {
+            // check the least-significant bit for whether it's 0 or 1
+            digitalWrite(MOTOR_PINS[i], motorState & 0x1 ? MOTOR_ON : MOTOR_OFF);
+            // shift the value over, setting up the next pin to be written.
+            motorState = motorState >> 1;
+            mask = (mask << 1) | 1;
+        }
+
+        // unset any unused values
+        lastMotorState = lastMotorState & mask;
+    }
+
+}
+
 void setup(void)
 {
     #ifdef DEBUG
@@ -160,10 +185,6 @@ void setup(void)
     // setup the pins for outputting the motor state.
     for(size_t i = 0; i < NUM_MOTORS; ++i) {
         pinMode(MOTOR_PINS[i], OUTPUT);
-
-        // just a convenient check that everything is setup correctly
-        digitalWrite(MOTOR_PINS[i], MOTOR_ON);
-        delay(100);
         digitalWrite(MOTOR_PINS[i], MOTOR_OFF);
     }
 
@@ -199,6 +220,8 @@ void setup(void)
         while(!ble.isConnected())
         {
             Serial.println(F("Waiting for connection."));
+            // debug the motors are connected correctly
+            setMotorState(lastMotorState == 0 ? 1 : lastMotorState << 1);
             delay(1000);
         }
     #endif
@@ -214,16 +237,16 @@ uint8_t readAnalog(PINS pin) {
 void loop(void)
 {
     uint8_t batteryLevel = readAnalog(BATTERY_LEVEL);
+
+    #ifdef DEBUG_BATTERY
+        Serial.print(F("Battery level = "));
+        Serial.print(batteryLevel);
+        Serial.println();
+    #endif
+
     if(batteryLevel != lastBatteryLevel)
     {
         lastBatteryLevel = batteryLevel;
-
-        #ifdef DEBUG_BATTERY
-            Serial.print(F("Battery level = "));
-            Serial.print(batteryLevel);
-            Serial.println();
-        #endif
-
         gatt.setChar(batteryLevelCharIndex, batteryLevel);
         digitalWrite(ON_BOARD_LED, batteryLevel < LOW_BATTERY_THRESHOLD);
     }
@@ -232,42 +255,24 @@ void loop(void)
     for(size_t i = 0; i < NUM_SENSORS; ++i)
     {
         uint8_t value = readAnalog(SENSOR_PINS[i]);
+        lastSensorState[i] = value;
+
+        #ifdef DEBUG_SENSOR
+            Serial.print(F("Sensor "));
+            Serial.print(i);
+            Serial.print(F(" = "));
+            Serial.print(value);
+            Serial.println();
+        #endif
+
         // don't do anything if the value didn't change
         if(value != lastSensorState[i])
         {
-            lastSensorState[i] = value;
-
-            #ifdef DEBUG_SENSOR
-                Serial.print(F("Sensor "));
-                Serial.print(i);
-                Serial.print(F(" = "));
-                Serial.print(value);
-                Serial.println();
-            #endif
-
             gatt.setChar(SENSOR_OUTPUT_CHAR_IDXS[i], value);
         }
     }
 
-    uint8_t motorState = gatt.getCharInt8(motorCharIdx);
-
-    #ifdef DEBUG_MOTOR
-        Serial.print(F("Motor state = "));
-        Serial.println(motorState);
-    #endif
-
-    if(motorState != lastMotorState)
-    {
-        lastMotorState = motorState;
-        // the motor state is a bitfield, so we iterate over the bitfield destructively to be able to get at the individual values very quickly.
-        for(size_t i = 0; i < NUM_MOTORS; ++i)
-        {
-            // check the least-significant bit for whether it's 0 or 1
-            digitalWrite(MOTOR_PINS[i], motorState & 0x1 ? MOTOR_ON : MOTOR_OFF);
-            // shift the value over, setting up the next pin to be written.
-            motorState = motorState >> 1;
-        }
-    }
+    setMotorState(gatt.getCharInt8(motorCharIdx));
 
     #ifdef DEBUG
         delay(1000);

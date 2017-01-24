@@ -160,6 +160,11 @@ void setup(void)
     // setup the pins for outputting the motor state.
     for(size_t i = 0; i < NUM_MOTORS; ++i) {
         pinMode(MOTOR_PINS[i], OUTPUT);
+
+        // just a convenient check that everything is setup correctly
+        digitalWrite(MOTOR_PINS[i], MOTOR_ON);
+        delay(100);
+        digitalWrite(MOTOR_PINS[i], MOTOR_OFF);
     }
 
     char sensorName[9];

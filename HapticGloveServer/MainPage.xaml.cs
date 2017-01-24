@@ -44,7 +44,7 @@ namespace HapticGloveServer
         else
         {
           sb.Clear();
-          sb.AppendFormat("Finger [Battery: {0}%, Fingers: ",
+          sb.AppendFormat("Finger [Battery: {0:P1}, Fingers: ",
               glove.Battery,
               glove.State == HapticGlove.GloveState.Ready ? "Ready" : glove.State.ToString(),
               glove.Fingers.Count);

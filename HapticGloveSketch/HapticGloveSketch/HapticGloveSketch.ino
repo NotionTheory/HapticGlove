@@ -85,6 +85,8 @@ const PINS MOTOR_PINS[] = {
 };
 
 const size_t NUM_MOTORS = sizeof(MOTOR_PINS) / sizeof(uint8_t);
+const int MOTOR_ON = LOW;
+const int MOTOR_OFF = HIGH;
 
 const uint8_t LOW_BATTERY_THRESHOLD = 125;
 uint8_t motorCharIdx, lastMotorState, batteryLevelCharIndex, lastBatteryLevel;
@@ -244,14 +246,13 @@ void loop(void)
         for(size_t i = 0; i < NUM_MOTORS; ++i)
         {
             // check the least-significant bit for whether it's 0 or 1
-            digitalWrite(MOTOR_PINS[i], motorState & 0x1);
+            digitalWrite(MOTOR_PINS[i], motorState & 0x1 ? MOTOR_ON : MOTOR_OFF);
             // shift the value over, setting up the next pin to be written.
             motorState = motorState >> 1;
         }
     }
 
     #ifdef DEBUG
-        Serial.println(F("Delay 1000 ms"));
         delay(1000);
     #endif
 }

@@ -16,3 +16,8 @@ https://msdn.microsoft.com/en-us/windows/uwp/devices-sensors/send-or-receive-fil
 https://msdn.microsoft.com/en-us/windows/uwp/devices-sensors/gatt-scenarios
 https://msdn.microsoft.com/en-us/windows/uwp/devices-sensors/ble-beacon
 https://msdn.microsoft.com/en-us/windows/uwp/devices-sensors/bluetooth-dev-faq
+
+
+https://cdn-learn.adafruit.com/assets/assets/000/036/080/original/adafruit_products_2995_pinout_v1_1.png?1475001826
+https://learn.adafruit.com/adafruit-arduino-lesson-13-dc-motors/breadboard-layout?view=all
+http://bildr.org/?s=flex+sensor

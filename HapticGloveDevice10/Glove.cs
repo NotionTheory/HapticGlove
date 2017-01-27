@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Storage.Streams;
+using System.ComponentModel;
+using System.Collections.Specialized;
 
 namespace HapticGlove
 {
-    public class Glove
+    public class Glove : INotifyPropertyChanged
     {
         private const string BLE_DEVICE_FILTER = "System.Devices.Aep.ProtocolId:=\"{bb7bb05e-5972-42b5-94fc-76eaa7084d49}\"";
         private const string DEVICE_NAME = "NotionTheory Haptic Glove";
@@ -74,16 +76,37 @@ namespace HapticGlove
             return GetByte(result.Value);
         }
 
+        private GloveState _state;
+
         public GloveState State
         {
-            get;
-            private set;
+            get
+            {
+                return this._state;
+            }
+            private set
+            {
+                this._state = value;
+                this.OnPropertyChanged(nameof(State));
+            }
         }
+
+        private float _battery;
 
         public float Battery
         {
-            get;
-            private set;
+            get
+            {
+                return this._battery;
+            }
+            private set
+            {
+                if(this._battery != value)
+                {
+                    this._battery = value;
+                    this.OnPropertyChanged(nameof(Battery));
+                }
+            }
         }
 
         public Exception Error
@@ -158,16 +181,36 @@ namespace HapticGlove
         private Dictionary<string, DeviceInformation> devices;
         private GattCharacteristic batteryCharacteristic;
         private Dictionary<string, string> properties;
+        private Random r;
+        private Dictionary<string, PropertyChangedEventArgs> propArgs;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string name)
+        {
+            if(!propArgs.ContainsKey(name))
+            {
+                propArgs.Add(name, new PropertyChangedEventArgs(name));
+            }
+            this.PropertyChanged?.Invoke(this, propArgs[name]);
+        }
 
         public Glove()
         {
+            r = new Random();
+            this.devices = new Dictionary<string, DeviceInformation>();
+            this.properties = new Dictionary<string, string>();
+            this.propArgs = new Dictionary<string, PropertyChangedEventArgs>();
             this.Fingers = new FingerState();
             this.Motors = new MotorState();
             this.State = GloveState.NotReady;
-            this.devices = new Dictionary<string, DeviceInformation>();
-            this.properties = new Dictionary<string, string>();
         }
 
+        public void Test()
+        {
+            this.Motors.Test(r);
+            this.Fingers.Test(r);
+            this.Battery = (float)r.NextDouble();
+        }
 
         public void Search()
         {
@@ -361,11 +404,13 @@ namespace HapticGlove
         const float MIN_BATTERY = 125;
         const float MAX_BATTERY = 167;
         const float DELTA_BATTERY = MAX_BATTERY - MIN_BATTERY;
+
         private void BatteryCharacteristic_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args)
         {
-            this.Battery = GetByte(args.CharacteristicValue);
-            this.Battery -= MIN_BATTERY;
-            this.Battery /= DELTA_BATTERY;
+            float bat = GetByte(args.CharacteristicValue);
+            bat -= MIN_BATTERY;
+            bat /= DELTA_BATTERY;
+            this.Battery = bat;
         }
     }
 }

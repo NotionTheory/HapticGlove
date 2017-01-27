@@ -2,107 +2,52 @@
 using Windows.UI.Xaml.Controls;
 using System.Threading;
 using System.Text;
+using System.Collections.Generic;
+using System.Linq;
+using Windows.UI.Xaml;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
 namespace HapticGloveServer
 {
-  /// <summary>
-  /// An empty page that can be used on its own or navigated to within a Frame.
-  /// </summary>
-  public sealed partial class MainPage : Page
-  {
-    Timer t;
-
-    public MainPage()
+    /// <summary>
+    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// </summary>
+    public sealed partial class MainPage : Page
     {
-      this.InitializeComponent();
-      t = new Timer(Tick, this, 3000, 1000);
-    }
-
-    private HapticGlove.GloveState lastState = HapticGlove.GloveState.NotReady;
-    private StringBuilder sb = new StringBuilder();
-
-    private void Tick(object state)
-    {
-      var glove = HapticGlove.Glove.DEFAULT;
-      if(glove != null)
-      {
-        if(!glove.State.HasFlag(HapticGlove.GloveState.Ready))
+        DispatcherTimer t;
+        public MainPage()
         {
-          if(glove.State != lastState)
-          {
-            lastState = glove.State;
-            WriteLine(glove.State.ToString());
-          }
-
-          if(!glove.State.HasFlag(HapticGlove.GloveState.Searching) && glove.State.HasFlag(HapticGlove.GloveState.DeviceFound))
-          {
-            glove.Connect();
-          }
+            this.InitializeComponent();
+            var glove = HapticGlove.Glove.DEFAULT;
+            DataContext = glove;
+            t = new DispatcherTimer();
+            t.Interval = new TimeSpan(0, 0, 0, 1);
+            t.Tick += T_Tick;
+            t.Start();
         }
-        else
-        {
-          sb.Clear();
-          sb.AppendFormat("Finger [Battery: {0:P1}, Fingers: ",
-              glove.Battery,
-              glove.State == HapticGlove.GloveState.Ready ? "Ready" : glove.State.ToString(),
-              glove.Fingers.Count);
-          for(int i = 0; i < glove.Fingers.Count; ++i)
-          {
-            sb.AppendFormat(", {0}", glove.Fingers[i]);
-          }
-          sb.AppendFormat(" Motors: {0}", glove.Motors.Count);
-          for(int i = 0; i < glove.Motors.Count; ++i)
-          {
-            sb.AppendFormat(", {0}", glove.Motors[i]);
-          }
-          sb.AppendFormat("]");
 
-          if(glove.Error != null)
-          {
-            sb.AppendFormat(" ERROR: {0}", glove.Error.Message);
-            t.Change(Timeout.Infinite, Timeout.Infinite);
-          }
-          WriteLine(sb.ToString());
-          glove.Motors.Test();
+        private void T_Tick(object sender, object e)
+        {
+            var glove = HapticGlove.Glove.DEFAULT;
+            if(glove.State == HapticGlove.GloveState.NotReady)
+            {
+                glove.Test();
+            }
         }
-      }
-    }
 
-    private string lastMessage;
-
-    private void Write(string msg = "")
-    {
-      if(msg != lastMessage)
-      {
-        lastMessage = msg;
-        this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+        private void motor_Toggled(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-          this.Description += msg;
-          this.Bindings.Update();
-        }).AsTask().Wait();
-      }
+            var cb = sender as CheckBox;
+            if(cb != null)
+            {
+                var glove = HapticGlove.Glove.DEFAULT;
+                var index = motors.Children.IndexOf(cb);
+                if(0 <= index && index < glove.Motors.Count)
+                {
+                    glove.Motors[index] = cb.IsChecked.HasValue && cb.IsChecked.Value;
+                }
+            }
+        }
     }
-
-    private void WriteLine(string msg = "")
-    {
-      Write(msg + "\n");
-    }
-
-    private void Write(string format, params object[] args)
-    {
-      Write(string.Format(format, args));
-    }
-
-    private void WriteLine(string format, params object[] args)
-    {
-      WriteLine(string.Format(format, args));
-    }
-
-    public string Description
-    {
-      get; set;
-    }
-  }
 }

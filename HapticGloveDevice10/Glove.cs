@@ -30,7 +30,7 @@ namespace HapticGlove
             new GATTDefaultCharacteristic("DFU Version", new Guid("{00001534-1212-efde-1523-785feabcd123}"));
 
             DEFAULT = new Glove();
-            DEFAULT.Search();
+            // DEFAULT.Search();
         }
 
         public static byte GetByte(IBuffer stream)
@@ -121,10 +121,90 @@ namespace HapticGlove
             private set;
         }
 
+        public float Finger0
+        {
+            get
+            {
+                return Fingers[0];
+            }
+        }
+
+        public float Finger1
+        {
+            get
+            {
+                return Fingers[1];
+            }
+        }
+
+        public float Finger2
+        {
+            get
+            {
+                return Fingers[2];
+            }
+        }
+
+        public float Finger3
+        {
+            get
+            {
+                return Fingers[3];
+            }
+        }
+
+        public float Finger4
+        {
+            get
+            {
+                return Fingers[4];
+            }
+        }
+
         public MotorState Motors
         {
             get;
             private set;
+        }
+
+        public bool Motor0
+        {
+            get
+            {
+                return Motors[0];
+            }
+        }
+
+        public bool Motor1
+        {
+            get
+            {
+                return Motors[1];
+            }
+        }
+
+        public bool Motor2
+        {
+            get
+            {
+                return Motors[2];
+            }
+        }
+
+        public bool Motor3
+        {
+            get
+            {
+                return Motors[3];
+            }
+        }
+
+        public bool Motor4
+        {
+            get
+            {
+                return Motors[4];
+            }
         }
 
         public string Manufacturer
@@ -203,6 +283,13 @@ namespace HapticGlove
             this.Fingers = new FingerState();
             this.Motors = new MotorState();
             this.State = GloveState.NotReady;
+            this.Fingers.PropertyChanged += child_PropertyChanged;
+            this.Motors.PropertyChanged += child_PropertyChanged;
+        }
+
+        private void child_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            this.OnPropertyChanged(e.PropertyName);
         }
 
         public void Test()

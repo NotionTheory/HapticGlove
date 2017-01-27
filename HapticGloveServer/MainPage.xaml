@@ -20,11 +20,11 @@
       <TextBlock Text="Motors" FontSize="30" Margin="0,50,0,10"/>
       <Border BorderBrush="Black" BorderThickness="2"  Padding="10" HorizontalAlignment="Left" VerticalAlignment="Top">
         <StackPanel x:Name="motors" Orientation="Horizontal">
-          <ToggleSwitch x:Name="motor1" Header="Thumb" HorizontalAlignment="Left" VerticalAlignment="Top" Toggled="motor_Toggled" />
-          <ToggleSwitch x:Name="motor2" Header="Index" HorizontalAlignment="Left" VerticalAlignment="Top" Toggled="motor_Toggled"/>
-          <ToggleSwitch x:Name="motor3" Header="Middle" HorizontalAlignment="Left" VerticalAlignment="Top" Toggled="motor_Toggled"/>
-          <ToggleSwitch x:Name="motor4" Header="Ring" HorizontalAlignment="Left" VerticalAlignment="Top" Toggled="motor_Toggled"/>
-          <ToggleSwitch x:Name="motor5" Header="Pinky" HorizontalAlignment="Left" VerticalAlignment="Top" Toggled="motor_Toggled"/>
+          <ToggleSwitch x:Name="motor1" Header="Thumb" HorizontalAlignment="Left" VerticalAlignment="Top" Toggled="motor_Toggled" IsOn="{Binding Motor0}" />
+          <ToggleSwitch x:Name="motor2" Header="Index" HorizontalAlignment="Left" VerticalAlignment="Top" Toggled="motor_Toggled" IsOn="{Binding Motor1}"/>
+          <ToggleSwitch x:Name="motor3" Header="Middle" HorizontalAlignment="Left" VerticalAlignment="Top" Toggled="motor_Toggled" IsOn="{Binding Motor2}"/>
+          <ToggleSwitch x:Name="motor4" Header="Ring" HorizontalAlignment="Left" VerticalAlignment="Top" Toggled="motor_Toggled" IsOn="{Binding Motor3}"/>
+          <ToggleSwitch x:Name="motor5" Header="Pinky" HorizontalAlignment="Left" VerticalAlignment="Top" Toggled="motor_Toggled" IsOn="{Binding Motor4}" />
         </StackPanel>
       </Border>
 
@@ -33,23 +33,23 @@
         <StackPanel x:Name="sensors" Orientation="Horizontal">
           <StackPanel>
             <TextBlock Text="Thumb"/>
-            <ProgressBar Height="10" x:Name="sensor1" Width="89" Margin="0,0,65,0" Value="{Binding Fingers[0]}" Maximum="1" LargeChange="0.1"  />
+            <ProgressBar Height="10" x:Name="sensor1" Width="89" Margin="0,0,65,0" Value="{Binding Finger0}" Maximum="1" LargeChange="0.1"  />
           </StackPanel>
           <StackPanel>
             <TextBlock Text="Index"/>
-            <ProgressBar Height="10" x:Name="sensor2" Width="89" Margin="0,0,65,0" Value="{Binding Fingers[1]}" Maximum="1" LargeChange="0.1"/>
+            <ProgressBar Height="10" x:Name="sensor2" Width="89" Margin="0,0,65,0" Value="{Binding Finger1}" Maximum="1" LargeChange="0.1"/>
           </StackPanel>
           <StackPanel>
             <TextBlock Text="Middle" />
-            <ProgressBar Height="10" x:Name="sensor3" Width="89" Margin="0,0,65,0" Value="{Binding Fingers[2]}" Maximum="1" LargeChange="0.1"/>
+            <ProgressBar Height="10" x:Name="sensor3" Width="89" Margin="0,0,65,0" Value="{Binding Finger2}" Maximum="1" LargeChange="0.1"/>
           </StackPanel>
           <StackPanel>
             <TextBlock Text="Ring" />
-            <ProgressBar Height="10" x:Name="sensor4" Width="89" Margin="0,0,65,0" Value="{Binding Fingers[3]}" Maximum="1" LargeChange="0.1"/>
+            <ProgressBar Height="10" x:Name="sensor4" Width="89" Margin="0,0,65,0" Value="{Binding Finger3}" Maximum="1" LargeChange="0.1"/>
           </StackPanel>
           <StackPanel>
             <TextBlock Text="Pinky"/>
-            <ProgressBar Height="10" x:Name="sensor5" Width="89" Margin="0,0,65,0" Value="{Binding Fingers[4]}" Maximum="1" LargeChange="0.1"/>
+            <ProgressBar Height="10" x:Name="sensor5" Width="89" Margin="0,0,65,0" Value="{Binding Finger4}" Maximum="1" LargeChange="0.1"/>
           </StackPanel>
         </StackPanel>
       </Border>

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ using Windows.Storage.Streams;
 
 namespace HapticGlove
 {
-    public class MotorState : IList<bool>, INotifyCollectionChanged
+    public class MotorState : INotifyPropertyChanged
     {
         private GattCharacteristic motor;
         private byte state, testState;
@@ -35,14 +36,6 @@ namespace HapticGlove
             }
         }
 
-        public bool IsReadOnly
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
         public async Task Connect(string description, GattCharacteristic c)
         {
             switch(description)
@@ -62,9 +55,8 @@ namespace HapticGlove
             }
         }
 
-        public event EventHandler MotorsChanged;
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
-
+        public event PropertyChangedEventHandler PropertyChanged;
+        
         public bool this[int index]
         {
             get
@@ -93,15 +85,14 @@ namespace HapticGlove
                 else
                 {
                     this.testState = state;
-                    this.MotorsChanged?.Invoke(this, EventArgs.Empty);
-                    this.CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, this));
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Format("Motor{0}", index)));
                 }
             }
         }
 
         internal void Test(Random r)
         {
-            this[r.Next(this.Count)] = r.NextDouble() > 0.5;
+            this[r.Next(5)] = r.NextDouble() > 0.5;
         }
 
         public async Task Flush()
@@ -115,90 +106,6 @@ namespace HapticGlove
                     await this.motor.WriteValueAsync(buffer, GattWriteOption.WriteWithoutResponse);
                 }
             }
-        }
-
-        public void Add(bool item)
-        {
-            int index = this.Count;
-            ++this.Count;
-            this[index] = item;
-            this.CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
-        }
-
-        public void Clear()
-        {
-            this.state = 0;
-            this.Count = 0;
-            this.CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-        }
-
-        public bool Contains(bool item)
-        {
-            return true;
-        }
-
-        public void CopyTo(bool[] array, int arrayIndex)
-        {
-            array[arrayIndex] = this[arrayIndex];
-        }
-
-        public bool Remove(bool item)
-        {
-            var index = this.IndexOf(item);
-            if(index > -1)
-            {
-                this.RemoveAt(index);
-                return true;
-            }
-            return false;
-        }
-
-        public IEnumerator<bool> GetEnumerator()
-        {
-            for(int i = 0; i < this.Count; ++i)
-            {
-                yield return this[i];
-            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
-
-        public int IndexOf(bool item)
-        {
-            for(int i = 0; i < this.Count; ++i)
-            {
-                if(this[i] == item)
-                {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
-        public void Insert(int index, bool item)
-        {
-            ++this.Count;
-            for(int i = this.Count - 1; i > index; ++i)
-            {
-                this[i] = this[i - 1];
-            }
-            this[index] = item;
-
-            this.CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
-        }
-
-        public void RemoveAt(int index)
-        {
-            var item = this[index];
-            for(int i = index; i < this.Count - 1; ++i)
-            {
-                this[i] = this[i + 1];
-            }
-            --this.Count;
-            this.CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
         }
     }
 }

@@ -15,31 +15,23 @@ namespace HapticGlove
     public class FingerState : INotifyPropertyChanged
     {
         private static Regex indexPattern = new Regex("^Sensor (\\d+)$");
-        private List<float> values;
-        private List<float> testValues;
-        private List<GattCharacteristic> sensors;
+        private List<FloatValueReader> readers;
 
         public FingerState()
         {
-            this.values = new List<float>();
-            this.testValues = new List<float>();
-            this.sensors = new List<GattCharacteristic>();
-            for(int i = 0; i < 5; ++i)
-            {
-                this.testValues.Add(0);
-            }
+            this.readers = new List<FloatValueReader>();
         }
 
         public bool HasFinger(int index)
         {
-            return 0 <= index && index < this.sensors.Count && this.sensors[index] != null;
+            return 0 <= index && index < this.readers.Count && this.readers[index] != null;
         }
 
         public int Count
         {
             get
             {
-                return Math.Min(this.sensors.Count, this.values.Count);
+                return this.readers.Count;
             }
         }
 
@@ -47,22 +39,11 @@ namespace HapticGlove
         {
             get
             {
-                var values = this.Ready ? this.values : this.testValues;
-                if(0 <= index && index < values.Count)
+                if(0 <= index && index < this.Count)
                 {
-                    return values[index];
+                    return this.readers[index].Value;
                 }
                 return 0f;
-            }
-
-            set
-            {
-                var values = this.Ready ? this.values : this.testValues;
-                if(0 <= index && index < values.Count)
-                {
-                    values[index] = value;
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Format("Finger{0}", index)));
-                }
             }
         }
 
@@ -70,7 +51,7 @@ namespace HapticGlove
         {
             get
             {
-                return this.Count >= 5;
+                return this.Count >= 5 && this.readers.All((reader) => reader.Ready);
             }
         }
 
@@ -86,36 +67,36 @@ namespace HapticGlove
 
         internal void Test(Random r)
         {
-            this[r.Next(this.testValues.Count)] = (float)r.NextDouble();
+            int index = r.Next(this.readers.Count);
+            this.readers[index].Test(r);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public async Task Connect(string description, GattCharacteristic sensor)
+        public void Connect(string description, GattCharacteristic sensor)
         {
             if(sensor.Uuid == GATTDefaultCharacteristic.Analog.UUID && sensor.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Read))
             {
                 var index = GetIndex(description);
                 if(0 <= index)
                 {
-                    while(index >= this.sensors.Count)
+                    while(index >= this.readers.Count)
                     {
-                        this.sensors.Add(null);
-                        this.values.Add(0f);
+                        var reader = new FloatValueReader(string.Format("Finger{0}", index));
+                        this.readers.Add(reader);
+                        reader.PropertyChanged += Reader_PropertyChanged;
                     }
-                    if(this.sensors[index] == null)
+                    if(!this.readers[index].Ready)
                     {
-                        this.sensors[index] = sensor;
-                        this.values[index] = await Glove.GetValue(sensor) / 256f;
-
-                        await sensor.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.Notify);
-                        sensor.ValueChanged += (GattCharacteristic sender, GattValueChangedEventArgs args) =>
-                        {
-                            this.values[index] = Glove.GetByte(args.CharacteristicValue) / 256f;
-                        };
+                        this.readers[index].Connect(sensor);
                     }
                 }
             }
+        }
+
+        private void Reader_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            this.PropertyChanged?.Invoke(this, e);
         }
     }
 }

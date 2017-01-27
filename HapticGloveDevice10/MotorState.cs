@@ -80,7 +80,7 @@ namespace HapticGlove
                 if(this.Ready)
                 {
                     this.state = state;
-                    this.Flush().Wait();
+                    this.Flush();
                 }
                 else
                 {
@@ -95,7 +95,7 @@ namespace HapticGlove
             this[r.Next(5)] = r.NextDouble() > 0.5;
         }
 
-        public async Task Flush()
+        public async void Flush()
         {
             if(this.motor != null)
             {

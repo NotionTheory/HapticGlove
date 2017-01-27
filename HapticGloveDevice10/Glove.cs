@@ -8,6 +8,7 @@ using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Storage.Streams;
 using System.ComponentModel;
 using System.Collections.Specialized;
+using Windows.UI.Core;
 
 namespace HapticGlove
 {
@@ -15,8 +16,6 @@ namespace HapticGlove
     {
         private const string BLE_DEVICE_FILTER = "System.Devices.Aep.ProtocolId:=\"{bb7bb05e-5972-42b5-94fc-76eaa7084d49}\"";
         private const string DEVICE_NAME = "NotionTheory Haptic Glove";
-
-        public static Glove DEFAULT;
 
         static Glove()
         {
@@ -28,9 +27,6 @@ namespace HapticGlove
             new GATTDefaultCharacteristic("DFU Packet", new Guid("{00001532-1212-efde-1523-785feabcd123}"));
             new GATTDefaultCharacteristic("DFU Control Point", new Guid("{00001531-1212-efde-1523-785feabcd123}"));
             new GATTDefaultCharacteristic("DFU Version", new Guid("{00001534-1212-efde-1523-785feabcd123}"));
-
-            DEFAULT = new Glove();
-            // DEFAULT.Search();
         }
 
         public static byte GetByte(IBuffer stream)
@@ -88,23 +84,23 @@ namespace HapticGlove
             {
                 this._state = value;
                 this.OnPropertyChanged(nameof(State));
+                this.OnPropertyChanged(nameof(Status));
             }
         }
 
-        private float _battery;
-
-        public float Battery
+        public string Status
         {
             get
             {
-                return this._battery;
-            }
-            private set
-            {
-                if(this._battery != value)
+                if(this.State.HasFlag(GloveState.Ready))
                 {
-                    this._battery = value;
-                    this.OnPropertyChanged(nameof(Battery));
+                    return this.SoftwareRevision;
+                }
+                else
+                {
+                    return string.Join(Environment.NewLine, this.State.ToString()
+                        .Split(',')
+                        .Select((str) => str.Trim()));
                 }
             }
         }
@@ -259,30 +255,44 @@ namespace HapticGlove
 
         private DeviceWatcher watcher;
         private Dictionary<string, DeviceInformation> devices;
-        private GattCharacteristic batteryCharacteristic;
+        private FloatValueReader _battery;
         private Dictionary<string, string> properties;
         private Random r;
         private Dictionary<string, PropertyChangedEventArgs> propArgs;
 
         public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string name)
+        private async void OnPropertyChanged(string name)
         {
             if(!propArgs.ContainsKey(name))
             {
                 propArgs.Add(name, new PropertyChangedEventArgs(name));
             }
-            this.PropertyChanged?.Invoke(this, propArgs[name]);
+            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                this.PropertyChanged?.Invoke(this, propArgs[name]);
+            });
         }
 
-        public Glove()
+        public float Battery
+        {
+            get
+            {
+                return this._battery.Value;
+            }
+        }
+
+        public Glove(CoreDispatcher dispatcher)
         {
             r = new Random();
+            this.dispatcher = dispatcher;
             this.devices = new Dictionary<string, DeviceInformation>();
             this.properties = new Dictionary<string, string>();
             this.propArgs = new Dictionary<string, PropertyChangedEventArgs>();
+            this.State = GloveState.NotReady;
             this.Fingers = new FingerState();
             this.Motors = new MotorState();
-            this.State = GloveState.NotReady;
+            this._battery = new FloatValueReader("Battery", MIN_BATTERY, MAX_BATTERY);
+            this._battery.PropertyChanged += child_PropertyChanged;
             this.Fingers.PropertyChanged += child_PropertyChanged;
             this.Motors.PropertyChanged += child_PropertyChanged;
         }
@@ -296,7 +306,7 @@ namespace HapticGlove
         {
             this.Motors.Test(r);
             this.Fingers.Test(r);
-            this.Battery = (float)r.NextDouble();
+            this._battery.Test(r);
         }
 
         public void Search()
@@ -442,35 +452,33 @@ namespace HapticGlove
             var characteristics = deviceService.GetAllCharacteristics();
             foreach(var characteristic in characteristics)
             {
-                if(characteristic.Uuid == GATTDefaultCharacteristic.BatteryLevel.UUID)
+                var description = await GetDescription(characteristic);
+                if(description != null)
                 {
-                    this.batteryCharacteristic = characteristic;
-                    await this.batteryCharacteristic.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.Notify);
-                    this.batteryCharacteristic.ValueChanged += BatteryCharacteristic_ValueChanged;
-                    this.State |= GloveState.BatteryFound;
-                }
-                else
-                {
-                    var description = await GetDescription(characteristic);
-                    if(description != null)
+                    if(description.Equals("Battery"))
                     {
-                        if(description.StartsWith("Motor "))
+                        this._battery.Connect(characteristic);
+                        if(this._battery.Ready)
                         {
-                            await this.Motors.Connect(description, characteristic);
-                            if(this.Motors.Ready)
-                            {
-                                this.State |= GloveState.MotorsFound;
-                            }
+                            this.State |= GloveState.BatteryFound;
                         }
-                        else if(description.StartsWith("Sensor "))
+                    }
+                    else if(description.StartsWith("Motor "))
+                    {
+                        await this.Motors.Connect(description, characteristic);
+                        if(this.Motors.Ready)
                         {
-                            await this.Fingers.Connect(description, characteristic);
-                            for(int i = 0; i < FingerStates.Length; ++i)
+                            this.State |= GloveState.MotorsFound;
+                        }
+                    }
+                    else if(description.StartsWith("Sensor "))
+                    {
+                        this.Fingers.Connect(description, characteristic);
+                        for(int i = 0; i < FingerStates.Length; ++i)
+                        {
+                            if(this.Fingers.HasFinger(i))
                             {
-                                if(this.Fingers.HasFinger(i))
-                                {
-                                    this.State |= FingerStates[i];
-                                }
+                                this.State |= FingerStates[i];
                             }
                         }
                     }
@@ -488,16 +496,8 @@ namespace HapticGlove
         };
 
 
-        const float MIN_BATTERY = 125;
-        const float MAX_BATTERY = 167;
-        const float DELTA_BATTERY = MAX_BATTERY - MIN_BATTERY;
-
-        private void BatteryCharacteristic_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args)
-        {
-            float bat = GetByte(args.CharacteristicValue);
-            bat -= MIN_BATTERY;
-            bat /= DELTA_BATTERY;
-            this.Battery = bat;
-        }
+        const byte MIN_BATTERY = 125;
+        const byte MAX_BATTERY = 167;
+        private readonly CoreDispatcher dispatcher;
     }
 }

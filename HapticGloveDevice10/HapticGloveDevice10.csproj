@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FingerState.cs" />
+    <Compile Include="FloatValueReader.cs" />
     <Compile Include="GATTDefaultCharacteristic.cs" />
     <Compile Include="GATTDefaultService.cs" />
     <Compile Include="Glove.cs" />

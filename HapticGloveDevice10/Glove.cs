@@ -455,7 +455,7 @@ namespace HapticGlove
                 var description = await GetDescription(characteristic);
                 if(description != null)
                 {
-                    if(description.Equals("Battery"))
+                    if(description.Equals("Battery") && characteristic.Uuid == GATTDefaultCharacteristic.Analog.UUID && characteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Read))
                     {
                         this._battery.Connect(characteristic);
                         if(this._battery.Ready)

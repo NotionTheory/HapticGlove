@@ -36,6 +36,11 @@ namespace HapticGlove
             }
         }
 
+        public bool IsConnectable(string description)
+        {
+            return description == "Motor State" || description == "Motor Count";
+        }
+
         public async Task Connect(string description, GattCharacteristic c)
         {
             switch(description)

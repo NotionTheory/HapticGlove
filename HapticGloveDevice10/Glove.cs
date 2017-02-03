@@ -66,10 +66,38 @@ namespace HapticGlove
             }
         }
 
+        public void CalibrateMax()
+        {
+            this.Sensors.CalibrateMax();
+        }
+
+        public void CalibrateMin()
+        {
+            this.Sensors.CalibrateMax();
+        }
+
+        public void CalibrateMax(int index)
+        {
+            this.Sensors.CalibrateMax(index);
+        }
+
+        public void CalibrateMin(int index)
+        {
+            this.Sensors.CalibrateMax(index);
+        }
+
         public static async Task<byte> GetValue(GattCharacteristic c)
         {
             var result = await c.ReadValueAsync();
             return GetByte(result.Value);
+        }
+
+        public Sensor this[int index]
+        {
+            get
+            {
+                return this.Sensors[index];
+            }
         }
 
         private GloveState _state;
@@ -105,103 +133,13 @@ namespace HapticGlove
             }
         }
 
-        public Exception Error
+        public SensorState Sensors
         {
             get;
             private set;
         }
 
-        public FingerState Fingers
-        {
-            get;
-            private set;
-        }
-
-        public float Finger0
-        {
-            get
-            {
-                return Fingers[0];
-            }
-        }
-
-        public float Finger1
-        {
-            get
-            {
-                return Fingers[1];
-            }
-        }
-
-        public float Finger2
-        {
-            get
-            {
-                return Fingers[2];
-            }
-        }
-
-        public float Finger3
-        {
-            get
-            {
-                return Fingers[3];
-            }
-        }
-
-        public float Finger4
-        {
-            get
-            {
-                return Fingers[4];
-            }
-        }
-
-        public MotorState Motors
-        {
-            get;
-            private set;
-        }
-
-        public bool Motor0
-        {
-            get
-            {
-                return Motors[0];
-            }
-        }
-
-        public bool Motor1
-        {
-            get
-            {
-                return Motors[1];
-            }
-        }
-
-        public bool Motor2
-        {
-            get
-            {
-                return Motors[2];
-            }
-        }
-
-        public bool Motor3
-        {
-            get
-            {
-                return Motors[3];
-            }
-        }
-
-        public bool Motor4
-        {
-            get
-            {
-                return Motors[4];
-            }
-        }
+        private MotorState Motors;
 
         public string Manufacturer
         {
@@ -255,10 +193,22 @@ namespace HapticGlove
 
         private DeviceWatcher watcher;
         private Dictionary<string, DeviceInformation> devices;
-        private FloatValueReader _battery;
         private Dictionary<string, string> properties;
         private Random r;
         private Dictionary<string, PropertyChangedEventArgs> propArgs;
+
+        private static GloveState[] SensorStates = new GloveState[]
+        {
+            GloveState.Sensor0Found,
+            GloveState.Sensor1Found,
+            GloveState.Sensor2Found,
+            GloveState.Sensor3Found,
+            GloveState.Sensor4Found,
+            GloveState.Sensor5Found
+        };
+
+
+        private readonly CoreDispatcher dispatcher;
 
         public event PropertyChangedEventHandler PropertyChanged;
         private async void OnPropertyChanged(string name)
@@ -273,14 +223,6 @@ namespace HapticGlove
             });
         }
 
-        public float Battery
-        {
-            get
-            {
-                return this._battery.Value;
-            }
-        }
-
         public Glove(CoreDispatcher dispatcher)
         {
             r = new Random();
@@ -289,12 +231,9 @@ namespace HapticGlove
             this.properties = new Dictionary<string, string>();
             this.propArgs = new Dictionary<string, PropertyChangedEventArgs>();
             this.State = GloveState.NotReady;
-            this.Fingers = new FingerState();
             this.Motors = new MotorState();
-            this._battery = new FloatValueReader("Battery", MIN_BATTERY, MAX_BATTERY);
-            this._battery.PropertyChanged += child_PropertyChanged;
-            this.Fingers.PropertyChanged += child_PropertyChanged;
             this.Motors.PropertyChanged += child_PropertyChanged;
+            this.Sensors = new SensorState(this.Motors);
         }
 
         private void child_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -302,11 +241,10 @@ namespace HapticGlove
             this.OnPropertyChanged(e.PropertyName);
         }
 
-        public void Test()
+        public void Test(object sender, object evt)
         {
             this.Motors.Test(r);
-            this.Fingers.Test(r);
-            this._battery.Test(r);
+            this.Sensors.Test(r);
         }
 
         public void Search()
@@ -340,7 +278,15 @@ namespace HapticGlove
                 else if(device.Pairing.IsPaired && !this.State.HasFlag(GloveState.Searching))
                 {
                     this.State |= GloveState.DeviceFound;
-                    this.Connect();
+                    try
+                    {
+                        await this.Connect();
+                    }
+                    catch(Exception exp)
+                    {
+                        await device.Pairing.UnpairAsync();
+                        this.State = GloveState.Watching;
+                    }
                 }
             }
         }
@@ -399,12 +345,11 @@ namespace HapticGlove
                     select device).FirstOrDefault();
         }
 
-        public async void Connect()
+        public async Task Connect()
         {
-            this.Error = null;
-            this.State |= GloveState.Searching;
-            try
+            if(!this.State.HasFlag(GloveState.Ready))
             {
+                this.State |= GloveState.Searching;
                 var deviceInformationService = await GetService(GATTDefaultService.DeviceInformation);
                 if(deviceInformationService != null)
                 {
@@ -416,15 +361,8 @@ namespace HapticGlove
                 if(batteryService != null)
                 {
                     this.State |= GloveState.BatteryServiceFound;
-                    ReadBatteryService(await GattDeviceService.FromIdAsync(batteryService.Id));
+                    await ReadBatteryService(await GattDeviceService.FromIdAsync(batteryService.Id));
                 }
-            }
-            catch(Exception exp)
-            {
-                this.Error = exp;
-            }
-            finally
-            {
                 this.State &= ~GloveState.Searching;
             }
         }
@@ -447,57 +385,32 @@ namespace HapticGlove
             }
         }
 
-        private async void ReadBatteryService(GattDeviceService deviceService)
+        private async Task ReadBatteryService(GattDeviceService deviceService)
         {
             var characteristics = deviceService.GetAllCharacteristics();
             foreach(var characteristic in characteristics)
             {
-                var description = await GetDescription(characteristic);
-                if(description != null)
+                var description = await GetDescription(characteristic) ?? "";
+                if(this.Motors.IsConnectable(description))
                 {
-                    if(description.Equals("Battery") && characteristic.Uuid == GATTDefaultCharacteristic.Analog.UUID && characteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Read))
+                    await this.Motors.Connect(description, characteristic);
+                    if(this.Motors.Ready)
                     {
-                        this._battery.Connect(characteristic);
-                        if(this._battery.Ready)
-                        {
-                            this.State |= GloveState.BatteryFound;
-                        }
+                        this.State |= GloveState.MotorsFound;
                     }
-                    else if(description.StartsWith("Motor "))
+                }
+                else if(this.Sensors.IsConnectable(description))
+                {
+                    await this.Sensors.Connect(description, characteristic);
+                    for(int i = 0; i < SensorStates.Length; ++i)
                     {
-                        await this.Motors.Connect(description, characteristic);
-                        if(this.Motors.Ready)
+                        if(this.Sensors.HasSensor(i))
                         {
-                            this.State |= GloveState.MotorsFound;
-                        }
-                    }
-                    else if(description.StartsWith("Sensor "))
-                    {
-                        this.Fingers.Connect(description, characteristic);
-                        for(int i = 0; i < FingerStates.Length; ++i)
-                        {
-                            if(this.Fingers.HasFinger(i))
-                            {
-                                this.State |= FingerStates[i];
-                            }
+                            this.State |= SensorStates[i];
                         }
                     }
                 }
             }
         }
-
-        private static GloveState[] FingerStates = new GloveState[]
-        {
-            GloveState.Finger1Found,
-            GloveState.Finger2Found,
-            GloveState.Finger3Found,
-            GloveState.Finger4Found,
-            GloveState.Finger5Found
-        };
-
-
-        const byte MIN_BATTERY = 125;
-        const byte MAX_BATTERY = 167;
-        private readonly CoreDispatcher dispatcher;
     }
 }

@@ -9,10 +9,7 @@
 #include "Adafruit_BLEGatt.h"
 #include "BluefruitConfig.h"
 
-// #define DEBUG
-// #define DEBUG_BATTERY
-// #define DEBUG_MOTOR
-// #define DEBUG_SENSOR
+#define DEBUG
 
 #ifdef DEBUG
     #define VERBOSE_MODE true
@@ -68,20 +65,24 @@ const uint8_t OUTPUT_PROPERTIES = GATT_CHARS_PROPERTIES_READ | GATT_CHARS_PROPER
 
 const uint8_t INPUT_PROPERTIES = GATT_CHARS_PROPERTIES_READ |GATT_CHARS_PROPERTIES_WRITE | GATT_CHARS_PROPERTIES_WRITE_WO_RESP;
 
-
-const PINS SENSOR_PINS[] = {
-    ANALOG0, // thumb
-    ANALOG1, // forefinger
-    ANALOG2, // middle finger
-    ANALOG3, // ring finger
-    ANALOG4,  // pinkie finger
-    // ANALOG5 // wrist
+struct Sensor {
+    const char* name;
+    PINS sensorPin;
+    uint8_t outputCharIdx;
+    uint8_t lastValue;
 };
 
-const size_t NUM_SENSORS = sizeof(SENSOR_PINS) / sizeof(uint8_t);
+const Sensor SENSORS[] = {
+    { "Thumb", ANALOG0, 0, 0 },
+    { "Index", ANALOG1, 0, 0 },
+    { "Middle", ANALOG2, 0, 0 },
+    { "Ring", ANALOG3, 0, 0 },
+    { "Pinkie", ANALOG4, 0, 0 },
+    { "Battery", BATTERY_LEVEL, 0, 0 },
+    // { "Wrist", ANALOG5, 0, 0 }
+};
 
-uint8_t sensorOutputCharIdxs[NUM_SENSORS];
-uint8_t lastSensorState[NUM_SENSORS];
+const size_t NUM_SENSORS = sizeof(SENSORS) / sizeof(Sensor);
 
 const PINS MOTOR_PINS[] = {
     GPIO5,
@@ -96,7 +97,7 @@ const int MOTOR_ON = HIGH;
 const int MOTOR_OFF = LOW;
 
 const uint8_t LOW_BATTERY_THRESHOLD = 125;
-uint8_t motorCharIdx, lastMotorState, batteryLevelCharIndex, lastBatteryLevel;
+uint8_t motorCharIdx, lastMotorState;
 
 void stop()
 {
@@ -112,7 +113,7 @@ void setMotorState(uint8_t motorState) {
 
     if(motorState != lastMotorState)
     {
-        #ifdef DEBUG_MOTOR
+        #ifdef DEBUG
             Serial.print(F("Motor state = "));
             Serial.println(motorState);
         #endif
@@ -181,12 +182,6 @@ void setup(void)
         stop();
     }
 
-
-    // Setup the characteristic for reporting the battery level.
-    lastBatteryLevel = 0;
-    batteryLevelCharIndex = addChar( "Battery", OUTPUT_PROPERTIES );
-
-
     // Tell the host computer how many haptic motors we have available.
     const uint8_t motorCountCharIdx = addChar( "Motor Count", OUTPUT_PROPERTIES );
 
@@ -196,6 +191,9 @@ void setup(void)
     motorCharIdx = addChar( "Motor State", INPUT_PROPERTIES );
 
 
+    pinMode(ON_BOARD_LED, OUTPUT);
+    digitalWrite(ON_BOARD_LED, LOW);
+
     // setup the pins for outputting the motor state.
     for(size_t i = 0; i < NUM_MOTORS; ++i) {
         pinMode(MOTOR_PINS[i], OUTPUT);
@@ -204,18 +202,17 @@ void setup(void)
 
 
     // Setup the characteristics for outputting the sensor values
-    char sensorName[9];
     for(size_t i = 0; i < NUM_SENSORS; ++i) {
-        sprintf(sensorName, "Sensor %d", i);
+        Sensor sensor = SENSORS[i];
 
         Serial.print(F("sensor index "));
         Serial.print(i);
         Serial.print(F(", name: "));
-        Serial.println(sensorName);
+        Serial.println(sensor.name);
 
         // Make sure we don't have random garbage in the array.
-        lastSensorState[i] = 0;
-        sensorOutputCharIdxs[i] = addChar( sensorName, OUTPUT_PROPERTIES );
+        sensor.lastValue = 0;
+        sensor.outputCharIdx = addChar( sensor.name, OUTPUT_PROPERTIES );
 
         // we don't need to configure a pin mode for these pins because they are analog inputs.
     }
@@ -251,43 +248,41 @@ uint8_t readAnalog(PINS pin) {
 
 void loop(void)
 {
-    uint8_t batteryLevel = readAnalog(BATTERY_LEVEL);
-
-    if(true || batteryLevel != lastBatteryLevel)
+    if(ble.isConnected())
     {
-        #ifdef DEBUG_BATTERY
-            Serial.print(F("Battery level = "));
-            Serial.print(batteryLevel);
-            Serial.println();
-        #endif
-
-        lastBatteryLevel = batteryLevel;
-        gatt.setChar(batteryLevelCharIndex, batteryLevel);
-        digitalWrite(ON_BOARD_LED, batteryLevel < LOW_BATTERY_THRESHOLD);
-    }
-
-    // update the sensors
-    for(size_t i = 0; i < NUM_SENSORS; ++i)
-    {
-        uint8_t value = readAnalog(SENSOR_PINS[i]);
-
-        // don't do anything if the value didn't change
-        if(true || value != lastSensorState[i])
+        // update the sensors
+        for(size_t i = 0; i < NUM_SENSORS; ++i)
         {
-            #ifdef DEBUG_SENSOR
-                Serial.print(F("Sensor "));
-                Serial.print(i);
-                Serial.print(F(" = "));
-                Serial.print(value);
-                Serial.println();
-            #endif
+            Sensor sensor = SENSORS[i];
+            uint8_t value = readAnalog(sensor.sensorPin);
 
-            lastSensorState[i] = value;
-            gatt.setChar(sensorOutputCharIdxs[i], value);
+            // don't do anything if the value didn't change
+            if(value != sensor.lastValue)
+            {
+                #ifdef DEBUG
+                    Serial.print(sensor.name);
+                    Serial.print(F(" = "));
+                    Serial.print(value);
+                    Serial.println();
+                #endif
+
+                sensor.lastValue = value;
+                gatt.setChar(sensor.outputCharIdx, value);
+
+                // if(i == 0) {
+                //     digitalWrite(ON_BOARD_LED, value < LOW_BATTERY_THRESHOLD);
+                // }
+            }
         }
-    }
 
-    setMotorState(gatt.getCharInt8(motorCharIdx));
+        setMotorState(gatt.getCharInt8(motorCharIdx));
+    }
+    else
+    {
+        #ifdef DEBUG
+            Serial.println(F(" no device connected."));
+        #endif
+    }
 
     #ifdef DEBUG
         delay(1000);

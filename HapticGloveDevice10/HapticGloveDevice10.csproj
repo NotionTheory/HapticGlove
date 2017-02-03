@@ -44,8 +44,8 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FingerState.cs" />
-    <Compile Include="FloatValueReader.cs" />
+    <Compile Include="SensorState.cs" />
+    <Compile Include="Sensor.cs" />
     <Compile Include="GATTDefaultCharacteristic.cs" />
     <Compile Include="GATTDefaultService.cs" />
     <Compile Include="Glove.cs" />

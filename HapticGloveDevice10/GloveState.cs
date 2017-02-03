@@ -11,13 +11,13 @@ namespace HapticGlove
         DeviceFound = 4,
         DeviceInformationServiceFound = 8,
         BatteryServiceFound = 16,
-        BatteryFound = 32,
-        MotorsFound = 64,
-        Finger1Found = 128,
-        Finger2Found = 256,
-        Finger3Found = 512,
-        Finger4Found = 1024,
-        Finger5Found = 2048,
+        MotorsFound = 32,
+        Sensor0Found = 64,
+        Sensor1Found = 128,
+        Sensor2Found = 256,
+        Sensor3Found = 512,
+        Sensor4Found = 1024,
+        Sensor5Found = 2048,
         Ready = 0xFFC
     }
 }

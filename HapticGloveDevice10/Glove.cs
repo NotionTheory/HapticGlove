@@ -9,6 +9,7 @@ using Windows.Storage.Streams;
 using System.ComponentModel;
 using System.Collections.Specialized;
 using Windows.UI.Core;
+using Windows.ApplicationModel.Core;
 
 namespace HapticGlove
 {
@@ -73,7 +74,7 @@ namespace HapticGlove
 
         public void CalibrateMin()
         {
-            this.Sensors.CalibrateMax();
+            this.Sensors.CalibrateMin();
         }
 
         public void CalibrateMax(int index)
@@ -81,9 +82,19 @@ namespace HapticGlove
             this.Sensors.CalibrateMax(index);
         }
 
+        public void CalibrateMax(int index, byte value)
+        {
+            this.Sensors.CalibrateMax(index, value);
+        }
+
         public void CalibrateMin(int index)
         {
-            this.Sensors.CalibrateMax(index);
+            this.Sensors.CalibrateMin(index);
+        }
+
+        public void CalibrateMin(int index, byte value)
+        {
+            this.Sensors.CalibrateMin(index, value);
         }
 
         public static async Task<byte> GetValue(GattCharacteristic c)
@@ -207,26 +218,22 @@ namespace HapticGlove
             GloveState.Sensor5Found
         };
 
-
-        private readonly CoreDispatcher dispatcher;
-
         public event PropertyChangedEventHandler PropertyChanged;
         private async void OnPropertyChanged(string name)
         {
-            if(!propArgs.ContainsKey(name))
+            await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                propArgs.Add(name, new PropertyChangedEventArgs(name));
-            }
-            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
+                if(!propArgs.ContainsKey(name))
+                {
+                    propArgs.Add(name, new PropertyChangedEventArgs(name));
+                }
                 this.PropertyChanged?.Invoke(this, propArgs[name]);
             });
         }
 
-        public Glove(CoreDispatcher dispatcher)
+        public Glove()
         {
             r = new Random();
-            this.dispatcher = dispatcher;
             this.devices = new Dictionary<string, DeviceInformation>();
             this.properties = new Dictionary<string, string>();
             this.propArgs = new Dictionary<string, PropertyChangedEventArgs>();
@@ -241,7 +248,7 @@ namespace HapticGlove
             this.OnPropertyChanged(e.PropertyName);
         }
 
-        public void Test(object sender, object evt)
+        public void Test()
         {
             this.Motors.Test(r);
             this.Sensors.Test(r);
@@ -267,7 +274,7 @@ namespace HapticGlove
             }
         }
 
-        private async void ConnectIfPaired(DeviceInformation device)
+        private async Task ConnectIfPaired(DeviceInformation device)
         {
             if(device.Name == DEVICE_NAME)
             {
@@ -280,7 +287,7 @@ namespace HapticGlove
                     this.State |= GloveState.DeviceFound;
                     try
                     {
-                        await this.Connect();
+                        this.Connect();
                     }
                     catch(Exception exp)
                     {
@@ -291,22 +298,22 @@ namespace HapticGlove
             }
         }
 
-        private void Watcher_Added(DeviceWatcher sender, DeviceInformation device)
+        private async void Watcher_Added(DeviceWatcher sender, DeviceInformation device)
         {
             if(!this.devices.ContainsKey(device.Id))
             {
                 this.devices.Add(device.Id, device);
-                this.ConnectIfPaired(device);
+                await this.ConnectIfPaired(device);
             }
         }
 
-        private void Watcher_Updated(DeviceWatcher sender, DeviceInformationUpdate deviceUpdate)
+        private async void Watcher_Updated(DeviceWatcher sender, DeviceInformationUpdate deviceUpdate)
         {
             if(this.devices.ContainsKey(deviceUpdate.Id))
             {
                 var device = this.devices[deviceUpdate.Id];
                 device.Update(deviceUpdate);
-                this.ConnectIfPaired(device);
+                await this.ConnectIfPaired(device);
             }
         }
 
@@ -345,24 +352,28 @@ namespace HapticGlove
                     select device).FirstOrDefault();
         }
 
-        public async Task Connect()
+        public async void Connect()
         {
             if(!this.State.HasFlag(GloveState.Ready))
             {
                 this.State |= GloveState.Searching;
+
                 var deviceInformationService = await GetService(GATTDefaultService.DeviceInformation);
                 if(deviceInformationService != null)
                 {
-                    ReadDeviceInformation(await GattDeviceService.FromIdAsync(deviceInformationService.Id));
                     this.State |= GloveState.DeviceInformationServiceFound;
+                    var service = await GattDeviceService.FromIdAsync(deviceInformationService.Id);
+                    ReadDeviceInformation(service);
                 }
 
                 var batteryService = await GetService(GATTDefaultService.BatteryService);
                 if(batteryService != null)
                 {
                     this.State |= GloveState.BatteryServiceFound;
-                    await ReadBatteryService(await GattDeviceService.FromIdAsync(batteryService.Id));
+                    var service = await GattDeviceService.FromIdAsync(batteryService.Id);
+                    ReadBatteryService(service);
                 }
+
                 this.State &= ~GloveState.Searching;
             }
         }
@@ -385,7 +396,7 @@ namespace HapticGlove
             }
         }
 
-        private async Task ReadBatteryService(GattDeviceService deviceService)
+        private async void ReadBatteryService(GattDeviceService deviceService)
         {
             var characteristics = deviceService.GetAllCharacteristics();
             foreach(var characteristic in characteristics)

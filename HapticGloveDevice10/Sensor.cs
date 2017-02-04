@@ -4,28 +4,46 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using Windows.UI.Core;
 
 namespace HapticGlove
 {
     public class Sensor : INotifyPropertyChanged
     {
-        public Sensor(string name, byte firstValue, byte min, byte max, int index, MotorState motorState)
+        public Sensor(string name, byte firstValue, int index, MotorState motorState)
         {
-            this.index = index;
+            this.propArgs = new Dictionary<string, PropertyChangedEventArgs>();
+            this.Index = index;
             this.motorState = motorState;
             this.Name = name;
-            this.arg = new PropertyChangedEventArgs(name);
-            this.Min = min;
-            this.minSet = this.Min != byte.MaxValue;
-            this.Max = max;
-            this.maxSet = this.Max != byte.MinValue;
-            this.reading = firstValue;
+            this._min = byte.MaxValue;
+            this._max = byte.MinValue;
+            this.valueFound = false;
+            this.SetValue(firstValue);
         }
 
-        public readonly string Name;
+        private const float LERP_A = 0.5f, LERP_B = 1 - LERP_A;
+        Dictionary<string, PropertyChangedEventArgs> propArgs;
+
+        public string Name
+        {
+            get; private set;
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
+        private async void OnPropertyChanged(string name)
+        {
+            await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                if(!propArgs.ContainsKey(name))
+                {
+                    propArgs.Add(name, new PropertyChangedEventArgs(name));
+                }
+                this.PropertyChanged?.Invoke(this, propArgs[name]);
+            });
+        }
 
         public bool IsFinger
         {
@@ -39,110 +57,166 @@ namespace HapticGlove
         {
             get
             {
-                return this.motorState[index];
+                return this.motorState[Index];
             }
             set
             {
-                this.motorState[index] = value;
+                this.motorState[Index] = value;
             }
         }
 
         private bool minSet, maxSet;
 
+        private byte _min, _max;
         public byte Min
         {
-            get;
-            private set;
+            get
+            {
+                return this._min;
+            }
+        }
+
+        private void SetMin(byte value)
+        {
+            if(this._min != value)
+            {
+                this._min = value;
+                this.OnPropertyChanged("Min");
+                this.OnPropertyChanged("Value");
+            }
         }
 
         public byte Max
         {
-            get;
-            private set;
+            get
+            {
+                return this._max;
+            }
         }
 
-        private readonly PropertyChangedEventArgs arg;
+        private void SetMax(byte value)
+        {
+            if(this._max != value)
+            {
+                this._max = value;
+                this.OnPropertyChanged("Max");
+                this.OnPropertyChanged("Value");
+            }
+        }
 
         private float Delta
         {
             get
             {
-                return Max - Min;
+                return this.Max - this.Min;
             }
         }
 
         private GattCharacteristic sensor;
 
-        private byte reading;
-        private MotorState motorState;
-        private int index;
+        private byte _reading;
+        public byte Reading
+        {
+            get
+            {
+                return this._reading;
+            }
 
+            private set
+            {
+                if(value != this._reading)
+                {
+                    this._reading = value;
+                    this.OnPropertyChanged("Reading");
+                    this.OnPropertyChanged("Value");
+                }
+            }
+        }
+
+        private MotorState motorState;
+        public int Index
+        {
+            get; private set;
+        }
+
+        private bool valueFound;
+
+        private float _value;
         public float Value
         {
             get
             {
-                float value = this.reading;
-
-                if(Delta > 0)
+                float value = this.Reading;
+                if(this.Delta > 0)
                 {
-                    value -= Min;
-                    value /= Delta;
+                    value -= this.Min;
+                    value /= this.Delta;
                     value = Math.Min(1, value);
                     value = Math.Max(0, value);
                 }
 
-                return value;
+                this._value = this._value * LERP_A + value * LERP_B;
+                return this._value;
+            }
+        }
+
+        public void CalibrateMin(byte value)
+        {
+            if(value != this.Min)
+            {
+                this.minSet = true;
+                this.SetMin(value);
             }
         }
 
         public void CalibrateMin()
         {
-            Min = reading;
-            minSet = true;
-            this.Changed();
+            this.CalibrateMin(this.Reading);
+        }
+
+        public void CalibrateMax(byte value)
+        {
+            if(value != this.Max)
+            {
+                this.maxSet = true;
+                this.SetMax(value);
+            }
         }
 
         public void CalibrateMax()
         {
-            Max = reading;
-            maxSet = true;
-            this.Changed();
+            this.CalibrateMax(this.Reading);
         }
 
         private void SetValue(byte b)
         {
-            if(!minSet)
+            if(b > 0 || this.valueFound)
             {
-                Min = Math.Min(Min, b);
-            }
-
-            if(!maxSet)
-            {
-                Max = Math.Max(Max, b);
-            }
-
-            if(Min == Max)
-            {
-                if(Min > 0)
+                this.valueFound = true;
+                if(!this.minSet && b < this.Min)
                 {
-                    --Min;
+                    this.SetMin(b);
                 }
-                else
+
+                if(!this.maxSet && b > this.Max)
                 {
-                    ++Max;
+                    this.SetMax(b);
                 }
-            }
 
-            if(b != this.reading)
-            {
-                reading = b;
-                this.Changed();
-            }
-        }
+                if(this.Min == this.Max)
+                {
+                    if(this.Min > 0)
+                    {
+                        this.SetMin((byte)(this._min - 1));
+                    }
+                    else
+                    {
+                        this.SetMax((byte)(this._max + 1));
+                    }
+                }
 
-        private void Changed()
-        {
-            this.PropertyChanged?.Invoke(this, arg);
+                this.Reading = b;
+            }
         }
 
         public bool Ready
@@ -155,8 +229,8 @@ namespace HapticGlove
 
         public async Task Connect(GattCharacteristic sensor)
         {
-            await sensor.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.Notify);
             this.sensor = sensor;
+            await this.sensor.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.Notify);
             this.sensor.ValueChanged += (GattCharacteristic sender, GattValueChangedEventArgs args) =>
             {
                 this.SetValue(Glove.GetByte(args.CharacteristicValue));

@@ -9,7 +9,7 @@
 #include "Adafruit_BLEGatt.h"
 #include "BluefruitConfig.h"
 
-#define DEBUG
+// #define DEBUG
 
 #ifdef DEBUG
     #define VERBOSE_MODE true
@@ -58,12 +58,13 @@ Adafruit_BluefruitLE_SPI ble(BLUEFRUIT_SPI_CS, BLUEFRUIT_SPI_IRQ, BLUEFRUIT_SPI_
 // The API for Generic Attribute Profile, used to specify services and characteristics.
 Adafruit_BLEGatt gatt(ble);
 
-const uint16_t GATT_CHARACTERISTIC_BYTE = 0x2A58;
+// The `Analog` characteristic
+const uint16_t GATT_ANALOG_CHARACTERISTIC = 0x2A58;
 
 // These are the properties used on the sensor output characteristics.
 const uint8_t OUTPUT_PROPERTIES = GATT_CHARS_PROPERTIES_READ | GATT_CHARS_PROPERTIES_NOTIFY;
 
-const uint8_t INPUT_PROPERTIES = GATT_CHARS_PROPERTIES_READ |GATT_CHARS_PROPERTIES_WRITE | GATT_CHARS_PROPERTIES_WRITE_WO_RESP;
+const uint8_t INPUT_PROPERTIES = GATT_CHARS_PROPERTIES_READ | GATT_CHARS_PROPERTIES_WRITE | GATT_CHARS_PROPERTIES_WRITE_WO_RESP;
 
 struct Sensor {
     const char* name;
@@ -72,7 +73,7 @@ struct Sensor {
     uint8_t lastValue;
 };
 
-const Sensor SENSORS[] = {
+Sensor SENSORS[] = {
     { "Thumb", ANALOG0, 0, 0 },
     { "Index", ANALOG1, 0, 0 },
     { "Middle", ANALOG2, 0, 0 },
@@ -138,7 +139,7 @@ void setMotorState(uint8_t motorState) {
 }
 
 uint8_t addChar(const char* name, uint8_t props) {
-    return gatt.addCharacteristic( GATT_CHARACTERISTIC_BYTE, props, 1, 1, BLE_DATATYPE_INTEGER, name );
+    return gatt.addCharacteristic( GATT_ANALOG_CHARACTERISTIC, props, 1, 1, BLE_DATATYPE_INTEGER, name );
 }
 
 void setup(void)
@@ -203,16 +204,14 @@ void setup(void)
 
     // Setup the characteristics for outputting the sensor values
     for(size_t i = 0; i < NUM_SENSORS; ++i) {
-        Sensor sensor = SENSORS[i];
-
         Serial.print(F("sensor index "));
         Serial.print(i);
         Serial.print(F(", name: "));
-        Serial.println(sensor.name);
+        Serial.println(SENSORS[i].name);
 
         // Make sure we don't have random garbage in the array.
-        sensor.lastValue = 0;
-        sensor.outputCharIdx = addChar( sensor.name, OUTPUT_PROPERTIES );
+        SENSORS[i].lastValue = 0;
+        SENSORS[i].outputCharIdx = addChar( SENSORS[i].name, OUTPUT_PROPERTIES );
 
         // we don't need to configure a pin mode for these pins because they are analog inputs.
     }
@@ -253,21 +252,20 @@ void loop(void)
         // update the sensors
         for(size_t i = 0; i < NUM_SENSORS; ++i)
         {
-            Sensor sensor = SENSORS[i];
-            uint8_t value = readAnalog(sensor.sensorPin);
+            uint8_t value = readAnalog(SENSORS[i].sensorPin);
 
             // don't do anything if the value didn't change
-            if(value != sensor.lastValue)
+            if(value != SENSORS[i].lastValue)
             {
                 #ifdef DEBUG
-                    Serial.print(sensor.name);
+                    Serial.print(SENSORS[i].name);
                     Serial.print(F(" = "));
                     Serial.print(value);
                     Serial.println();
                 #endif
 
-                sensor.lastValue = value;
-                gatt.setChar(sensor.outputCharIdx, value);
+                SENSORS[i].lastValue = value;
+                gatt.setChar(SENSORS[i].outputCharIdx, value);
 
                 // if(i == 0) {
                 //     digitalWrite(ON_BOARD_LED, value < LOW_BATTERY_THRESHOLD);

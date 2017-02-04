@@ -17,13 +17,17 @@ namespace HapticGloveServer
     public sealed partial class MainPage : Page
     {
         DispatcherTimer t;
-        public HapticGlove.Glove glove;
+        HapticGlove.Glove glove;
         public MainPage()
         {
             this.InitializeComponent();
-            this.glove = new HapticGlove.Glove(CoreWindow.GetForCurrentThread().Dispatcher);
+            this.Loaded += MainPage_Loaded;
+            this.glove = new HapticGlove.Glove();
             DataContext = this.glove;
+        }
 
+        private void MainPage_Loaded(object sender, RoutedEventArgs e)
+        {
             if(true)
             {
                 this.glove.Search();
@@ -32,7 +36,11 @@ namespace HapticGloveServer
             {
                 t = new DispatcherTimer();
                 t.Interval = new TimeSpan(0, 0, 0, 1);
-                t.Tick += this.glove.Test;
+                t.Tick += (a, b) =>
+                {
+                    this.glove.Test();
+                };
+
                 t.Start();
             }
         }
@@ -40,8 +48,8 @@ namespace HapticGloveServer
         private static int? GetIndex(Control ctrl)
         {
             var pan = ctrl?.Parent as StackPanel;
-            var parent = pan?.Parent as StackPanel;
-            return parent?.Children?.IndexOf(pan);
+            var sensor = pan?.DataContext as HapticGlove.Sensor;
+            return sensor?.Index;
         }
 
         private void motor_Toggled(object sender, Windows.UI.Xaml.RoutedEventArgs e)
@@ -82,6 +90,36 @@ namespace HapticGloveServer
         private void CalibrateMaxAll_Click(object sender, RoutedEventArgs e)
         {
             this.glove.CalibrateMax();
+        }
+
+        private void Min_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var tb = sender as TextBox;
+            var index = GetIndex(tb);
+            if(index.HasValue)
+            {
+                var s = tb.Text;
+                byte v = 0;
+                if(byte.TryParse(s, out v))
+                {
+                    this.glove.CalibrateMin(index.Value, v);
+                }
+            }
+        }
+
+        private void Max_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var tb = sender as TextBox;
+            var index = GetIndex(tb);
+            if(index.HasValue)
+            {
+                var s = tb.Text;
+                byte v = 0;
+                if(byte.TryParse(s, out v))
+                {
+                    this.glove.CalibrateMax(index.Value, v);
+                }
+            }
         }
     }
 }

@@ -87,21 +87,19 @@ namespace HapticGlove
             if(sensor.Uuid == GATTDefaultCharacteristic.Analog.UUID && sensor.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Read))
             {
                 int index = names.IndexOf(description);
-                byte firstValue = await Glove.GetValue(sensor),
-                    min = byte.MaxValue,
-                    max = byte.MinValue;
-                if(description == "Battery")
-                {
-                    min = MIN_BATTERY;
-                    max = MAX_BATTERY;
-                }
-                var reader = new Sensor(description, firstValue, min, max, index, motorState);
+                byte firstValue = await Glove.GetValue(sensor);
+                var reader = new Sensor(description, firstValue, index, motorState);
                 await reader.Connect(sensor);
                 await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
                     this.Readers.Add(reader);
                 });
             }
+        }
+
+        public void CalibrateMin(int index, byte value)
+        {
+            this.Readers[index]?.CalibrateMin(value);
         }
 
         public void CalibrateMin(int index)
@@ -115,6 +113,11 @@ namespace HapticGlove
             {
                 this.CalibrateMin(i);
             }
+        }
+
+        public void CalibrateMax(int index, byte value)
+        {
+            this.Readers[index]?.CalibrateMax(value);
         }
 
         public void CalibrateMax(int index)

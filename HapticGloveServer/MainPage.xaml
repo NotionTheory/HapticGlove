@@ -12,27 +12,43 @@
 
       <TextBlock Text="Haptic Glove Server" FontSize="50"/>
       <TextBlock x:Name="deviceName" FontSize="10" Text="{Binding Status}" VerticalAlignment="Center"/>
-      <Border BorderBrush="Black" BorderThickness="2"  Padding="10" HorizontalAlignment="Stretch" VerticalAlignment="Top">
-        <ListView ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollMode="Enabled" ScrollViewer.VerticalScrollMode="Disabled" ItemsSource="{Binding Sensors.Readers}">
-          <ListView.ItemsPanel>
-            <ItemsPanelTemplate>
-              <StackPanel Background="Transparent" Orientation="Horizontal" />
-            </ItemsPanelTemplate>
-          </ListView.ItemsPanel>
-          <ListView.ItemTemplate>
-            <DataTemplate>
-              <StackPanel>
-                <TextBlock Text="{Binding Name}" />
-                <ProgressBar Height="10" Width="89" Margin="0,0,65,0" Value="{Binding Sensor}" Maximum="1" LargeChange="0.1"/>
-                <ToggleSwitch HorizontalAlignment="Left" VerticalAlignment="Top" Toggled="motor_Toggled" IsOn="{Binding Motor}" Visibility="{Binding IsFinger}" />
-                <Button Margin="0,10,0,0" Content="Calibrate Min" Click="CalibrateMinFinger_Click" Visibility="{Binding IsFinger}" />
-                <Button Margin="0,10,0,0" Content="Calibrate Max" Click="CalibrateMaxFinger_Click" Visibility="{Binding IsFinger}" />
+      <ListView ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollMode="Enabled" ScrollViewer.VerticalScrollMode="Disabled" ItemsSource="{Binding Sensors.Readers}">
+        <ListView.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Background="Transparent" Orientation="Horizontal" />
+          </ItemsPanelTemplate>
+        </ListView.ItemsPanel>
+        <ListView.ItemTemplate>
+          <DataTemplate>
+            <StackPanel VerticalAlignment="Top">
+              <TextBlock Text="{Binding Name}" />
+
+              <Grid>
+                <ProgressBar Width="89" Margin="0,0,65,0" Value="{Binding Value}" Maximum="1" LargeChange="0.1" />
+                <TextBlock Text="{Binding Reading}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+              </Grid>
+
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Min" />
+                <TextBox Text="{Binding Min}" TextChanged="Min_TextChanged" />
+                <Button Margin="0,10,0,0" FontSize="8" Content="Calibrate" Click="CalibrateMinFinger_Click" />
               </StackPanel>
-            </DataTemplate>
-          </ListView.ItemTemplate>
-        </ListView>
-      </Border>
+
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Max" />
+                <TextBox Text="{Binding Max}" TextChanged="Max_TextChanged" />
+                <Button Margin="0,10,0,0" FontSize="8" Content="Calibrate" Click="CalibrateMaxFinger_Click" />
+              </StackPanel>
+
+              <ToggleSwitch HorizontalAlignment="Left" VerticalAlignment="Top" Toggled="motor_Toggled" IsOn="{Binding Motor}" Visibility="{Binding IsFinger}" />
+            </StackPanel>
+          </DataTemplate>
+        </ListView.ItemTemplate>
+      </ListView>
+
+
       <Button Content="Calibrate Min All" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,20,0,0" Click="CalibrateMinAll_Click"/>
+
       <Button Content="Calibrate Max All" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,20,0,0" Click="CalibrateMaxAll_Click"/>
     </StackPanel>
   </Grid>

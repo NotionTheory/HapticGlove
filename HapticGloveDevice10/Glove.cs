@@ -150,7 +150,12 @@ namespace HapticGlove
             private set;
         }
 
-        private MotorState Motors;
+        private readonly MotorState Motors;
+
+        public void SetMotorState(byte motorState)
+        {
+            this.Motors.SetState(motorState);
+        }
 
         public string Manufacturer
         {
@@ -289,7 +294,7 @@ namespace HapticGlove
                     {
                         this.Connect();
                     }
-                    catch(Exception exp)
+                    catch(Exception)
                     {
                         await device.Pairing.UnpairAsync();
                         this.State = GloveState.Watching;

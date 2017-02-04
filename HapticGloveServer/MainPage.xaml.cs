@@ -1,13 +1,6 @@
 ﻿using System;
 using Windows.UI.Xaml.Controls;
-using System.Threading;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
 using Windows.UI.Xaml;
-using Windows.UI.Core;
-
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
 namespace HapticGloveServer
 {
@@ -16,33 +9,54 @@ namespace HapticGloveServer
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        DispatcherTimer t;
         HapticGlove.Glove glove;
+        Server server;
         public MainPage()
         {
             this.InitializeComponent();
             this.Loaded += MainPage_Loaded;
             this.glove = new HapticGlove.Glove();
+            this.glove.PropertyChanged += Glove_PropertyChanged;
+            this.server = new Server();
+            this.server.PropertyChanged += Server_PropertyChanged;
             DataContext = this.glove;
+        }
+
+        private void Glove_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if(this.glove.Sensors.Ready)
+            {
+                this.glove.PropertyChanged -= Glove_PropertyChanged;
+                foreach(var reader in this.glove.Sensors.Readers)
+                {
+                    reader.PropertyChanged += Reader_PropertyChanged;
+                }
+            }
+        }
+
+        private void Reader_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == "Value") {
+                var reader = sender as HapticGlove.Sensor;
+                if(reader != null)
+                {
+                    this.server.SetSensorState(reader.Index, reader.Value);
+                }
+            }
+        }
+
+        private void Server_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == "MotorState")
+            {
+                this.glove.SetMotorState(this.server.MotorState);
+            }
         }
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-            if(true)
-            {
-                this.glove.Search();
-            }
-            else
-            {
-                t = new DispatcherTimer();
-                t.Interval = new TimeSpan(0, 0, 0, 1);
-                t.Tick += (a, b) =>
-                {
-                    this.glove.Test();
-                };
-
-                t.Start();
-            }
+            this.glove.Search();
+            this.server.Start();
         }
 
         private static int? GetIndex(Control ctrl)

@@ -95,6 +95,12 @@ namespace HapticGlove
             }
         }
 
+        internal void SetState(byte motorState)
+        {
+            this.state = motorState;
+            this.Flush();
+        }
+
         internal void Test(Random r)
         {
             this[r.Next(5)] = r.NextDouble() > 0.5;

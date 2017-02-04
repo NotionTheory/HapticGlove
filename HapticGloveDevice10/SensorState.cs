@@ -86,7 +86,7 @@ namespace HapticGlove
         {
             if(sensor.Uuid == GATTDefaultCharacteristic.Analog.UUID && sensor.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Read))
             {
-                int index = names.IndexOf(description);
+                byte index = (byte)names.IndexOf(description);
                 byte firstValue = await Glove.GetValue(sensor);
                 var reader = new Sensor(description, firstValue, index, motorState);
                 await reader.Connect(sensor);

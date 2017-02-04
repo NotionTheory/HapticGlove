@@ -12,7 +12,7 @@ namespace HapticGlove
 {
     public class Sensor : INotifyPropertyChanged
     {
-        public Sensor(string name, byte firstValue, int index, MotorState motorState)
+        public Sensor(string name, byte firstValue, byte index, MotorState motorState)
         {
             this.propArgs = new Dictionary<string, PropertyChangedEventArgs>();
             this.Index = index;
@@ -134,7 +134,7 @@ namespace HapticGlove
         }
 
         private MotorState motorState;
-        public int Index
+        public byte Index
         {
             get; private set;
         }

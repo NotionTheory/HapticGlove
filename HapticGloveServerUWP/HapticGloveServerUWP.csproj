@@ -85,18 +85,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HapticGloveDevice10\HapticGloveDevice10.csproj">
+    <ProjectReference Include="..\HapticGloveDevice10\HapticGloveDeviceUWP.csproj">
       <Project>{9784a20c-9543-44dd-bc9d-c0e535dfadd1}</Project>
-      <Name>HapticGloveDevice10</Name>
+      <Name>HapticGloveDeviceUWP</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <SDKReference Include="WindowsDesktop, Version=10.0.14393.0">
-      <Name>Windows Desktop Extensions for the UWP</Name>
-    </SDKReference>
-    <SDKReference Include="WindowsIoT, Version=10.0.14393.0">
-      <Name>Windows IoT Extensions for the UWP</Name>
-    </SDKReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

@@ -85,7 +85,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HapticGloveDevice10\HapticGloveDeviceUWP.csproj">
+    <ProjectReference Include="..\HapticGloveDeviceUWP\HapticGloveDeviceUWP.csproj">
       <Project>{9784a20c-9543-44dd-bc9d-c0e535dfadd1}</Project>
       <Name>HapticGloveDeviceUWP</Name>
     </ProjectReference>

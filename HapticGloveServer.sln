@@ -14,39 +14,21 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HapticGloveDeviceUWP", "Hap
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Debug|ARM = Debug|ARM
 		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
-		Release|Any CPU = Release|Any CPU
-		Release|ARM = Release|ARM
 		Release|x64 = Release|x64
-		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Debug|ARM.ActiveCfg = Debug|x64
 		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Debug|x64.ActiveCfg = Debug|x64
 		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Debug|x64.Build.0 = Debug|x64
 		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Debug|x64.Deploy.0 = Debug|x64
-		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Debug|x86.ActiveCfg = Debug|x64
-		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Release|Any CPU.ActiveCfg = Release|x64
-		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Release|ARM.ActiveCfg = Release|x64
 		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Release|x64.ActiveCfg = Release|x64
 		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Release|x64.Build.0 = Release|x64
 		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Release|x64.Deploy.0 = Release|x64
-		{C17C5AA9-A832-4DFC-A14C-E93EA27392D2}.Release|x86.ActiveCfg = Release|x64
-		{9784A20C-9543-44DD-BC9D-C0E535DFADD1}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{9784A20C-9543-44DD-BC9D-C0E535DFADD1}.Debug|ARM.ActiveCfg = Debug|x64
 		{9784A20C-9543-44DD-BC9D-C0E535DFADD1}.Debug|x64.ActiveCfg = Debug|x64
 		{9784A20C-9543-44DD-BC9D-C0E535DFADD1}.Debug|x64.Build.0 = Debug|x64
-		{9784A20C-9543-44DD-BC9D-C0E535DFADD1}.Debug|x86.ActiveCfg = Debug|x64
-		{9784A20C-9543-44DD-BC9D-C0E535DFADD1}.Release|Any CPU.ActiveCfg = Release|x64
-		{9784A20C-9543-44DD-BC9D-C0E535DFADD1}.Release|ARM.ActiveCfg = Release|x64
 		{9784A20C-9543-44DD-BC9D-C0E535DFADD1}.Release|x64.ActiveCfg = Release|x64
 		{9784A20C-9543-44DD-BC9D-C0E535DFADD1}.Release|x64.Build.0 = Release|x64
 		{9784A20C-9543-44DD-BC9D-C0E535DFADD1}.Release|x64.Deploy.0 = Release|x64
-		{9784A20C-9543-44DD-BC9D-C0E535DFADD1}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

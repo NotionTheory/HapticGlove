@@ -1,3 +1,4 @@
+﻿using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -18,6 +19,8 @@ namespace HapticGloveServer
             get; set;
         }
 
+        Timer t;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -28,6 +31,14 @@ namespace HapticGloveServer
             this.server = new Server();
             this.server.PropertyChanged += Server_PropertyChanged;
             this.DataContext = this;
+            this.t = new Timer(10);
+            this.t.Elapsed += T_Elapsed;
+            this.t.Start();
+        }
+
+        private void T_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            this.glove.Update();
         }
 
         private void Glove_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

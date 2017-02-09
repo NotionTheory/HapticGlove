@@ -29,6 +29,11 @@ namespace HapticGlove
             new GATTDefaultCharacteristic("DFU Version", new Guid("{00001534-1212-efde-1523-785feabcd123}"));
         }
 
+        public void Update()
+        {
+            this.Sensors.RefreshValues();
+        }
+
         public static byte GetByte(IBuffer stream)
         {
             var buffer = new byte[stream.Length];

@@ -20,7 +20,15 @@ namespace HapticGlove
             this.SetValue(firstValue);
         }
 
-        private const float LERP_A = 0.5f, LERP_B = 1 - LERP_A;
+        const float LERP_A = 0.85f;
+        float LERP_B
+        {
+            get
+            {
+                return 1 - LERP_A;
+            }
+        }
+
         Dictionary<string, PropertyChangedEventArgs> propArgs;
 
         public string Name
@@ -78,7 +86,7 @@ namespace HapticGlove
             {
                 this._min = value;
                 this.OnPropertyChanged("Min");
-                this.OnPropertyChanged("Value");
+                this.RefreshValue();
             }
         }
 
@@ -96,7 +104,7 @@ namespace HapticGlove
             {
                 this._max = value;
                 this.OnPropertyChanged("Max");
-                this.OnPropertyChanged("Value");
+                this.RefreshValue();
             }
         }
 
@@ -124,9 +132,22 @@ namespace HapticGlove
                 {
                     this._reading = value;
                     this.OnPropertyChanged("Reading");
-                    this.OnPropertyChanged("Value");
+                    this.target = this.Reading;
+                    if(this.Delta > 0)
+                    {
+                        this.target -= this.Min;
+                        this.target /= this.Delta;
+                        this.target = Math.Min(1, this.target);
+                        this.target = Math.Max(0, this.target);
+                    }
+                    this.RefreshValue();
                 }
             }
+        }
+
+        public void RefreshValue()
+        {            
+            this.Value = this.Value * LERP_A + this.target * LERP_B;
         }
 
         private MotorState motorState;
@@ -137,21 +158,19 @@ namespace HapticGlove
 
         private bool valueFound;
 
-        private float _value;
+        private float target, _value;
         public float Value
         {
+            private set
+            {
+                if(value != this._value)
+                {
+                    this._value = value;
+                    this.OnPropertyChanged("Value");
+                }
+            }
             get
             {
-                float value = this.Reading;
-                if(this.Delta > 0)
-                {
-                    value -= this.Min;
-                    value /= this.Delta;
-                    value = Math.Min(1, value);
-                    value = Math.Max(0, value);
-                }
-
-                this._value = this._value * LERP_A + value * LERP_B;
                 return this._value;
             }
         }

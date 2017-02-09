@@ -68,6 +68,17 @@ namespace HapticGlove
             }
         }
 
+        internal void RefreshValues()
+        {
+            lock(this.Readers)
+            {
+                foreach(var reader in this.Readers)
+                {
+                    reader.RefreshValue();
+                }
+            }
+        }
+
         internal void Test(Random r)
         {
             int index = r.Next(this.Readers.Count);
@@ -84,7 +95,10 @@ namespace HapticGlove
                 await reader.Connect(sensor);
                 Glove.Invoke(() =>
                 {
-                    this.Readers.Add(reader);
+                    lock(this.Readers)
+                    {
+                        this.Readers.Add(reader);
+                    }
                 });
             }
         }
@@ -127,7 +141,8 @@ namespace HapticGlove
 
         public bool IsConnectable(string description)
         {
-            return names.Contains(description);
+            return names.Contains(description)
+                && this.Readers.All((r) => r.Name != description);
         }
     }
 }

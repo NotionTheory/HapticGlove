@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HapticGloveServer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="671.394" Width="933.894">
+        Title="MainWindow" Height="671.394" Width="933.894" FontFamily="Yu Gothic UI">
   <Grid>
-    <StackPanel>
+    <StackPanel Margin="10">
 
       <Label Content="Haptic Glove Server" FontSize="50"/>
 
@@ -16,21 +16,21 @@
       <Label Content="{Binding server.ClientCount, StringFormat=\{0:D\} Clients}" Margin="10,0,10,10" />
 
       <ListView ItemsSource="{Binding glove.Sensors.Readers}" Margin="10,0" BorderThickness="0">
-        
+
         <ListView.ItemsPanel>
           <ItemsPanelTemplate>
             <StackPanel Background="Transparent" Orientation="Horizontal" />
           </ItemsPanelTemplate>
         </ListView.ItemsPanel>
-        
+
         <ListView.ItemTemplate>
           <DataTemplate>
             <StackPanel VerticalAlignment="Top" Width="125">
-              
+
               <Label Content="{Binding Name}" />
 
               <Grid>
-                <ProgressBar Width="105" HorizontalAlignment="Left" Value="{Binding Value, Mode=OneWay}" Maximum="1" LargeChange="0.1" />
+                <ProgressBar Width="105" HorizontalAlignment="Left" Value="{Binding Value, Mode=OneWay}" Maximum="1" LargeChange="0.1" SmallChange="0.01" Foreground="#FF124076" />
                 <Label Content="{Binding Reading}" HorizontalAlignment="Center" VerticalAlignment="Center" />
               </Grid>
 
@@ -45,7 +45,7 @@
               </StackPanel>
 
               <CheckBox Content="motor" Checked="motor_Toggled" IsChecked="{Binding Motor}" Visibility="{Binding IsFinger}" />
-              
+
             </StackPanel>
           </DataTemplate>
         </ListView.ItemTemplate>
@@ -54,7 +54,7 @@
       <Button Content="Calibrate Min All" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10,20,10,0" Click="CalibrateMinAll_Click"/>
 
       <Button Content="Calibrate Max All" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10,20,10,0" Click="CalibrateMaxAll_Click"/>
-      
+
     </StackPanel>
   </Grid>
 </Window>

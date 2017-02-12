@@ -31,7 +31,14 @@ namespace HapticGlove
 
         public void Update()
         {
-            this.Sensors.RefreshValues();
+            if (this.State.HasFlag(GloveState.Ready))
+            {
+                this.Sensors.RefreshValues();
+            }
+            else
+            {
+                this.Test();
+            }
         }
 
         public static byte GetByte(IBuffer stream)
@@ -211,6 +218,8 @@ namespace HapticGlove
             }
         }
 
+        public bool TestMode { get; set; }
+
         DeviceWatcher watcher;
         Dictionary<string, DeviceInformation> devices;
         Dictionary<string, string> properties;
@@ -269,8 +278,11 @@ namespace HapticGlove
 
         public void Test()
         {
-            this.Motors.Test(r);
-            this.Sensors.Test(r);
+            if (this.TestMode)
+            {
+                this.Motors.Test(r);
+                this.Sensors.Test(r);
+            }
         }
 
         public void Search()

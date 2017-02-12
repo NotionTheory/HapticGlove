@@ -31,6 +31,10 @@ namespace HapticGlove
         {
             this.motorState = motorState;
             this.Readers = new ObservableCollection<Sensor>();
+            for (int i = 0; i < names.Count; ++i)
+            {
+                this.Readers.Add(new Sensor(names[i], 0, (byte)i, motorState));
+            }
         }
 
         public bool HasSensor(int index)
@@ -91,15 +95,12 @@ namespace HapticGlove
             {
                 byte index = (byte)names.IndexOf(description);
                 byte firstValue = await Glove.GetValue(sensor);
-                var reader = new Sensor(description, firstValue, index, motorState);
-                await reader.Connect(sensor);
-                Glove.Invoke(() =>
+                var reader = this.Readers[index];
+                if (reader.Name != description)
                 {
-                    lock(this.Readers)
-                    {
-                        this.Readers.Add(reader);
-                    }
-                });
+                    throw new Exception(string.Format("WHAT THE HELL JUST HAPPENED? Expected {0}, but got {1}", reader.Name, description));
+                }
+                await reader.Connect(sensor);
             }
         }
 

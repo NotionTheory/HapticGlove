@@ -256,7 +256,7 @@ namespace HapticGlove
         {
             if(!this.Ready)
             {
-                this.SetValue((byte)r.Next(this.Min, this.Max));
+                this.SetValue((byte)r.Next(25, 75));
             }
         }
     }

@@ -55,6 +55,8 @@
 
       <Button Content="Calibrate Max All" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10,20,10,0" Click="CalibrateMaxAll_Click"/>
 
+      <CheckBox Content="Test mode" IsChecked="False" Margin="10,50,0,0" Click="CheckBox_Checked"></CheckBox>
+
     </StackPanel>
   </Grid>
 </Window>

@@ -27,7 +27,10 @@ namespace HapticGloveServer
             this.Loaded += MainPage_Loaded;
             this.Closing += MainWindow_Closing;
             this.glove = new HapticGlove.Glove();
-            this.glove.PropertyChanged += Glove_PropertyChanged;
+            foreach (var reader in this.glove.Sensors.Readers)
+            {
+                reader.PropertyChanged += Reader_PropertyChanged;
+            }
             this.server = new Server();
             this.server.PropertyChanged += Server_PropertyChanged;
             this.DataContext = this;
@@ -39,18 +42,6 @@ namespace HapticGloveServer
         private void T_Elapsed(object sender, ElapsedEventArgs e)
         {
             this.glove.Update();
-        }
-
-        private void Glove_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if(this.glove.Sensors.Ready)
-            {
-                this.glove.PropertyChanged -= Glove_PropertyChanged;
-                foreach(var reader in this.glove.Sensors.Readers)
-                {
-                    reader.PropertyChanged += Reader_PropertyChanged;
-                }
-            }
         }
 
         private void Reader_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -159,6 +150,15 @@ namespace HapticGloveServer
                 {
                     this.glove.CalibrateMax(index.Value, v);
                 }
+            }
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            var cb = sender as CheckBox;
+            if (cb != null)
+            {
+                this.glove.TestMode = cb.IsChecked.HasValue && cb.IsChecked.Value;
             }
         }
     }

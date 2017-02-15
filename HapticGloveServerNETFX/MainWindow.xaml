@@ -57,6 +57,9 @@
 
       <CheckBox Content="Test mode" IsChecked="False" Margin="10,50,0,0" Click="CheckBox_Checked"></CheckBox>
 
+      <TextBlock Margin="10,30,0,0">Interpolation factor</TextBlock>
+
+      <Slider Minimum="0" Maximum="1" LargeChange="0.1" SmallChange="0.01" TickFrequency="0.1" TickPlacement="BottomRight" Margin="10,10,10,10" Value="{Binding glove.InterpolationFactor}" />
     </StackPanel>
   </Grid>
 </Window>

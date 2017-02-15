@@ -20,12 +20,17 @@ namespace HapticGlove
             this.SetValue(firstValue);
         }
 
-        const float LERP_A = 0.85f;
-        float LERP_B
+        public float LerpA
+        {
+            get;
+            set;
+        }
+
+        float LerpB
         {
             get
             {
-                return 1 - LERP_A;
+                return 1 - LerpA;
             }
         }
 
@@ -147,7 +152,7 @@ namespace HapticGlove
 
         public void RefreshValue()
         {            
-            this.Value = this.Value * LERP_A + this.target * LERP_B;
+            this.Value = this.Value * LerpA + this.target * LerpB;
         }
 
         private MotorState motorState;

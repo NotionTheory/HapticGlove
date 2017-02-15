@@ -29,18 +29,6 @@ namespace HapticGlove
             new GATTDefaultCharacteristic("DFU Version", new Guid("{00001534-1212-efde-1523-785feabcd123}"));
         }
 
-        public void Update()
-        {
-            if (this.State.HasFlag(GloveState.Ready))
-            {
-                this.Sensors.RefreshValues();
-            }
-            else
-            {
-                this.Test();
-            }
-        }
-
         public static byte GetByte(IBuffer stream)
         {
             var buffer = new byte[stream.Length];
@@ -269,6 +257,36 @@ namespace HapticGlove
             this.Motors = new MotorState();
             this.Motors.PropertyChanged += child_PropertyChanged;
             this.Sensors = new SensorState(this.Motors);
+            this.InterpolationFactor = 0.85;
+        }
+
+        double lerpA;
+        public double InterpolationFactor
+        {
+            get
+            {
+                return this.lerpA;
+            }
+            set
+            {
+                this.lerpA = value;
+                foreach(var reader in this.Sensors.Readers)
+                {
+                    reader.LerpA = (float)value;
+                }
+            }
+        }
+
+        public void Update()
+        {
+            if(this.State.HasFlag(GloveState.Ready))
+            {
+                this.Sensors.RefreshValues();
+            }
+            else
+            {
+                this.Test();
+            }
         }
 
         void child_PropertyChanged(object sender, PropertyChangedEventArgs e)

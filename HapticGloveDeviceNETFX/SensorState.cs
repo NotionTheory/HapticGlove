@@ -143,7 +143,7 @@ namespace HapticGlove
         public bool IsConnectable(string description)
         {
             return names.Contains(description)
-                && this.Readers.All((r) => r.Name != description);
+                && this.Readers.All((r) => r.Name != description || !r.Ready);
         }
     }
 }

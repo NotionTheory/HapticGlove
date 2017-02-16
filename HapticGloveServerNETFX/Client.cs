@@ -94,7 +94,6 @@ namespace HapticGloveServer
         public void Dispose()
         {
             this.stream.Dispose();
-            this.client.Dispose();
         }
     }
 }

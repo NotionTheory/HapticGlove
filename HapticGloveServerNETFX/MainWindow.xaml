@@ -44,7 +44,7 @@
                 <Button Content="Calibrate Max" Width="75" Click="CalibrateMaxFinger_Click" />
               </StackPanel>
 
-              <CheckBox Content="motor" Checked="motor_Toggled" IsChecked="{Binding Motor}" Visibility="{Binding IsFinger}" />
+              <CheckBox Content="motor" Checked="motor_Toggled" IsChecked="{Binding Motor}" />
 
             </StackPanel>
           </DataTemplate>

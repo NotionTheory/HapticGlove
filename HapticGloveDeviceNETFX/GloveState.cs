@@ -17,7 +17,6 @@ namespace HapticGlove
         Sensor2Found = 256,
         Sensor3Found = 512,
         Sensor4Found = 1024,
-        Sensor5Found = 2048,
-        Ready = 0xFFC
+        Ready = 0x7FC
     }
 }

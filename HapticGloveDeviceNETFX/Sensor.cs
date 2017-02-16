@@ -54,14 +54,6 @@ namespace HapticGlove
             });
         }
 
-        public bool IsFinger
-        {
-            get
-            {
-                return this.Name != "Battery";
-            }
-        }
-
         public bool Motor
         {
             get

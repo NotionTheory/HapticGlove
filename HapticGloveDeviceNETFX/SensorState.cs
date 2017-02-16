@@ -14,8 +14,7 @@ namespace HapticGlove
             "Index",
             "Middle",
             "Ring",
-            "Pinkie",
-            "Battery"
+            "Pinkie"
         });
 
         public ObservableCollection<Sensor> Readers
@@ -23,8 +22,6 @@ namespace HapticGlove
             get; private set;
         }
 
-        const byte MIN_BATTERY = 125;
-        const byte MAX_BATTERY = 167;
         private MotorState motorState;
 
         public SensorState(MotorState motorState)

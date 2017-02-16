@@ -220,8 +220,7 @@ namespace HapticGlove
             GloveState.Sensor1Found,
             GloveState.Sensor2Found,
             GloveState.Sensor3Found,
-            GloveState.Sensor4Found,
-            GloveState.Sensor5Found
+            GloveState.Sensor4Found
         };
 
         public event PropertyChangedEventHandler PropertyChanged;

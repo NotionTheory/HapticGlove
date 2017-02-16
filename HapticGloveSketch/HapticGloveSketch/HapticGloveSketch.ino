@@ -66,38 +66,28 @@ const uint8_t OUTPUT_PROPERTIES = GATT_CHARS_PROPERTIES_READ | GATT_CHARS_PROPER
 
 const uint8_t INPUT_PROPERTIES = GATT_CHARS_PROPERTIES_READ | GATT_CHARS_PROPERTIES_WRITE | GATT_CHARS_PROPERTIES_WRITE_WO_RESP;
 
-struct Sensor {
+struct Finger {
     const char* name;
     PINS sensorPin;
+    PINS motorPin;
     uint8_t outputCharIdx;
     uint8_t lastValue;
 };
 
-Sensor SENSORS[] = {
-    { "Thumb", ANALOG0, 0, 0 },
-    { "Index", ANALOG1, 0, 0 },
-    { "Middle", ANALOG2, 0, 0 },
-    { "Ring", ANALOG3, 0, 0 },
-    { "Pinkie", ANALOG4, 0, 0 },
-    { "Battery", BATTERY_LEVEL, 0, 0 },
-    // { "Wrist", ANALOG5, 0, 0 }
+Finger FINGERS[] = {
+    { "Thumb", ANALOG0, GPIO5, 0, 0 },
+    { "Index", ANALOG1, GPIO6, 0, 0 },
+    { "Middle", ANALOG2, GPIO10, 0, 0 },
+    { "Ring", ANALOG3, GPIO11, 0, 0 },
+    { "Pinkie", ANALOG4, GPIO12, 0, 0 },
+    // { "Wrist", ANALOG5, GPIO20, 0, 0 }
 };
 
-const size_t NUM_SENSORS = sizeof(SENSORS) / sizeof(Sensor);
+const size_t NUM_FINGERS = sizeof(FINGERS) / sizeof(Finger);
 
-const PINS MOTOR_PINS[] = {
-    GPIO5,
-    GPIO6,
-    GPIO10,
-    GPIO11,
-    GPIO12
-};
-
-const size_t NUM_MOTORS = sizeof(MOTOR_PINS) / sizeof(uint8_t);
 const int MOTOR_ON = HIGH;
 const int MOTOR_OFF = LOW;
 
-const uint8_t LOW_BATTERY_THRESHOLD = 125;
 uint8_t motorCharIdx, lastMotorState;
 
 void stop()
@@ -123,10 +113,10 @@ void setMotorState(uint8_t motorState) {
 
         uint8_t mask = 0;
         // the motor state is a bitfield, so we iterate over the bitfield destructively to be able to get at the individual values very quickly.
-        for(size_t i = 0; i < NUM_MOTORS; ++i)
+        for(size_t i = 0; i < NUM_FINGERS; ++i)
         {
             // check the least-significant bit for whether it's 0 or 1
-            digitalWrite(MOTOR_PINS[i], motorState & 0x1 ? MOTOR_ON : MOTOR_OFF);
+            digitalWrite(FINGERS[i].motorPin, motorState & 0x1 ? MOTOR_ON : MOTOR_OFF);
             // shift the value over, setting up the next pin to be written.
             motorState = motorState >> 1;
             mask = (mask << 1) | 1;
@@ -192,26 +182,23 @@ void setup(void)
     motorCharIdx = addChar( "Motor State", INPUT_PROPERTIES );
 
 
-    pinMode(ON_BOARD_LED, OUTPUT);
-    digitalWrite(ON_BOARD_LED, LOW);
-
     // setup the pins for outputting the motor state.
-    for(size_t i = 0; i < NUM_MOTORS; ++i) {
-        pinMode(MOTOR_PINS[i], OUTPUT);
-        digitalWrite(MOTOR_PINS[i], MOTOR_OFF);
+    for(size_t i = 0; i < NUM_FINGERS; ++i) {
+        pinMode(FINGERS[i].motorPin, OUTPUT);
+        digitalWrite(FINGERS[i].motorPin, MOTOR_OFF);
     }
 
 
     // Setup the characteristics for outputting the sensor values
-    for(size_t i = 0; i < NUM_SENSORS; ++i) {
+    for(size_t i = 0; i < NUM_FINGERS; ++i) {
         Serial.print(F("sensor index "));
         Serial.print(i);
         Serial.print(F(", name: "));
-        Serial.println(SENSORS[i].name);
+        Serial.println(FINGERS[i].name);
 
         // Make sure we don't have random garbage in the array.
-        SENSORS[i].lastValue = 0;
-        SENSORS[i].outputCharIdx = addChar( SENSORS[i].name, OUTPUT_PROPERTIES );
+        FINGERS[i].lastValue = 0;
+        FINGERS[i].outputCharIdx = addChar( FINGERS[i].name, OUTPUT_PROPERTIES );
 
         // we don't need to configure a pin mode for these pins because they are analog inputs.
     }
@@ -223,7 +210,7 @@ void setup(void)
 
     delay(500);
 
-    gatt.setChar(motorCountCharIdx, (uint8_t)NUM_MOTORS);
+    gatt.setChar(motorCountCharIdx, (uint8_t)NUM_FINGERS);
 
     #ifdef DEBUG
         ble.verbose(false);
@@ -249,27 +236,23 @@ void loop(void)
 {
     if(ble.isConnected())
     {
-        // update the sensors
-        for(size_t i = 0; i < NUM_SENSORS; ++i)
+        // update the fingers
+        for(size_t i = 0; i < NUM_FINGERS; ++i)
         {
-            uint8_t value = readAnalog(SENSORS[i].sensorPin);
+            uint8_t value = readAnalog(FINGERS[i].sensorPin);
 
             // don't do anything if the value didn't change
-            if(value != SENSORS[i].lastValue)
+            if(value != FINGERS[i].lastValue)
             {
                 #ifdef DEBUG
-                    Serial.print(SENSORS[i].name);
+                    Serial.print(FINGERS[i].name);
                     Serial.print(F(" = "));
                     Serial.print(value);
                     Serial.println();
                 #endif
 
-                SENSORS[i].lastValue = value;
-                gatt.setChar(SENSORS[i].outputCharIdx, value);
-
-                // if(i == 0) {
-                //     digitalWrite(ON_BOARD_LED, value < LOW_BATTERY_THRESHOLD);
-                // }
+                FINGERS[i].lastValue = value;
+                gatt.setChar(FINGERS[i].outputCharIdx, value);
             }
         }
 

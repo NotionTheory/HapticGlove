@@ -71,16 +71,15 @@ struct Finger {
     PINS sensorPin;
     PINS motorPin;
     uint8_t outputCharIdx;
-    uint8_t lastValue;
 };
 
 Finger FINGERS[] = {
-    { "Thumb", ANALOG0, GPIO5, 0, 0 },
-    { "Index", ANALOG1, GPIO6, 0, 0 },
-    { "Middle", ANALOG2, GPIO10, 0, 0 },
-    { "Ring", ANALOG3, GPIO11, 0, 0 },
-    { "Pinkie", ANALOG4, GPIO12, 0, 0 },
-    // { "Wrist", ANALOG5, GPIO20, 0, 0 }
+    { "Thumb", ANALOG0, GPIO5, 0 },
+    { "Index", ANALOG1, GPIO6, 0 },
+    { "Middle", ANALOG2, GPIO10, 0 },
+    { "Ring", ANALOG3, GPIO11, 0 },
+    { "Pinkie", ANALOG4, GPIO12, 0 },
+    // { "Wrist", ANALOG5, GPIO20, 0 }
 };
 
 const size_t NUM_FINGERS = sizeof(FINGERS) / sizeof(Finger);
@@ -88,7 +87,7 @@ const size_t NUM_FINGERS = sizeof(FINGERS) / sizeof(Finger);
 const int MOTOR_ON = HIGH;
 const int MOTOR_OFF = LOW;
 
-uint8_t motorCharIdx, lastMotorState;
+uint8_t motorCharIdx;
 
 void stop()
 {
@@ -102,34 +101,24 @@ void stop()
 
 void setMotorState(uint8_t motorState) {
 
-    if(motorState != lastMotorState)
+    #ifdef DEBUG
+        Serial.print(F("Motor state = "));
+        Serial.println(motorState);
+    #endif
+
+    // the motor state is a bitfield, so we iterate over the bitfield destructively to be able to get at the individual values very quickly.
+    for(size_t i = 0; i < NUM_FINGERS; ++i)
     {
-        #ifdef DEBUG
-            Serial.print(F("Motor state = "));
-            Serial.println(motorState);
-        #endif
-
-        lastMotorState = motorState;
-
-        uint8_t mask = 0;
-        // the motor state is a bitfield, so we iterate over the bitfield destructively to be able to get at the individual values very quickly.
-        for(size_t i = 0; i < NUM_FINGERS; ++i)
-        {
-            // check the least-significant bit for whether it's 0 or 1
-            digitalWrite(FINGERS[i].motorPin, motorState & 0x1 ? MOTOR_ON : MOTOR_OFF);
-            // shift the value over, setting up the next pin to be written.
-            motorState = motorState >> 1;
-            mask = (mask << 1) | 1;
-        }
-
-        // unset any unused values
-        lastMotorState = lastMotorState & mask;
+        // check the least-significant bit for whether it's 0 or 1
+        digitalWrite(FINGERS[i].motorPin, motorState & 0x1 ? MOTOR_ON : MOTOR_OFF);
+        // shift the value over, setting up the next pin to be written.
+        motorState = motorState >> 1;
     }
 
 }
 
 uint8_t addChar(const char* name, uint8_t props) {
-    return gatt.addCharacteristic( GATT_ANALOG_CHARACTERISTIC, props, 1, 1, BLE_DATATYPE_INTEGER, name );
+    return gatt.addCharacteristic( GATT_ANALOG_CHARACTERISTIC, props, 1, 2, BLE_DATATYPE_AUTO, name );
 }
 
 void setup(void)
@@ -178,7 +167,6 @@ void setup(void)
 
 
     // Setup the characteristic for receiving the motor state. We use the `Write without Response` property because the host PC doesn't care when the write operation finishes, we just want it to happen as fast as possible.
-    lastMotorState = 0;
     motorCharIdx = addChar( "Motor State", INPUT_PROPERTIES );
 
 
@@ -197,7 +185,6 @@ void setup(void)
         Serial.println(FINGERS[i].name);
 
         // Make sure we don't have random garbage in the array.
-        FINGERS[i].lastValue = 0;
         FINGERS[i].outputCharIdx = addChar( FINGERS[i].name, OUTPUT_PROPERTIES );
 
         // we don't need to configure a pin mode for these pins because they are analog inputs.
@@ -210,7 +197,7 @@ void setup(void)
 
     delay(500);
 
-    gatt.setChar(motorCountCharIdx, (uint8_t)NUM_FINGERS);
+    gatt.setChar(motorCountCharIdx, (uint16_t)NUM_FINGERS);
 
     #ifdef DEBUG
         ble.verbose(false);
@@ -220,16 +207,9 @@ void setup(void)
         while(!ble.isConnected())
         {
             Serial.println(F("Waiting for connection."));
-            // debug the motors are connected correctly
-            setMotorState(lastMotorState == 0 ? 1 : lastMotorState << 1);
             delay(1000);
         }
     #endif
-}
-
-// convert the values read on analog pins from range [0, 1023] to [0, 255]
-uint8_t readAnalog(PINS pin) {
-    return (uint8_t)(analogRead(pin) >> 2);
 }
 
 void loop(void)
@@ -239,21 +219,15 @@ void loop(void)
         // update the fingers
         for(size_t i = 0; i < NUM_FINGERS; ++i)
         {
-            uint8_t value = readAnalog(FINGERS[i].sensorPin);
-
-            // don't do anything if the value didn't change
-            if(value != FINGERS[i].lastValue)
-            {
-                #ifdef DEBUG
-                    Serial.print(FINGERS[i].name);
-                    Serial.print(F(" = "));
-                    Serial.print(value);
-                    Serial.println();
-                #endif
-
-                FINGERS[i].lastValue = value;
-                gatt.setChar(FINGERS[i].outputCharIdx, value);
-            }
+            uint16_t value = (uint16_t)analogRead(FINGERS[i].sensorPin);
+            bool success = gatt.setChar(FINGERS[i].outputCharIdx, value);
+            #ifdef DEBUG
+                Serial.print(FINGERS[i].name);
+                Serial.print(F(" = "));
+                Serial.print(value);
+                Serial.print(success ? "." : "!");
+                Serial.println();
+            #endif
         }
 
         setMotorState(gatt.getCharInt8(motorCharIdx));

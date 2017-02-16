@@ -9,6 +9,7 @@ using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Devices.Enumeration;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
+using ValueType = System.UInt16;
 
 namespace HapticGlove
 {
@@ -29,11 +30,16 @@ namespace HapticGlove
             new GATTDefaultCharacteristic("DFU Version", new Guid("{00001534-1212-efde-1523-785feabcd123}"));
         }
 
-        public static byte GetByte(IBuffer stream)
+        public static ValueType GetNumber(IBuffer stream)
         {
             var buffer = new byte[stream.Length];
             DataReader.FromBuffer(stream).ReadBytes(buffer);
-            var b = buffer[0];
+            ValueType b = 0;
+            for(int i = buffer.Length - 1; i >= 0; --i)
+            {
+                b <<= 8;
+                b |= buffer[i];
+            }
             return b;
         }
 
@@ -81,7 +87,7 @@ namespace HapticGlove
             this.Sensors.CalibrateMax(index);
         }
 
-        public void CalibrateMax(int index, byte value)
+        public void CalibrateMax(int index, ValueType value)
         {
             this.Sensors.CalibrateMax(index, value);
         }
@@ -91,15 +97,15 @@ namespace HapticGlove
             this.Sensors.CalibrateMin(index);
         }
 
-        public void CalibrateMin(int index, byte value)
+        public void CalibrateMin(int index, ValueType value)
         {
             this.Sensors.CalibrateMin(index, value);
         }
 
-        public static async Task<byte> GetValue(GattCharacteristic c)
+        public static async Task<ValueType> GetValue(GattCharacteristic c)
         {
             var result = await c.ReadValueAsync();
-            return GetByte(result.Value);
+            return GetNumber(result.Value);
         }
 
         public Sensor this[int index]

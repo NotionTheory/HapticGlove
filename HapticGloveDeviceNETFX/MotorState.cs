@@ -3,13 +3,14 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Storage.Streams;
+using ValueType = System.Byte;
 
 namespace HapticGlove
 {
     public class MotorState : INotifyPropertyChanged
     {
         private GattCharacteristic motor;
-        private byte state, testState;
+        private ValueType state, testState;
 
         public int Count
         {
@@ -62,13 +63,13 @@ namespace HapticGlove
             get
             {
                 var state = this.Ready ? this.state : this.testState;
-                byte mask = (byte)(1 << index);
+                ValueType mask = (ValueType)(1 << index);
                 return (state & mask) != 0;
             }
             set
             {
                 var state = this.Ready ? this.state : this.testState;
-                byte mask = (byte)(1 << index);
+                ValueType mask = (ValueType)(1 << index);
                 if(value)
                 {
                     state |= mask;
@@ -90,7 +91,7 @@ namespace HapticGlove
             }
         }
 
-        internal void SetState(byte motorState)
+        internal void SetState(ValueType motorState)
         {
             this.state = motorState;
             this.Flush();

@@ -272,3 +272,4 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+HapticGloveSketch/libraries/Adafruit_BluefruitLE_nRF51-master/

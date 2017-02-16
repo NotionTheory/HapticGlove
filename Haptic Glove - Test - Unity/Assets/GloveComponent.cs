@@ -13,7 +13,7 @@ public class GloveComponent : MonoBehaviour
 
     private float[] lastFingerValues;
 
-    private float thresholdValue = 0.3f;
+    private float thresholdValue = 0.7f;
 
     public GauntletController gauntletController;
 
@@ -123,14 +123,14 @@ public class GloveComponent : MonoBehaviour
             lastFingerValues[index] = value;
             var animationName = FingerAnimationNames[index];
             var animation = f[animationName];
-            animation.normalizedTime = 1 - value;
+            animation.normalizedTime = value;
             animation.speed = 0;
             f.Play();
 
             gauntletController.charging = true;
             for(int i = 0; i < this.fingers.Length && gauntletController.charging; ++i)
             {
-                gauntletController.charging = lastFingerValues[i] < thresholdValue;
+                gauntletController.charging = lastFingerValues[i] > thresholdValue;
             }
         }
     }

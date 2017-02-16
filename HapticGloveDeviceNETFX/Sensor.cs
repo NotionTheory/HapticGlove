@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using ValueType = System.UInt16;
 
 namespace HapticGlove
 {
     public class Sensor : INotifyPropertyChanged
     {
-        public Sensor(string name, byte firstValue, byte index, MotorState motorState)
+        public Sensor(string name, ValueType firstValue, int index, MotorState motorState)
         {
             this.propArgs = new Dictionary<string, PropertyChangedEventArgs>();
             this.Index = index;
             this.motorState = motorState;
             this.Name = name;
-            this._min = byte.MaxValue;
-            this._max = byte.MinValue;
+            this._min = ValueType.MaxValue;
+            this._max = ValueType.MinValue;
             this.valueFound = false;
             this.SetValue(firstValue);
         }
@@ -68,8 +69,8 @@ namespace HapticGlove
 
         private bool minSet, maxSet;
 
-        private byte _min, _max;
-        public byte Min
+        private ValueType _min, _max;
+        public ValueType Min
         {
             get
             {
@@ -77,7 +78,7 @@ namespace HapticGlove
             }
         }
 
-        private void SetMin(byte value)
+        private void SetMin(ValueType value)
         {
             if(this._min != value)
             {
@@ -87,7 +88,7 @@ namespace HapticGlove
             }
         }
 
-        public byte Max
+        public ValueType Max
         {
             get
             {
@@ -95,7 +96,7 @@ namespace HapticGlove
             }
         }
 
-        private void SetMax(byte value)
+        private void SetMax(ValueType value)
         {
             if(this._max != value)
             {
@@ -115,8 +116,8 @@ namespace HapticGlove
 
         private GattCharacteristic sensor;
 
-        private byte _reading;
-        public byte Reading
+        private ValueType _reading;
+        public ValueType Reading
         {
             get
             {
@@ -148,7 +149,7 @@ namespace HapticGlove
         }
 
         private MotorState motorState;
-        public byte Index
+        public int Index
         {
             get; private set;
         }
@@ -172,7 +173,7 @@ namespace HapticGlove
             }
         }
 
-        public void CalibrateMin(byte value)
+        public void CalibrateMin(ValueType value)
         {
             if(value != this.Min)
             {
@@ -186,7 +187,7 @@ namespace HapticGlove
             this.CalibrateMin(this.Reading);
         }
 
-        public void CalibrateMax(byte value)
+        public void CalibrateMax(ValueType value)
         {
             if(value != this.Max)
             {
@@ -200,7 +201,7 @@ namespace HapticGlove
             this.CalibrateMax(this.Reading);
         }
 
-        private void SetValue(byte b)
+        private void SetValue(ValueType b)
         {
             if(b > 0 || this.valueFound)
             {
@@ -219,11 +220,11 @@ namespace HapticGlove
                 {
                     if(this.Min > 0)
                     {
-                        this.SetMin((byte)(this._min - 1));
+                        this.SetMin((ValueType)(this._min - 1));
                     }
                     else
                     {
-                        this.SetMax((byte)(this._max + 1));
+                        this.SetMax((ValueType)(this._max + 1));
                     }
                 }
 
@@ -245,7 +246,7 @@ namespace HapticGlove
             await this.sensor.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.Notify);
             this.sensor.ValueChanged += (GattCharacteristic sender, GattValueChangedEventArgs args) =>
             {
-                this.SetValue(Glove.GetByte(args.CharacteristicValue));
+                this.SetValue(Glove.GetNumber(args.CharacteristicValue));
             };
         }
 
@@ -253,7 +254,7 @@ namespace HapticGlove
         {
             if(!this.Ready)
             {
-                this.SetValue((byte)r.Next(25, 75));
+                this.SetValue((ValueType)r.Next(25, 75));
             }
         }
     }

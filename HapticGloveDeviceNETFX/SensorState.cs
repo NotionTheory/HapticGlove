@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using ValueType = System.UInt16;
 
 namespace HapticGlove
 {
@@ -30,7 +31,7 @@ namespace HapticGlove
             this.Readers = new ObservableCollection<Sensor>();
             for (int i = 0; i < names.Count; ++i)
             {
-                this.Readers.Add(new Sensor(names[i], 0, (byte)i, motorState));
+                this.Readers.Add(new Sensor(names[i], 0, i, motorState));
             }
         }
 
@@ -90,8 +91,8 @@ namespace HapticGlove
         {
             if(sensor.Uuid == GATTDefaultCharacteristic.Analog.UUID && sensor.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Read))
             {
-                byte index = (byte)names.IndexOf(description);
-                byte firstValue = await Glove.GetValue(sensor);
+                int index = names.IndexOf(description);
+                ValueType firstValue = await Glove.GetValue(sensor);
                 var reader = this.Readers[index];
                 if (reader.Name != description)
                 {
@@ -101,7 +102,7 @@ namespace HapticGlove
             }
         }
 
-        public void CalibrateMin(int index, byte value)
+        public void CalibrateMin(int index, ValueType value)
         {
             this.Readers[index]?.CalibrateMin(value);
         }
@@ -119,7 +120,7 @@ namespace HapticGlove
             }
         }
 
-        public void CalibrateMax(int index, byte value)
+        public void CalibrateMax(int index, ValueType value)
         {
             this.Readers[index]?.CalibrateMax(value);
         }

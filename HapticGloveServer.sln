@@ -10,8 +10,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{3E082A38-C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HapticGloveDeviceNETFX", "HapticGloveDeviceNETFX\HapticGloveDeviceNETFX.csproj", "{D93B6CE7-B84B-43A4-9DC0-B7FC871737A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Haptic Glove - Test - Unity", "Haptic Glove - Test - Unity\Haptic Glove - Test - Unity.csproj", "{ADFD54BB-4925-C57B-5428-3DF2752DAA0C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HapticGloveServerNETFX", "HapticGloveServerNETFX\HapticGloveServerNETFX.csproj", "{A36C3F3A-8DCE-4DD8-8558-3E36F8E51733}"
 EndProject
 Global
@@ -24,10 +22,6 @@ Global
 		{D93B6CE7-B84B-43A4-9DC0-B7FC871737A6}.Debug|x64.Build.0 = Debug|x64
 		{D93B6CE7-B84B-43A4-9DC0-B7FC871737A6}.Release|x64.ActiveCfg = Release|x64
 		{D93B6CE7-B84B-43A4-9DC0-B7FC871737A6}.Release|x64.Build.0 = Release|x64
-		{ADFD54BB-4925-C57B-5428-3DF2752DAA0C}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{ADFD54BB-4925-C57B-5428-3DF2752DAA0C}.Debug|x64.Build.0 = Debug|Any CPU
-		{ADFD54BB-4925-C57B-5428-3DF2752DAA0C}.Release|x64.ActiveCfg = Release|Any CPU
-		{ADFD54BB-4925-C57B-5428-3DF2752DAA0C}.Release|x64.Build.0 = Release|Any CPU
 		{A36C3F3A-8DCE-4DD8-8558-3E36F8E51733}.Debug|x64.ActiveCfg = Debug|x64
 		{A36C3F3A-8DCE-4DD8-8558-3E36F8E51733}.Debug|x64.Build.0 = Debug|x64
 		{A36C3F3A-8DCE-4DD8-8558-3E36F8E51733}.Release|x64.ActiveCfg = Release|x64

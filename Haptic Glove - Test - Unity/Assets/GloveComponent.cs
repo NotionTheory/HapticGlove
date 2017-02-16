@@ -130,7 +130,7 @@ public class GloveComponent : MonoBehaviour
             gauntletController.charging = true;
             for(int i = 0; i < this.fingers.Length && gauntletController.charging; ++i)
             {
-                gauntletController.charging = lastFingerValues[i] > thresholdValue;
+                gauntletController.charging = lastFingerValues[i] < thresholdValue;
             }
         }
     }

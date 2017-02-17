@@ -273,3 +273,15 @@ sysinfo.txt
 *.apk
 *.unitypackage
 HapticGloveSketch/libraries/Adafruit_BluefruitLE_nRF51-master/
+LaserGauntlet/ProjectSettings/
+LaserGauntlet/Library/
+LaserGauntlet/Builds/
+LaserGauntlet/Assets/VRTK/
+LaserGauntlet/Assets/UBER/
+LaserGauntlet/Assets/SWS/
+LaserGauntlet/Assets/SteamVR/
+LaserGauntlet/Assets/Resources/
+LaserGauntlet/Assets/Standard Assets/
+LaserGauntlet/Assets/AmplifyColor/
+LaserGauntlet/Assets/AmplifyBloom/
+LaserGauntlet/Assets/_Imported/

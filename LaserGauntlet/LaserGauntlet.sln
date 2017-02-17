@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LaserGauntlet", "LaserGauntlet.csproj", "{E97E4D13-7FA6-DF15-CF8D-BE52F3868031}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LaserGauntlet.Editor", "LaserGauntlet.Editor.csproj", "{8EBDCECE-C675-9841-6159-948C5333B132}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E97E4D13-7FA6-DF15-CF8D-BE52F3868031}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E97E4D13-7FA6-DF15-CF8D-BE52F3868031}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E97E4D13-7FA6-DF15-CF8D-BE52F3868031}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E97E4D13-7FA6-DF15-CF8D-BE52F3868031}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EBDCECE-C675-9841-6159-948C5333B132}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EBDCECE-C675-9841-6159-948C5333B132}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EBDCECE-C675-9841-6159-948C5333B132}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EBDCECE-C675-9841-6159-948C5333B132}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -58,8 +58,11 @@ public class GloveComponent : MonoBehaviour
 
     private void DisconnectFromServer()
     {
-        this.stream.Dispose();
-        this.stream = null;
+        if(this.stream != null)
+        {
+            this.stream.Dispose();
+            this.stream = null;
+        }
         this.server = null;
     }
 

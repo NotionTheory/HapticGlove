@@ -161,5 +161,15 @@ namespace HapticGloveServer
                 this.glove.TestMode = cb.IsChecked.HasValue && cb.IsChecked.Value;
             }
         }
+
+        private void CloseFist_Click(object sender, RoutedEventArgs e)
+        {
+            this.glove.CloseFistTest();
+        }
+
+        private void OpenFirst_Click(object sender, RoutedEventArgs e)
+        {
+            this.glove.OpenFistTest();
+        }
     }
 }

@@ -124,7 +124,7 @@ namespace HapticGlove
                 return this._reading;
             }
 
-            private set
+            set
             {
                 if(value != this._reading)
                 {

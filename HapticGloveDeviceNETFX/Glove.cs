@@ -155,6 +155,26 @@ namespace HapticGlove
             private set;
         }
 
+        public void CloseFistTest()
+        {
+            foreach(var reader in this.Sensors.Readers)
+            {
+                reader.CalibrateMin(50);
+                reader.CalibrateMax(100);
+                reader.Reading = 100;
+            }
+        }
+
+        public void OpenFistTest()
+        {
+            foreach(var reader in this.Sensors.Readers)
+            {
+                reader.CalibrateMin(50);
+                reader.CalibrateMax(100);
+                reader.Reading = 50;
+            }
+        }
+
         readonly MotorState Motors;
 
         public void SetMotorState(byte motorState)

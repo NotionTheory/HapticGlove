@@ -13,12 +13,24 @@ namespace HapticGlove
         {
             this.propArgs = new Dictionary<string, PropertyChangedEventArgs>();
             this.Index = index;
+            this.motorName = string.Format("Motor{0}", this.Index);
             this.motorState = motorState;
+            this.motorState.PropertyChanged += MotorState_PropertyChanged;
             this.Name = name;
             this._min = ValueType.MaxValue;
             this._max = ValueType.MinValue;
             this.valueFound = false;
             this.SetValue(firstValue);
+        }
+
+        string motorName;
+
+        private void MotorState_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == this.motorName)
+            {
+                this.OnPropertyChanged("Motor");
+            }
         }
 
         public float LerpA

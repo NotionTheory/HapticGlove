@@ -86,7 +86,7 @@ namespace HapticGlove
                 else
                 {
                     this.testState = state;
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Format("Motor{0}", index)));
+                    this.OnPropertyChanged(index);
                 }
             }
         }
@@ -95,6 +95,15 @@ namespace HapticGlove
         {
             this.state = motorState;
             this.Flush();
+            for(int i = 0; i < this.Count; ++i)
+            {
+                this.OnPropertyChanged(i);
+            }
+        }
+
+        void OnPropertyChanged(int index)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Format("Motor{0}", index)));
         }
 
         internal void Test(Random r)

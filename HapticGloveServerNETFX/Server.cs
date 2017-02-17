@@ -79,27 +79,21 @@ namespace HapticGloveServer
                 {
                     var client = new Client(await listener.AcceptTcpClientAsync());
                     client.PropertyChanged += Client_PropertyChanged;
-                    lock(this.clients)
-                    {
-                        this.clients.Add(client);
-                        this.OnPropertyChanged("ClientCount");
-                    }
+                    this.clients.Add(client);
+                    this.OnPropertyChanged("ClientCount");
                 }
 
-                lock(this.clients)
+                for(int i = this.clients.Count - 1; i >= 0; --i)
                 {
-                    for(int i = this.clients.Count - 1; i >= 0; --i)
+                    var client = this.clients[i];
+                    if(client.Connected)
                     {
-                        var client = this.clients[i];
-                        if(client.Connected)
-                        {
-                            client.Update();
-                        }
-                        else
-                        {
-                            this.clients.RemoveAt(i);
-                            this.OnPropertyChanged("ClientCount");
-                        }
+                        client.Update();
+                    }
+                    else
+                    {
+                        this.clients.RemoveAt(i);
+                        this.OnPropertyChanged("ClientCount");
                     }
                 }
             }
@@ -109,12 +103,9 @@ namespace HapticGloveServer
         {
             var i = (byte)index;
             var v = (byte)(255 * value);
-            lock(this.clients)
+            for(int j = 0; j < clients.Count; ++j)
             {
-                foreach(var client in clients)
-                {
-                    client.SetSensorState(i, v);
-                }
+                clients[j].SetSensorState(i, v);
             }
         }
 

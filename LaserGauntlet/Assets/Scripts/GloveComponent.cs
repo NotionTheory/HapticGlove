@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Net.Sockets;
 using System.IO;
 using System.Linq;
+using System;
 
 public class GloveComponent : MonoBehaviour
 {
@@ -105,9 +106,17 @@ public class GloveComponent : MonoBehaviour
 
     private void ConnectToServer()
     {
-        this.server = new TcpClient();
-        this.server.Connect("127.0.0.1", 9001);
-        this.stream = this.server.GetStream();
+        try
+        {
+            this.server = new TcpClient();
+            this.server.Connect("127.0.0.1", 9001);
+            this.stream = this.server.GetStream();
+        }
+        catch(SocketException)
+        {
+            // swallow the error and try again later
+            this.server = null;
+        }
     }
 
     private string[] FingerAnimationNames = new string[] {

@@ -38,7 +38,7 @@ namespace HapticGloveServer
         {
             if(this.client.Available > 0)
             {
-                for(int i = this.client.Available; i >= 0; --i)
+                for(int i = this.client.Available - 1; i >= 0; --i)
                 {
                     this.stream.Read(temp, 0, 1);
                 }

@@ -114,9 +114,12 @@ namespace HapticGlove
 
         public void CalibrateMin()
         {
-            for(int i = 1; i < this.Count; ++i)
+            for(int i = 0; i < this.Count; ++i)
             {
-                this.CalibrateMin(i);
+                if(names[i] != "Battery")
+                {
+                    this.CalibrateMin(i);
+                }
             }
         }
 
@@ -132,9 +135,12 @@ namespace HapticGlove
 
         public void CalibrateMax()
         {
-            for(int i = 1; i < this.Count; ++i)
+            for(int i = 0; i < this.Count; ++i)
             {
-                this.CalibrateMax(i);
+                if(names[i] != "Battery")
+                {
+                    this.CalibrateMax(i);
+                }
             }
         }
 

@@ -21,12 +21,13 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
-/[Ll]ibrary/
-/[Tt]emp/
-/[Oo]bj/
-/[Bb]uild/
-/[Bb]uilds/
-/Assets/AssetStoreTools*
+[Tt]emp/
+[Bb]uild/
+[Bb]uilds/
+
+# Unity
+[Ll]ibrary/
+[Ll]ibraries/
 
 
 # Visual Studio 2015 cache/options directory
@@ -272,17 +273,3 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
-HapticGloveSketch/libraries/Adafruit_BluefruitLE_nRF51-master/
-LaserGauntlet/ProjectSettings/
-LaserGauntlet/Library/
-LaserGauntlet/Builds/
-LaserGauntlet/Assets/VRTK/
-LaserGauntlet/Assets/UBER/
-LaserGauntlet/Assets/SWS/
-LaserGauntlet/Assets/SteamVR/
-LaserGauntlet/Assets/Resources/
-LaserGauntlet/Assets/Standard Assets/
-LaserGauntlet/Assets/AmplifyColor/
-LaserGauntlet/Assets/AmplifyBloom/
-LaserGauntlet/Assets/_Imported/
-LaserGauntlet/Temp/

@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{3E082A38-C6FC-48D1-989F-02CBFA12FDA1}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HapticGlove.Device", "HapticGlove.Device\HapticGlove.Device.csproj", "{D93B6CE7-B84B-43A4-9DC0-B7FC871737A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HapticGlove.UI", "HapticGlove.UI\HapticGlove.UI.csproj", "{A36C3F3A-8DCE-4DD8-8558-3E36F8E51733}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D93B6CE7-B84B-43A4-9DC0-B7FC871737A6} = {D93B6CE7-B84B-43A4-9DC0-B7FC871737A6}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D93B6CE7-B84B-43A4-9DC0-B7FC871737A6}.Debug|x64.ActiveCfg = Debug|x64
+		{D93B6CE7-B84B-43A4-9DC0-B7FC871737A6}.Debug|x64.Build.0 = Debug|x64
+		{D93B6CE7-B84B-43A4-9DC0-B7FC871737A6}.Release|x64.ActiveCfg = Release|x64
+		{D93B6CE7-B84B-43A4-9DC0-B7FC871737A6}.Release|x64.Build.0 = Release|x64
+		{A36C3F3A-8DCE-4DD8-8558-3E36F8E51733}.Debug|x64.ActiveCfg = Debug|x64
+		{A36C3F3A-8DCE-4DD8-8558-3E36F8E51733}.Debug|x64.Build.0 = Debug|x64
+		{A36C3F3A-8DCE-4DD8-8558-3E36F8E51733}.Release|x64.ActiveCfg = Release|x64
+		{A36C3F3A-8DCE-4DD8-8558-3E36F8E51733}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

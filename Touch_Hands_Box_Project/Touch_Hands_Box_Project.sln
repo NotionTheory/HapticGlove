@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Touch_Hands_Box_Project", "Touch_Hands_Box_Project.csproj", "{B4DBA436-AD0F-9E2E-C843-B4123208450F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Touch_Hands_Box_Project.Editor", "Touch_Hands_Box_Project.Editor.csproj", "{F94DE1CD-17C6-7BE4-C907-0E9789FC14EE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B4DBA436-AD0F-9E2E-C843-B4123208450F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4DBA436-AD0F-9E2E-C843-B4123208450F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4DBA436-AD0F-9E2E-C843-B4123208450F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4DBA436-AD0F-9E2E-C843-B4123208450F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F94DE1CD-17C6-7BE4-C907-0E9789FC14EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F94DE1CD-17C6-7BE4-C907-0E9789FC14EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F94DE1CD-17C6-7BE4-C907-0E9789FC14EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F94DE1CD-17C6-7BE4-C907-0E9789FC14EE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

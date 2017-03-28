@@ -8,9 +8,11 @@ public class ButtonSwitchLimits : MonoBehaviour
 
     public bool IsBottomed;
     public bool IsTouched;
+    public bool IsTopped;
     public event EventHandler Clicked, Released;
 
     Renderer rend;
+    Vector3 lastPosition;
     
     void Start()
     {
@@ -28,10 +30,18 @@ public class ButtonSwitchLimits : MonoBehaviour
     void Update()
     {
         var wasOn = IsOn;
+        var position = this.transform.localPosition;
+        var delta = position - lastPosition;
+        if(!IsTouched)
+        {
+        }
+
+        lastPosition = position;
+
         var color = rend.material.color;
         color.r = IsOn ? 0 : 1;
         color.g = IsTouched ? 1 : 0;
-        color.b = 0;
+        color.b = IsTopped ? 0 : 1;
         rend.material.color = color;
 
         if(IsOn && !wasOn && Clicked != null)
@@ -50,6 +60,7 @@ public class ButtonSwitchLimits : MonoBehaviour
         if(obj == "Limit")
         {
             IsBottomed = false;
+            IsTopped = true;
         }
         else if(obj == "Enclosure")
         {
@@ -58,17 +69,14 @@ public class ButtonSwitchLimits : MonoBehaviour
         else
         {
             IsTouched = true;
+            IsTopped = false;
         }
     }
 
     private void OnCollisionExit(Collision collision)
     {
         var obj = collision.collider.name;
-        if(obj == "Enclosure")
-        {
-            IsBottomed = false;
-        }
-        else if(obj != "Limit")
+        if(obj != "Limit" && obj != "Enclosure")
         {
             IsTouched = false;
         }

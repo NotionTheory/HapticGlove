@@ -36,6 +36,11 @@ public class ToggleSwitchLimits : MonoBehaviour
         {
             Throw -= 360;
         }
+        if(Mathf.Abs(Throw) > MaxThrow)
+        {
+            euler.z = Throw = Mathf.Sign(Throw) * MaxThrow;
+            this.controlSphere.localEulerAngles = euler;
+        }
         if(Mathf.Abs(Throw) > DeadZone)
         {
             Throw = Mathf.Sign(Throw) * MaxThrow;
@@ -49,11 +54,5 @@ public class ToggleSwitchLimits : MonoBehaviour
         {
             Changed.Invoke(this, EventArgs.Empty);
         }
-
-        var color = tip.material.color;
-        color.r = IsOn ? 0 : 1;
-        color.g = IsOn ? 1 : 0;
-        color.b = 0;
-        tip.material.color = color;
     }
 }

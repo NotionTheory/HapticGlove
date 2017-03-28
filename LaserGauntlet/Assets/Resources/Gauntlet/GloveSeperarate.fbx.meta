@@ -1,0 +1,212 @@
+fileFormatVersion: 2
+guid: d8b9e02e027c83b4183777aca8b51973
+timeCreated: 1490714588
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Arm
+    100002: Forearm
+    100004: Gauntlet Rig
+    100006: Gauntlet Rig.002
+    100008: Gauntlet Rig.003
+    100010: Gauntlet Rig.004
+    100012: Gauntlet Rig.005
+    100014: Gauntlet.007
+    100016: //RootNode
+    100018: Index Finger
+    100020: Index.001
+    100022: Index.001 1
+    100024: Index.001_end
+    100026: Index.002
+    100028: Index.003
+    100030: Index.004
+    100032: Index.004_end
+    100034: Index.004_end_end
+    100036: Middle Finger
+    100038: Middle.001
+    100040: Middle.001 1
+    100042: Middle.001_end
+    100044: Middle.002
+    100046: Middle.003
+    100048: Middle.004
+    100050: Middle.004_end
+    100052: Middle.004_end_end
+    100054: Pinky Finger
+    100056: Pinky.001
+    100058: Pinky.001 1
+    100060: Pinky.001_end
+    100062: Pinky.002
+    100064: Pinky.003
+    100066: Pinky.004
+    100068: Pinky.004_end
+    100070: Pinky.004_end_end
+    100072: Ring Finger
+    100074: Ring.001
+    100076: Ring.001 1
+    100078: Ring.001_end
+    100080: Ring.002
+    100082: Ring.003
+    100084: Ring.004
+    100086: Ring.004_end
+    100088: Ring.004_end_end
+    100090: Thumb
+    100092: Thumb.001
+    100094: Thumb.001 1
+    100096: Thumb.001_end
+    100098: Thumb.002
+    100100: Thumb.003
+    100102: Thumb.003_end
+    100104: Thumb.003_end_end
+    100106: Wrist Flex
+    100108: Wrist Flex 1
+    100110: Wrist Flex 2
+    100112: Wrist Flex 3
+    100114: Wrist Flex 4
+    100116: Wrist Flex 5
+    400000: Arm
+    400002: Forearm
+    400004: Gauntlet Rig
+    400006: Gauntlet Rig.002
+    400008: Gauntlet Rig.003
+    400010: Gauntlet Rig.004
+    400012: Gauntlet Rig.005
+    400014: Gauntlet.007
+    400016: //RootNode
+    400018: Index Finger
+    400020: Index.001
+    400022: Index.001 1
+    400024: Index.001_end
+    400026: Index.002
+    400028: Index.003
+    400030: Index.004
+    400032: Index.004_end
+    400034: Index.004_end_end
+    400036: Middle Finger
+    400038: Middle.001
+    400040: Middle.001 1
+    400042: Middle.001_end
+    400044: Middle.002
+    400046: Middle.003
+    400048: Middle.004
+    400050: Middle.004_end
+    400052: Middle.004_end_end
+    400054: Pinky Finger
+    400056: Pinky.001
+    400058: Pinky.001 1
+    400060: Pinky.001_end
+    400062: Pinky.002
+    400064: Pinky.003
+    400066: Pinky.004
+    400068: Pinky.004_end
+    400070: Pinky.004_end_end
+    400072: Ring Finger
+    400074: Ring.001
+    400076: Ring.001 1
+    400078: Ring.001_end
+    400080: Ring.002
+    400082: Ring.003
+    400084: Ring.004
+    400086: Ring.004_end
+    400088: Ring.004_end_end
+    400090: Thumb
+    400092: Thumb.001
+    400094: Thumb.001 1
+    400096: Thumb.001_end
+    400098: Thumb.002
+    400100: Thumb.003
+    400102: Thumb.003_end
+    400104: Thumb.003_end_end
+    400106: Wrist Flex
+    400108: Wrist Flex 1
+    400110: Wrist Flex 2
+    400112: Wrist Flex 3
+    400114: Wrist Flex 4
+    400116: Wrist Flex 5
+    4300000: Thumb
+    4300002: Index Finger
+    4300004: Middle Finger
+    4300006: Ring Finger
+    4300008: Gauntlet.007
+    4300010: Arm
+    7400000: Gauntlet Rig.005|Gauntlet Rig|Gauntlet Rig|Idle|Gauntlet Rig|Idle.005
+    7400002: Gauntlet Rig.004|Gauntlet Rig|Gauntlet Rig|Idle|Gauntlet Rig|Idle.004
+    7400004: Gauntlet Rig.003|Gauntlet Rig|Gauntlet Rig|Idle|Gauntlet Rig|Idle.003
+    7400006: Gauntlet Rig.002|Gauntlet Rig|Gauntlet Rig|Idle|Gauntlet Rig|Idle.002
+    7400008: Pinky Finger|Gauntlet Rig|Gauntlet Rig|Idle|Gauntlet Rig|Idle.001
+    7400010: Gauntlet Rig|Gauntlet Rig|Gauntlet Rig|Idle|Gauntlet Rig|Idle
+    9500000: //RootNode
+    13700000: Arm
+    13700002: Gauntlet.007
+    13700004: Index Finger
+    13700006: Middle Finger
+    13700008: Ring Finger
+    13700010: Thumb
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

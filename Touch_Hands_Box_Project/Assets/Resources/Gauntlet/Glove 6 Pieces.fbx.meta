@@ -1,0 +1,172 @@
+fileFormatVersion: 2
+guid: a262334e2df45934aafe33ad83af8290
+timeCreated: 1490725888
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Forearm
+    100002: Gauntlet
+    100004: Gauntlet Rig
+    100006: Gauntlet.001
+    100008: Gauntlet.002
+    100010: Gauntlet.003
+    100012: Gauntlet.004
+    100014: Gauntlet.005
+    100016: //RootNode
+    100018: Index.001
+    100020: Index.002
+    100022: Index.003
+    100024: Index.004
+    100026: Index.004_end
+    100028: Index.004_end_end
+    100030: Middle.001
+    100032: Middle.002
+    100034: Middle.003
+    100036: Middle.004
+    100038: Middle.004_end
+    100040: Middle.004_end_end
+    100042: Pinky.001
+    100044: Pinky.002
+    100046: Pinky.003
+    100048: Pinky.004
+    100050: Pinky.004_end
+    100052: Pinky.004_end_end
+    100054: Ring.001
+    100056: Ring.002
+    100058: Ring.003
+    100060: Ring.004
+    100062: Ring.004_end
+    100064: Ring.004_end_end
+    100066: Thumb.001
+    100068: Thumb.002
+    100070: Thumb.003
+    100072: Thumb.003_end
+    100074: Thumb.003_end_end
+    100076: Wrist Flex
+    400000: Forearm
+    400002: Gauntlet
+    400004: Gauntlet Rig
+    400006: Gauntlet.001
+    400008: Gauntlet.002
+    400010: Gauntlet.003
+    400012: Gauntlet.004
+    400014: Gauntlet.005
+    400016: //RootNode
+    400018: Index.001
+    400020: Index.002
+    400022: Index.003
+    400024: Index.004
+    400026: Index.004_end
+    400028: Index.004_end_end
+    400030: Middle.001
+    400032: Middle.002
+    400034: Middle.003
+    400036: Middle.004
+    400038: Middle.004_end
+    400040: Middle.004_end_end
+    400042: Pinky.001
+    400044: Pinky.002
+    400046: Pinky.003
+    400048: Pinky.004
+    400050: Pinky.004_end
+    400052: Pinky.004_end_end
+    400054: Ring.001
+    400056: Ring.002
+    400058: Ring.003
+    400060: Ring.004
+    400062: Ring.004_end
+    400064: Ring.004_end_end
+    400066: Thumb.001
+    400068: Thumb.002
+    400070: Thumb.003
+    400072: Thumb.003_end
+    400074: Thumb.003_end_end
+    400076: Wrist Flex
+    4300000: Gauntlet.005
+    4300002: Gauntlet.004
+    4300004: Gauntlet.003
+    4300006: Gauntlet.002
+    4300008: Gauntlet.001
+    4300010: Gauntlet
+    7400000: Gauntlet Rig|Gauntlet Rig|Gauntlet Rig|Gauntlet RigAction|Gauntlet Rig|Gaunt
+    7400002: Gauntlet Rig|Gauntlet Rig|Gauntlet Rig|Idle|Gauntlet Rig|Idle
+    7400004: Gauntlet Rig|Gauntlet Rig|Gauntlet Rig|Wrist FlexAction.001|Gauntlet
+      Rig|Wri
+    7400006: Gauntlet Rig|Gauntlet Rig|Gauntlet Rig|Wrist FlexAction.002|Gauntlet
+      Rig|Wri
+    9500000: //RootNode
+    13700000: Gauntlet
+    13700002: Gauntlet.001
+    13700004: Gauntlet.002
+    13700006: Gauntlet.003
+    13700008: Gauntlet.004
+    13700010: Gauntlet.005
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

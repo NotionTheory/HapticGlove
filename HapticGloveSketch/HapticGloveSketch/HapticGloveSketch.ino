@@ -214,12 +214,12 @@ void setup(void)
         if(!ble.factoryReset(true)) {
            stop();
         }
-
-        Serial.println(F("Setting device name"));
-        if(!ble.sendCommandCheckOK(F("AT+GAPDEVNAME=NotionTheory Haptic Glove"))) {
-            stop();
-        }
     #endif
+    
+    Serial.println(F("Setting device name"));
+    if(!ble.sendCommandCheckOK(F("AT+GAPDEVNAME=NotionTheory Haptic Glove"))) {
+        stop();
+    }
 
     // The factory reset does not clear the GATT flash.
     Serial.println(F("Clearing GATT"));

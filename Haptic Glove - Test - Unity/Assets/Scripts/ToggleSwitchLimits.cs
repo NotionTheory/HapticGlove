@@ -31,14 +31,21 @@ public class ToggleSwitchLimits : MonoBehaviour
     {
         var wasOn = IsOn;
         var euler = this.controlSphere.localEulerAngles;
-        Throw = euler.z;
+
+        // Constrain the rotation, because Unity does it in World Space
+        // and we want it done in local, model space.
+        euler.y = 0;
+        euler.z = 0;
+        this.controlSphere.localEulerAngles = euler;
+
+        Throw = euler.x;
         if(Throw > 180)
         {
             Throw -= 360;
         }
         if(Mathf.Abs(Throw) > MaxThrow)
         {
-            euler.z = Throw = Mathf.Sign(Throw) * MaxThrow;
+            euler.x = Throw = Mathf.Sign(Throw) * MaxThrow;
             this.controlSphere.localEulerAngles = euler;
         }
         if(Mathf.Abs(Throw) > DeadZone)
@@ -46,7 +53,7 @@ public class ToggleSwitchLimits : MonoBehaviour
             Throw = Mathf.Sign(Throw) * MaxThrow;
             IsOn = Throw > 0;
         }
-        euler.z = Throw;
+        euler.x = Throw;
         Throw /= MaxThrow;
         this.visibleSphere.localEulerAngles = euler;
 

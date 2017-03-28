@@ -32,9 +32,13 @@ public class ButtonSwitchLimits : MonoBehaviour
         var wasOn = IsOn;
         var position = this.transform.localPosition;
         var delta = position - lastPosition;
-        if(!IsTouched)
+        delta.x = 0;
+        delta.z = 0;
+        if(!IsTouched && !IsTopped)
         {
+            delta.y += 0.01f;
         }
+        this.transform.localPosition = position = lastPosition + delta;
 
         lastPosition = position;
 

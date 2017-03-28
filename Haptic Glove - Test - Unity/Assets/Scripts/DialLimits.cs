@@ -23,7 +23,17 @@ public class DialLimits : MonoBehaviour
     {
         var lastValue = Value;
         var euler = this.controlCylinder.localEulerAngles;
+
+        // Constrain the rotation, because Unity does it in World Space
+        // and we want it done in local, model space.
+        euler.x = 0;
+        euler.z = 0;
+        this.controlCylinder.localEulerAngles = euler;
+
+        // Calculate which digit we're pointing at.
         Value = (int)(euler.y * NumTicks / 360);
+
+        // Chunk the visible dial over there.
         euler.y = Value * 360 / NumTicks;
         this.visibleCylinder.localEulerAngles = euler;
 

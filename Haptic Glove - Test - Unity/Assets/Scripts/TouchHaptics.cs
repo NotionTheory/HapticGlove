@@ -38,6 +38,6 @@ public class TouchHaptics : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log(collision.other.name);
+        Debug.Log(collision.collider.name);
     }
 }

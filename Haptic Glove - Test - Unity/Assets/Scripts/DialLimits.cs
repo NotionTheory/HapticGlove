@@ -25,8 +25,8 @@ public class DialLimits : MonoBehaviour
         var euler = this.controlCylinder.localEulerAngles;
         Value = (int)(euler.y * NumTicks / 360);
         euler.y = Value * 360 / NumTicks;
-        Debug.Log(euler);
         this.visibleCylinder.localEulerAngles = euler;
+        tab.material.color = Color.HSVToRGB(Value / (float)NumTicks, 1, 1);
         if(Value != lastValue && Changed != null)
         {
             Changed.Invoke(this, EventArgs.Empty);

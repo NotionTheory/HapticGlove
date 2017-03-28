@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 7e559a1729ac1bb4cb450b1834d82f9b
-timeCreated: 1490725887
+guid: 9a16b562a6652664790f5c5d9c1ed92d
+timeCreated: 1490112194
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -77,6 +77,20 @@ ModelImporter:
     4300022: Switch B.001
     4300024: Switch D.001
     4300026: Switch C.001
+    6400000: Dial.001
+    6400002: Light Bottom Centre Left
+    6400004: Light Bottom Centre Right
+    6400006: Light Bottom Left
+    6400008: Light Bottom Right
+    6400010: Light Top Centre
+    6400012: Light Top Left
+    6400014: Light Top Right
+    6400016: Main Box.001
+    6400018: Main Box.002
+    6400020: Switch A.001
+    6400022: Switch B.001
+    6400024: Switch C.001
+    6400026: Switch D.001
   materials:
     importMaterials: 1
     materialName: 0
@@ -103,7 +117,7 @@ ModelImporter:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
-    addColliders: 0
+    addColliders: 1
     importBlendShapes: 1
     swapUVChannels: 0
     generateSecondaryUV: 0

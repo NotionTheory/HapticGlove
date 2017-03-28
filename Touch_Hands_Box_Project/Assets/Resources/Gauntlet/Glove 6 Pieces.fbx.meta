@@ -1,7 +1,7 @@
 fileFormatVersion: 2
-guid: a262334e2df45934aafe33ad83af8290
-timeCreated: 1490725888
-licenseType: Free
+guid: e92be4373e8025745b5e9074d14f0695
+timeCreated: 1486948108
+licenseType: Pro
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
@@ -96,6 +96,7 @@ ModelImporter:
     7400006: Gauntlet Rig|Gauntlet Rig|Gauntlet Rig|Wrist FlexAction.002|Gauntlet
       Rig|Wri
     9500000: //RootNode
+    11100000: //RootNode
     13700000: Gauntlet
     13700002: Gauntlet.001
     13700004: Gauntlet.002
@@ -122,13 +123,440 @@ ModelImporter:
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Gauntlet Rig|Gauntlet Rig|Gauntlet Rig|Gauntlet RigAction|Gauntlet Rig|Gaunt
+      takeName: Gauntlet Rig|Gauntlet Rig|Gauntlet Rig|Gauntlet RigAction|Gauntlet
+        Rig|Gaunt
+      firstFrame: 0
+      lastFrame: 169
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Gauntlet
+        weight: 1
+      - path: Gauntlet Rig
+        weight: 1
+      - path: Gauntlet Rig/Forearm
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Index.001
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Index.001/Index.002
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Index.001/Index.002/Index.003
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Index.001/Index.002/Index.003/Index.004
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Index.001/Index.002/Index.003/Index.004/Index.004_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Index.001/Index.002/Index.003/Index.004/Index.004_end/Index.004_end_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Middle.001
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Middle.001/Middle.002
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Middle.001/Middle.002/Middle.003
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Middle.001/Middle.002/Middle.003/Middle.004
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Middle.001/Middle.002/Middle.003/Middle.004/Middle.004_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Middle.001/Middle.002/Middle.003/Middle.004/Middle.004_end/Middle.004_end_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Pinky.001
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Pinky.001/Pinky.002
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Pinky.001/Pinky.002/Pinky.003
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Pinky.001/Pinky.002/Pinky.003/Pinky.004
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Pinky.001/Pinky.002/Pinky.003/Pinky.004/Pinky.004_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Pinky.001/Pinky.002/Pinky.003/Pinky.004/Pinky.004_end/Pinky.004_end_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Ring.001
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Ring.001/Ring.002
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Ring.001/Ring.002/Ring.003
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Ring.001/Ring.002/Ring.003/Ring.004
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Ring.001/Ring.002/Ring.003/Ring.004/Ring.004_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Ring.001/Ring.002/Ring.003/Ring.004/Ring.004_end/Ring.004_end_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Thumb.001
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Thumb.001/Thumb.002
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Thumb.001/Thumb.002/Thumb.003
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Thumb.001/Thumb.002/Thumb.003/Thumb.003_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Thumb.001/Thumb.002/Thumb.003/Thumb.003_end/Thumb.003_end_end
+        weight: 1
+      - path: Gauntlet.001
+        weight: 1
+      - path: Gauntlet.002
+        weight: 1
+      - path: Gauntlet.003
+        weight: 1
+      - path: Gauntlet.004
+        weight: 1
+      - path: Gauntlet.005
+        weight: 1
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Gauntlet Rig|Gauntlet Rig|Gauntlet Rig|Idle|Gauntlet Rig|Idle
+      takeName: Gauntlet Rig|Gauntlet Rig|Gauntlet Rig|Idle|Gauntlet Rig|Idle
+      firstFrame: 0
+      lastFrame: 89
+      wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 1
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Gauntlet
+        weight: 1
+      - path: Gauntlet Rig
+        weight: 1
+      - path: Gauntlet Rig/Forearm
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Index.001
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Index.001/Index.002
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Index.001/Index.002/Index.003
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Index.001/Index.002/Index.003/Index.004
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Index.001/Index.002/Index.003/Index.004/Index.004_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Index.001/Index.002/Index.003/Index.004/Index.004_end/Index.004_end_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Middle.001
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Middle.001/Middle.002
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Middle.001/Middle.002/Middle.003
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Middle.001/Middle.002/Middle.003/Middle.004
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Middle.001/Middle.002/Middle.003/Middle.004/Middle.004_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Middle.001/Middle.002/Middle.003/Middle.004/Middle.004_end/Middle.004_end_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Pinky.001
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Pinky.001/Pinky.002
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Pinky.001/Pinky.002/Pinky.003
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Pinky.001/Pinky.002/Pinky.003/Pinky.004
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Pinky.001/Pinky.002/Pinky.003/Pinky.004/Pinky.004_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Pinky.001/Pinky.002/Pinky.003/Pinky.004/Pinky.004_end/Pinky.004_end_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Ring.001
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Ring.001/Ring.002
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Ring.001/Ring.002/Ring.003
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Ring.001/Ring.002/Ring.003/Ring.004
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Ring.001/Ring.002/Ring.003/Ring.004/Ring.004_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Ring.001/Ring.002/Ring.003/Ring.004/Ring.004_end/Ring.004_end_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Thumb.001
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Thumb.001/Thumb.002
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Thumb.001/Thumb.002/Thumb.003
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Thumb.001/Thumb.002/Thumb.003/Thumb.003_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Thumb.001/Thumb.002/Thumb.003/Thumb.003_end/Thumb.003_end_end
+        weight: 1
+      - path: Gauntlet.001
+        weight: 1
+      - path: Gauntlet.002
+        weight: 1
+      - path: Gauntlet.003
+        weight: 1
+      - path: Gauntlet.004
+        weight: 1
+      - path: Gauntlet.005
+        weight: 1
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Gauntlet Rig|Gauntlet Rig|Gauntlet Rig|Wrist FlexAction.001|Gauntlet Rig|Wri
+      takeName: Gauntlet Rig|Gauntlet Rig|Gauntlet Rig|Wrist FlexAction.001|Gauntlet
+        Rig|Wri
+      firstFrame: 0
+      lastFrame: 1
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Gauntlet
+        weight: 1
+      - path: Gauntlet Rig
+        weight: 1
+      - path: Gauntlet Rig/Forearm
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Index.001
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Index.001/Index.002
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Index.001/Index.002/Index.003
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Index.001/Index.002/Index.003/Index.004
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Index.001/Index.002/Index.003/Index.004/Index.004_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Index.001/Index.002/Index.003/Index.004/Index.004_end/Index.004_end_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Middle.001
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Middle.001/Middle.002
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Middle.001/Middle.002/Middle.003
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Middle.001/Middle.002/Middle.003/Middle.004
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Middle.001/Middle.002/Middle.003/Middle.004/Middle.004_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Middle.001/Middle.002/Middle.003/Middle.004/Middle.004_end/Middle.004_end_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Pinky.001
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Pinky.001/Pinky.002
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Pinky.001/Pinky.002/Pinky.003
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Pinky.001/Pinky.002/Pinky.003/Pinky.004
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Pinky.001/Pinky.002/Pinky.003/Pinky.004/Pinky.004_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Pinky.001/Pinky.002/Pinky.003/Pinky.004/Pinky.004_end/Pinky.004_end_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Ring.001
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Ring.001/Ring.002
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Ring.001/Ring.002/Ring.003
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Ring.001/Ring.002/Ring.003/Ring.004
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Ring.001/Ring.002/Ring.003/Ring.004/Ring.004_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Ring.001/Ring.002/Ring.003/Ring.004/Ring.004_end/Ring.004_end_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Thumb.001
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Thumb.001/Thumb.002
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Thumb.001/Thumb.002/Thumb.003
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Thumb.001/Thumb.002/Thumb.003/Thumb.003_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Thumb.001/Thumb.002/Thumb.003/Thumb.003_end/Thumb.003_end_end
+        weight: 1
+      - path: Gauntlet.001
+        weight: 1
+      - path: Gauntlet.002
+        weight: 1
+      - path: Gauntlet.003
+        weight: 1
+      - path: Gauntlet.004
+        weight: 1
+      - path: Gauntlet.005
+        weight: 1
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Gauntlet Rig|Gauntlet Rig|Gauntlet Rig|Wrist FlexAction.002|Gauntlet Rig|Wri
+      takeName: Gauntlet Rig|Gauntlet Rig|Gauntlet Rig|Wrist FlexAction.002|Gauntlet
+        Rig|Wri
+      firstFrame: 0
+      lastFrame: 1
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Gauntlet
+        weight: 1
+      - path: Gauntlet Rig
+        weight: 1
+      - path: Gauntlet Rig/Forearm
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Index.001
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Index.001/Index.002
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Index.001/Index.002/Index.003
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Index.001/Index.002/Index.003/Index.004
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Index.001/Index.002/Index.003/Index.004/Index.004_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Index.001/Index.002/Index.003/Index.004/Index.004_end/Index.004_end_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Middle.001
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Middle.001/Middle.002
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Middle.001/Middle.002/Middle.003
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Middle.001/Middle.002/Middle.003/Middle.004
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Middle.001/Middle.002/Middle.003/Middle.004/Middle.004_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Middle.001/Middle.002/Middle.003/Middle.004/Middle.004_end/Middle.004_end_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Pinky.001
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Pinky.001/Pinky.002
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Pinky.001/Pinky.002/Pinky.003
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Pinky.001/Pinky.002/Pinky.003/Pinky.004
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Pinky.001/Pinky.002/Pinky.003/Pinky.004/Pinky.004_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Pinky.001/Pinky.002/Pinky.003/Pinky.004/Pinky.004_end/Pinky.004_end_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Ring.001
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Ring.001/Ring.002
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Ring.001/Ring.002/Ring.003
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Ring.001/Ring.002/Ring.003/Ring.004
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Ring.001/Ring.002/Ring.003/Ring.004/Ring.004_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Ring.001/Ring.002/Ring.003/Ring.004/Ring.004_end/Ring.004_end_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Thumb.001
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Thumb.001/Thumb.002
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Thumb.001/Thumb.002/Thumb.003
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Thumb.001/Thumb.002/Thumb.003/Thumb.003_end
+        weight: 1
+      - path: Gauntlet Rig/Forearm/Wrist Flex/Thumb.001/Thumb.002/Thumb.003/Thumb.003_end/Thumb.003_end_end
+        weight: 1
+      - path: Gauntlet.001
+        weight: 1
+      - path: Gauntlet.002
+        weight: 1
+      - path: Gauntlet.003
+        weight: 1
+      - path: Gauntlet.004
+        weight: 1
+      - path: Gauntlet.005
+        weight: 1
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
-    addColliders: 0
+    addColliders: 1
     importBlendShapes: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
@@ -161,10 +589,10 @@ ModelImporter:
     rootMotionBoneName: 
     rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
-    hasExtraRoot: 0
+    hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 1
   humanoidOversampling: 1
   additionalBone: 0
   userData: 

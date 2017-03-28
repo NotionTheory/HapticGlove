@@ -23,8 +23,9 @@ public class DialLimits : MonoBehaviour
     {
         var lastValue = Value;
         var euler = this.controlCylinder.localEulerAngles;
-        Value = (int)(euler.x * NumTicks / 360);
-        euler.x = Value * 360 / NumTicks;
+        Value = (int)(euler.y * NumTicks / 360);
+        euler.y = Value * 360 / NumTicks;
+        Debug.Log(euler);
         this.visibleCylinder.localEulerAngles = euler;
         if(Value != lastValue && Changed != null)
         {

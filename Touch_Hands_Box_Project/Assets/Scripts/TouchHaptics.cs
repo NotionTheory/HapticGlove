@@ -24,7 +24,7 @@ public class TouchHaptics : MonoBehaviour
 
     private void Update()
     {
-        try
+		if(this.anim != null)
         {
             var state = this.anim[this.anim.name + "Curl"];
             if(state != null)
@@ -33,10 +33,6 @@ public class TouchHaptics : MonoBehaviour
                 state.speed = 0;
                 this.anim.Play();
             }
-        }
-        catch
-        {
-            Debug.LogErrorFormat("i{0}", this.fingerIndex);
         }
     }
 
@@ -47,15 +43,16 @@ public class TouchHaptics : MonoBehaviour
     float powerFactor = 0.5f;
     void OnTriggerStay(Collider other)
     {
+		try{
         bool isWater = other.gameObject.CompareTag("water"),
              isSolid = other.gameObject.CompareTag("solid");
         if(isSolid || isWater)
         {
             float a = Vector3.Distance(other.transform.position, transform.position);
             float b = other.bounds.extents.magnitude + this.here.radius - a;
-            float c = this.scaleFactor * Math.Abs(b);
-            float d = (float)Math.Pow(c, this.powerFactor);
-            float v = Math.Max(0, Math.Min(1, d));
+            float c = this.scaleFactor * Mathf.Abs(b);
+            float d = Mathf.Pow(c, this.powerFactor);
+            float v = Mathf.Max(0, Mathf.Min(1, d));
             if(isWater)
             {
                 v *= 0.5f;
@@ -63,6 +60,10 @@ public class TouchHaptics : MonoBehaviour
 
             this.server.motors[this.fingerIndex] = v;
         }
+		}
+		catch(Exception exp) {
+			Debug.Log (exp.Message);
+		}
     }
 
     void OnTriggerExit(Collider other)

@@ -6,7 +6,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{C530DAA1-8620-7CC1-576D-31CE1DEB0722}</ProjectGuid>
+    <ProjectGuid>{4CDE0227-EC7A-2C21-A02B-4154AD50DA30}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>Temp\bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_5_0;UNITY_5_5;UNITY_5;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_DUCK_TYPING;ENABLE_GENERICS;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_SPRITERENDERER_FLIPPING;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_RAKNET;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;INCLUDE_DYNAMIC_GI;INCLUDE_GI;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;INCLUDE_PUBNUB;ENABLE_PLAYMODE_TESTS_RUNNER;ENABLE_SCRIPTING_NEW_CSHARP_COMPILER;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_SUBSTANCE;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_EVENT_QUEUE;ENABLE_CLUSTERINPUT;ENABLE_VIDEO;ENABLE_VR;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;ENABLE_PROFILER;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;UNITY_TEAM_LICENSE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_5_0;UNITY_5_5;UNITY_5;UNITY_64;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_DUCK_TYPING;ENABLE_GENERICS;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_SPRITERENDERER_FLIPPING;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_RAKNET;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;INCLUDE_DYNAMIC_GI;INCLUDE_GI;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;INCLUDE_PUBNUB;ENABLE_PLAYMODE_TESTS_RUNNER;ENABLE_SCRIPTING_NEW_CSHARP_COMPILER;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_SUBSTANCE;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_EVENT_QUEUE;ENABLE_CLUSTERINPUT;ENABLE_VIDEO;ENABLE_VR;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;ENABLE_PROFILER;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;UNITY_TEAM_LICENSE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169</NoWarn>
@@ -47,8 +47,15 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Resources\Gauntlet\Mesh\animController.cs" />
-     <Compile Include="Assets\Scripts\GloveComponent.cs" />
+     <Compile Include="Assets\Scripts\ButtonSwitchLimits.cs" />
+     <Compile Include="Assets\Scripts\DeviceServer.cs" />
+     <Compile Include="Assets\Scripts\DialDragger.cs" />
+     <Compile Include="Assets\Scripts\DialLimits.cs" />
+     <Compile Include="Assets\Scripts\DinoClaw.cs" />
+     <Compile Include="Assets\Scripts\IsServerConnected.cs" />
+     <Compile Include="Assets\Scripts\NixieTube.cs" />
      <Compile Include="Assets\Scripts\SwitchBehavior.cs" />
+     <Compile Include="Assets\Scripts\ToggleSwitchLimits.cs" />
      <Compile Include="Assets\Scripts\TouchHaptics.cs" />
      <Compile Include="Assets\SteamVR\Extras\SteamVR_GazeTracker.cs" />
      <Compile Include="Assets\SteamVR\Extras\SteamVR_LaserPointer.cs" />
@@ -102,6 +109,18 @@
      <Compile Include="Assets\SteamVR\InteractionSystem\Core\Scripts\Util.cs" />
      <Compile Include="Assets\SteamVR\InteractionSystem\Core\Scripts\VelocityEstimator.cs" />
      <Compile Include="Assets\SteamVR\InteractionSystem\Hints\Scripts\ControllerButtonHints.cs" />
+     <Compile Include="Assets\SteamVR\InteractionSystem\Longbow\Scripts\ArcheryTarget.cs" />
+     <Compile Include="Assets\SteamVR\InteractionSystem\Longbow\Scripts\Arrow.cs" />
+     <Compile Include="Assets\SteamVR\InteractionSystem\Longbow\Scripts\ArrowHand.cs" />
+     <Compile Include="Assets\SteamVR\InteractionSystem\Longbow\Scripts\ArrowheadRotation.cs" />
+     <Compile Include="Assets\SteamVR\InteractionSystem\Longbow\Scripts\Balloon.cs" />
+     <Compile Include="Assets\SteamVR\InteractionSystem\Longbow\Scripts\BalloonColliders.cs" />
+     <Compile Include="Assets\SteamVR\InteractionSystem\Longbow\Scripts\BalloonHapticBump.cs" />
+     <Compile Include="Assets\SteamVR\InteractionSystem\Longbow\Scripts\BalloonSpawner.cs" />
+     <Compile Include="Assets\SteamVR\InteractionSystem\Longbow\Scripts\ExplosionWobble.cs" />
+     <Compile Include="Assets\SteamVR\InteractionSystem\Longbow\Scripts\FireSource.cs" />
+     <Compile Include="Assets\SteamVR\InteractionSystem\Longbow\Scripts\Longbow.cs" />
+     <Compile Include="Assets\SteamVR\InteractionSystem\Longbow\Scripts\SoundBowClick.cs" />
      <Compile Include="Assets\SteamVR\InteractionSystem\Samples\Scripts\ControllerHintsExample.cs" />
      <Compile Include="Assets\SteamVR\InteractionSystem\Samples\Scripts\InteractableExample.cs" />
      <Compile Include="Assets\SteamVR\InteractionSystem\Teleport\Scripts\AllowTeleportWhileAttachedToHand.cs" />
@@ -143,6 +162,7 @@
      <None Include="Assets\SteamVR\Resources\SteamVR_Fade.shader" />
      <None Include="Assets\SteamVR\Resources\SteamVR_ClearAll.shader" />
      <None Include="Assets\SteamVR\InteractionSystem\Hints\Shaders\ControllerButtonHints.shader" />
+     <None Include="Assets\SteamVR\InteractionSystem\Teleport\Shaders\Highlight.shader" />
      <None Include="Assets\SteamVR\Resources\SteamVR_SphericalProjection.shader" />
      <None Include="Assets\SteamVR\Resources\SteamVR_AlphaOut.shader" />
      <None Include="Assets\SteamVR\readme.txt" />
@@ -169,7 +189,7 @@
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityVR/RuntimeEditor/UnityEngine.VR.dll</HintPath>
  </Reference>
  <Reference Include="NotionTheory.HapticGlove.Client.NETFX">
- <HintPath>C:/Users/GameDesign/Documents/Touch_2Hands_Updated/Assets/Plugins/NotionTheory.HapticGlove.Client.NETFX.dll</HintPath>
+ <HintPath>C:/Users/GameDesign/Desktop/Touch_Hands_Box_Project/Touch_Hands_Box_Project/Assets/Plugins/NotionTheory.HapticGlove.Client.NETFX.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.iOS.Extensions.Xcode">
  <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/AppleTVSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>

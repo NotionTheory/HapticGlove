@@ -54,7 +54,11 @@ public class TouchHaptics : MonoBehaviour
     {
         set
         {
-            server.motors[(int)finger] = Mathf.Max(0f, Mathf.Min(1f, value));
+            int index = (int)finger;
+            if(server != null && 0 <= index && index < server.motors.Length)
+            {
+                server.motors[index] = Mathf.Max(0f, Mathf.Min(1f, value));
+            }
         }
     }
 
@@ -62,7 +66,12 @@ public class TouchHaptics : MonoBehaviour
     {
         get
         {
-            return 1f - Mathf.Pow(server.fingers[(int)finger], 0.5f);
+            int index = (int)finger;
+            if(server != null && 0 <= index && index < server.fingers.Length)
+            {
+                return 1f - Mathf.Pow(server.fingers[index], 0.5f);
+            }
+            return 0;
         }
     }
 

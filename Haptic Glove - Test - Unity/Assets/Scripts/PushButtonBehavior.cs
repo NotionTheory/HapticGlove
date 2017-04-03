@@ -3,14 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PushButtonBehavior : MonoBehaviour
+public class PushButtonBehavior : TouchableBehavior
 {
     const float ALPHA = 0.005f;
     public bool IsBottomed;
     public bool IsTopped;
 
     float MinY = 0.2f, MaxY = 0.3f;
-    int touchCount = 0;
 
     public event EventHandler Clicked, Released;
 
@@ -20,13 +19,6 @@ public class PushButtonBehavior : MonoBehaviour
     void Start()
     {
         rend = GetComponent<Renderer>();
-    }
-    public bool IsTouched
-    {
-        get
-        {
-            return touchCount > 0;
-        }
     }
 
     public bool IsOn
@@ -64,23 +56,13 @@ public class PushButtonBehavior : MonoBehaviour
 
         if(IsOn && !wasOn && Clicked != null)
         {
+            ForFingers((f) => f.Vibrate(0.5f, 50));
             Clicked.Invoke(this, EventArgs.Empty);
         }
         else if(wasOn && !IsOn && Released != null)
         {
+            ForFingers((f) => f.Vibrate(0.25f, 50));
             Released.Invoke(this, EventArgs.Empty);
         }
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        ++touchCount;
-        var obj = collision.collider.name;
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        --touchCount;
-        var obj = collision.collider.name;
     }
 }

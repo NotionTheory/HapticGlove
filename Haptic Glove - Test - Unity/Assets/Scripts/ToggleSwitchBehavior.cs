@@ -26,7 +26,7 @@ public class ToggleSwitchBehavior : TouchableBehavior
 
         var euler = new Vector3();
         euler.x = -MaxThrow;
-        this.visibleSphere.localEulerAngles = euler;
+        this.controlSphere.localEulerAngles = euler;
     }
 
 

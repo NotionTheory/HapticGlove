@@ -29,8 +29,9 @@ public class PushButtonBehavior : TouchableBehavior
         }
     }
 
-    void Update()
+    protected override void Update()
     {
+        base.Update();
         var wasOn = IsOn;
         var position = this.transform.localPosition;
         var delta = position - lastPosition;

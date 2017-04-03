@@ -19,8 +19,9 @@ public class DialBehavior : TouchableBehavior
             .GetComponent<Renderer>();
     }
 
-    void Update()
+    protected override void Update()
     {
+        base.Update();
         var lastValue = Value;
         var euler = this.controlCylinder.localEulerAngles;
 

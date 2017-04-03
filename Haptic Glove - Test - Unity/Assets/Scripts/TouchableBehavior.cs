@@ -7,18 +7,17 @@ public class TouchableBehavior : MonoBehaviour
 {
     TouchHaptics[] fingers = new TouchHaptics[10];
 
-    public bool IsTouched
+    public bool IsTouched;
+
+    protected virtual void Update()
     {
-        get
+        IsTouched = false;
+        for(int i = 0; i < fingers.Length && !IsTouched; ++i)
         {
-            for(int i = 0; i < fingers.Length; ++i)
+            if(fingers[i] != null)
             {
-                if(fingers[i] != null)
-                {
-                    return true;
-                }
+                IsTouched = true;
             }
-            return false;
         }
     }
 

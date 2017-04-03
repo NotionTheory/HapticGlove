@@ -30,8 +30,9 @@ public class ToggleSwitchBehavior : TouchableBehavior
     }
 
 
-    void Update()
+    protected override void Update()
     {
+        base.Update();
         var wasOn = IsOn;
         var euler = this.controlSphere.localEulerAngles;
 

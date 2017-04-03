@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ButtonSwitchLimits : MonoBehaviour
+public class PushButtonBehavior : TouchableBehavior
 {
-
+    const float ALPHA = 0.002f;
     public bool IsBottomed;
-    public bool IsTouched;
     public bool IsTopped;
+
+    float MinY = 0.2f, MaxY = 0.3f;
+
     public event EventHandler Clicked, Released;
 
     Renderer rend;
@@ -27,16 +29,25 @@ public class ButtonSwitchLimits : MonoBehaviour
         }
     }
 
-    void Update()
+    protected override void Update()
     {
+        base.Update();
         var wasOn = IsOn;
         var position = this.transform.localPosition;
         var delta = position - lastPosition;
-        if(!IsTouched)
+        delta.x = 0;
+        delta.z = 0;
+        if(!IsTouched && !IsTopped)
         {
+            delta.y += 0.025f;
         }
+        position = lastPosition + delta;
+        position.y = Mathf.Min(MaxY, Mathf.Max(MinY, position.y));
 
-        lastPosition = position;
+        IsTopped = Mathf.Abs(MaxY - position.y) < ALPHA;
+        IsBottomed = Mathf.Abs(MinY - position.y) < ALPHA;
+
+        lastPosition = this.transform.localPosition = position;
 
         var color = rend.material.color;
         color.r = IsOn ? 0 : 1;
@@ -46,39 +57,13 @@ public class ButtonSwitchLimits : MonoBehaviour
 
         if(IsOn && !wasOn && Clicked != null)
         {
+            ForFingers((f) => f.Vibrate(1f, 100));
             Clicked.Invoke(this, EventArgs.Empty);
         }
         else if(wasOn && !IsOn && Released != null)
         {
+            ForFingers((f) => f.Vibrate(0.5f, 100));
             Released.Invoke(this, EventArgs.Empty);
-        }
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        var obj = collision.collider.name;
-        if(obj == "Limit")
-        {
-            IsBottomed = false;
-            IsTopped = true;
-        }
-        else if(obj == "Enclosure")
-        {
-            IsBottomed = true;
-        }
-        else
-        {
-            IsTouched = true;
-            IsTopped = false;
-        }
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        var obj = collision.collider.name;
-        if(obj != "Limit" && obj != "Enclosure")
-        {
-            IsTouched = false;
         }
     }
 }

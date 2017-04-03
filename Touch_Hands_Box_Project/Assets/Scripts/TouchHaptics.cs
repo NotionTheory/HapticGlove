@@ -5,74 +5,116 @@ using UnityEngine;
 
 public class TouchHaptics : MonoBehaviour
 {
+    private class HapticFrame
+    {
+        public float strength;
+        public float duration;
+
+        public HapticFrame(float strength, float duration)
+        {
+            this.strength = strength;
+            this.duration = duration;
+        }
+    }
+
+    public enum Fingers {
+        LeftThumb,
+        LeftIndex,
+        LeftMiddle,
+        LeftRing,
+        LeftPinky,
+        RightThumb,
+        RightIndex,
+        RightMiddle,
+        RightRing,
+        RightPinky
+    }
+
+    [Range(0f, 1f)]
+    public float PersistentMotorValue = 0f;
+    
+    public Fingers finger = 0;
+
     DeviceServer server;
-    public int fingerIndex = 0;
     Animation anim;
-    SphereCollider here;
+    Queue<HapticFrame> sequence = new Queue<HapticFrame>();
 
     private void Start()
     {
-        this.here = this.GetComponent<SphereCollider>();
-        this.server = FindObjectOfType<DeviceServer>();
-        var head = this.transform;
-        while(this.anim == null && head != null)
+        server = FindObjectOfType<DeviceServer>();
+        var head = transform;
+        while(anim == null && head != null)
         {
-            this.anim = head.GetComponent<Animation>();
+            anim = head.GetComponent<Animation>();
             head = head.transform.parent;
         }
     }
 
+    public float MotorValue
+    {
+        set
+        {
+            int index = (int)finger;
+            if(server != null && 0 <= index && index < server.motors.Length)
+            {
+                server.motors[index] = Mathf.Max(0f, Mathf.Min(1f, value));
+            }
+        }
+    }
+
+    public float FingerValue
+    {
+        get
+        {
+            int index = (int)finger;
+            if(server != null && 0 <= index && index < server.fingers.Length)
+            {
+                return 1f - Mathf.Pow(server.fingers[index], 0.5f);
+            }
+            return 0;
+        }
+    }
+
+    public void Vibrate(float strength, float duration)
+    {
+        sequence.Enqueue(new HapticFrame(strength, duration));
+    }
+
     private void Update()
     {
-		if(this.anim != null)
+        UpdateFingerValue();
+        UpdateMotorValue();
+    }
+
+    private void UpdateFingerValue()
+    {
+        if(anim != null)
         {
-            var state = this.anim[this.anim.name + "Curl"];
+            var state = anim[anim.name + "Curl"];
             if(state != null)
             {
-                state.normalizedTime = 1 - (float)Math.Pow(this.server.fingers[this.fingerIndex], 0.5);
+                state.normalizedTime = FingerValue;
                 state.speed = 0;
-                this.anim.Play();
+                anim.Play();
             }
         }
     }
 
-    //0 = RThumb, 1 = RIndex, 2 = RMiddle, 3 = RRing, 4 = RPinky, 5 = LThumb, 6 = LIndex, 7 = LMiddle, 8 = LRing, 9 = LPinky
-
-
-    float scaleFactor = 10f;
-    float powerFactor = 0.5f;
-    void OnTriggerStay(Collider other)
+    private void UpdateMotorValue()
     {
-		try{
-        bool isWater = other.gameObject.CompareTag("water"),
-             isSolid = other.gameObject.CompareTag("solid");
-        if(isSolid || isWater)
+        if(sequence.Count == 0)
         {
-            float a = Vector3.Distance(other.transform.position, transform.position);
-            float b = other.bounds.extents.magnitude + this.here.radius - a;
-            float c = this.scaleFactor * Mathf.Abs(b);
-            float d = Mathf.Pow(c, this.powerFactor);
-            float v = Mathf.Max(0, Mathf.Min(1, d));
-            if(isWater)
+            MotorValue = PersistentMotorValue;
+        }
+        else
+        {
+            var cur = sequence.Peek();
+            MotorValue = cur.strength;
+            cur.duration -= Time.deltaTime;
+            if(cur.duration <= 0)
             {
-                v *= 0.5f;
+                sequence.Dequeue();
             }
-
-            this.server.motors[this.fingerIndex] = v;
-        }
-		}
-		catch(Exception exp) {
-			Debug.Log (exp.Message);
-		}
-    }
-
-    void OnTriggerExit(Collider other)
-    {
-        bool isWater = other.gameObject.CompareTag("water"),
-             isSolid = other.gameObject.CompareTag("solid");
-        if(isSolid || isWater)
-        {
-            this.server.motors[this.fingerIndex] = 0.0f;
         }
     }
 }

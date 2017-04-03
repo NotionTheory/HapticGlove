@@ -3,12 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ButtonSwitchLimits : MonoBehaviour
+public class PushButtonBehavior : MonoBehaviour
 {
-
+    const float ALPHA = 0.005f;
     public bool IsBottomed;
-    public bool IsTouched;
     public bool IsTopped;
+
+    float MinY = 0.2f, MaxY = 0.3f;
+    int touchCount = 0;
+
     public event EventHandler Clicked, Released;
 
     Renderer rend;
@@ -17,6 +20,13 @@ public class ButtonSwitchLimits : MonoBehaviour
     void Start()
     {
         rend = GetComponent<Renderer>();
+    }
+    public bool IsTouched
+    {
+        get
+        {
+            return touchCount > 0;
+        }
     }
 
     public bool IsOn
@@ -36,11 +46,15 @@ public class ButtonSwitchLimits : MonoBehaviour
         delta.z = 0;
         if(!IsTouched && !IsTopped)
         {
-            delta.y += 0.01f;
+            delta.y += 0.05f;
         }
-        this.transform.localPosition = position = lastPosition + delta;
+        position = lastPosition + delta;
+        position.y = Mathf.Min(MaxY, Mathf.Max(MinY, position.y));
 
-        lastPosition = position;
+        IsTopped = Mathf.Abs(MaxY - position.y) < ALPHA;
+        IsBottomed = Mathf.Abs(MinY - position.y) < ALPHA;
+
+        lastPosition = this.transform.localPosition = position;
 
         var color = rend.material.color;
         color.r = IsOn ? 0 : 1;
@@ -60,29 +74,13 @@ public class ButtonSwitchLimits : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        ++touchCount;
         var obj = collision.collider.name;
-        if(obj == "Limit")
-        {
-            IsBottomed = false;
-            IsTopped = true;
-        }
-        else if(obj == "Enclosure")
-        {
-            IsBottomed = true;
-        }
-        else
-        {
-            IsTouched = true;
-            IsTopped = false;
-        }
     }
 
     private void OnCollisionExit(Collision collision)
     {
+        --touchCount;
         var obj = collision.collider.name;
-        if(obj != "Limit" && obj != "Enclosure")
-        {
-            IsTouched = false;
-        }
     }
 }

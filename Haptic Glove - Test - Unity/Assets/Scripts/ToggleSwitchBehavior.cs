@@ -69,7 +69,7 @@ public class ToggleSwitchBehavior : TouchableBehavior
 
         if(wasOn != IsOn && Changed != null)
         {
-            ForFingers((f) => f.Vibrate(0.25f, 50));
+            ForFingers((f) => f.Vibrate(1f, 100));
             Changed.Invoke(this, EventArgs.Empty);
         }
     }

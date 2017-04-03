@@ -57,12 +57,12 @@ public class PushButtonBehavior : TouchableBehavior
 
         if(IsOn && !wasOn && Clicked != null)
         {
-            ForFingers((f) => f.Vibrate(0.5f, 50));
+            ForFingers((f) => f.Vibrate(1f, 100));
             Clicked.Invoke(this, EventArgs.Empty);
         }
         else if(wasOn && !IsOn && Released != null)
         {
-            ForFingers((f) => f.Vibrate(0.25f, 50));
+            ForFingers((f) => f.Vibrate(0.5f, 100));
             Released.Invoke(this, EventArgs.Empty);
         }
     }

@@ -42,7 +42,7 @@ public class DialBehavior : TouchableBehavior
 
         if(Value != lastValue && Changed != null)
         {
-            ForFingers((finger) => finger.Vibrate(0.25f, 25));
+            ForFingers((finger) => finger.Vibrate(0.5f, 100));
             Changed.Invoke(this, EventArgs.Empty);
         }
     }

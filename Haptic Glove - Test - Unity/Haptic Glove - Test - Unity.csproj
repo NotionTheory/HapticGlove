@@ -88,7 +88,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\PushButtonBehavior.cs" />
     <Compile Include="Assets\Scripts\DeviceServer.cs" />
-    <Compile Include="Assets\Scripts\DialLimits.cs" />
+    <Compile Include="Assets\Scripts\DialBehavior.cs" />
     <Compile Include="Assets\Scripts\IsServerConnected.cs" />
     <Compile Include="Assets\Scripts\MouseFollow.cs" />
     <Compile Include="Assets\Scripts\NixieTube.cs" />

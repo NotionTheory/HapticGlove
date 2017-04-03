@@ -92,7 +92,7 @@
     <Compile Include="Assets\Scripts\IsServerConnected.cs" />
     <Compile Include="Assets\Scripts\MouseFollow.cs" />
     <Compile Include="Assets\Scripts\NixieTube.cs" />
-    <Compile Include="Assets\Scripts\ToggleSwitchLimits.cs" />
+    <Compile Include="Assets\Scripts\ToggleSwitchBehavior.cs" />
     <Compile Include="Assets\Scripts\TouchableBehavior.cs" />
     <Compile Include="Assets\Scripts\TouchHaptics.cs" />
   </ItemGroup>

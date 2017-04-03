@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ToggleSwitchLimits : MonoBehaviour
+public class ToggleSwitchBehavior : TouchableBehavior
 {
     public bool IsOn;
 
@@ -11,19 +11,22 @@ public class ToggleSwitchLimits : MonoBehaviour
 
     public float MaxThrow = 23;
     public float DeadZone = 10;
-    public float Throw;
 
     Transform visibleSphere, controlSphere;
     Renderer tip;
 
     void Start()
     {
-        this.visibleSphere = transform.FindChild("VisibleSphere");
-        this.controlSphere = transform.FindChild("ControlSphere");
+        this.visibleSphere = transform.parent.FindChild("VisibleSphere");
+        this.controlSphere = transform.parent.FindChild("ControlSphere");
         this.tip = this.visibleSphere
             .FindChild("Cylinder")
             .FindChild("Tip")
             .GetComponent<Renderer>();
+
+        var euler = new Vector3();
+        euler.x = -MaxThrow;
+        this.visibleSphere.localEulerAngles = euler;
     }
 
 
@@ -38,27 +41,34 @@ public class ToggleSwitchLimits : MonoBehaviour
         euler.z = 0;
         this.controlSphere.localEulerAngles = euler;
 
-        Throw = euler.x;
-        if(Throw > 180)
+        var rotX = euler.x;
+        if(rotX > 180)
         {
-            Throw -= 360;
+            rotX -= 360;
         }
-        if(Mathf.Abs(Throw) > MaxThrow)
+        if(Mathf.Abs(rotX) > MaxThrow)
         {
-            euler.x = Throw = Mathf.Sign(Throw) * MaxThrow;
+            euler.x = rotX = Mathf.Sign(rotX) * MaxThrow;
             this.controlSphere.localEulerAngles = euler;
         }
-        if(Mathf.Abs(Throw) > DeadZone)
+        if(Mathf.Abs(rotX) > DeadZone)
         {
-            Throw = Mathf.Sign(Throw) * MaxThrow;
-            IsOn = Throw > 0;
+            rotX = Mathf.Sign(rotX) * MaxThrow;
+            IsOn = rotX > 0;
         }
-        euler.x = Throw;
-        Throw /= MaxThrow;
+        euler.x = rotX;
+        rotX /= MaxThrow;
         this.visibleSphere.localEulerAngles = euler;
+
+        var color = tip.material.color;
+        color.r = IsOn ? 0 : 1;
+        color.g = IsTouched ? 1 : 0;
+        color.b = 1;
+        tip.material.color = color;
 
         if(wasOn != IsOn && Changed != null)
         {
+            ForFingers((f) => f.Vibrate(0.25f, 50));
             Changed.Invoke(this, EventArgs.Empty);
         }
     }

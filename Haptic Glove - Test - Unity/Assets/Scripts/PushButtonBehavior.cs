@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PushButtonBehavior : TouchableBehavior
 {
-    const float ALPHA = 0.005f;
+    const float ALPHA = 0.002f;
     public bool IsBottomed;
     public bool IsTopped;
 
@@ -38,7 +38,7 @@ public class PushButtonBehavior : TouchableBehavior
         delta.z = 0;
         if(!IsTouched && !IsTopped)
         {
-            delta.y += 0.05f;
+            delta.y += 0.025f;
         }
         position = lastPosition + delta;
         position.y = Mathf.Min(MaxY, Mathf.Max(MinY, position.y));

@@ -34,7 +34,7 @@ public class TouchableBehavior : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        var hapticDevice = collision.gameObject.GetComponent<TouchHaptics>();
+        TouchHaptics hapticDevice = FindFinger(collision);
         if(hapticDevice != null)
         {
             fingers[(int)hapticDevice.finger] = hapticDevice;
@@ -44,11 +44,24 @@ public class TouchableBehavior : MonoBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
-        var hapticDevice = collision.gameObject.GetComponent<TouchHaptics>();
+        TouchHaptics hapticDevice = FindFinger(collision);
         if(hapticDevice != null)
         {
             fingers[(int)hapticDevice.finger] = null;
             hapticDevice.PersistentMotorValue = 0;
         }
+    }
+
+    private static TouchHaptics FindFinger(Collision collision)
+    {
+        var top = collision.gameObject;
+        var hapticDevice = top.GetComponentInChildren<TouchHaptics>();
+        while(top != null && hapticDevice == null)
+        {
+            top = top.transform.parent.gameObject;
+            hapticDevice = top.GetComponentInChildren<TouchHaptics>();
+        }
+
+        return hapticDevice;
     }
 }

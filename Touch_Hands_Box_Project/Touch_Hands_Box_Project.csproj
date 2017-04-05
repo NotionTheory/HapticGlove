@@ -91,10 +91,12 @@
     <Compile Include="Assets\Scripts\DeviceServer.cs" />
     <Compile Include="Assets\Scripts\DialBehavior.cs" />
     <Compile Include="Assets\Scripts\DinoClaw.cs" />
+    <Compile Include="Assets\Scripts\IndicatorLamp.cs" />
     <Compile Include="Assets\Scripts\IsServerConnected.cs" />
     <Compile Include="Assets\Scripts\MouseFollow.cs" />
     <Compile Include="Assets\Scripts\NixieTube.cs" />
     <Compile Include="Assets\Scripts\PushButtonBehavior.cs" />
+    <Compile Include="Assets\Scripts\ToggleIndicator.cs" />
     <Compile Include="Assets\Scripts\ToggleSwitchBehavior.cs" />
     <Compile Include="Assets\Scripts\TouchHaptics.cs" />
     <Compile Include="Assets\Scripts\TouchableBehavior.cs" />

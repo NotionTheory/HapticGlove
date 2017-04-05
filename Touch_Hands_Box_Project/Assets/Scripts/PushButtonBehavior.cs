@@ -9,9 +9,25 @@ public class PushButtonBehavior : TouchableBehavior
     public bool IsBottomed;
     public bool IsTopped;
 
-    float MinY = 0.2f, MaxY = 0.3f;
-
     public event EventHandler Clicked, Released;
+
+    [Range(0, 0.1f)]
+    public float SpringBack = 0.025f;
+    
+    public float MinimumPosition = 0.2f;
+
+    public float MaximumPosition = 0.3f;
+
+    [Header("Haptic feedback")]
+    [Range(0, 1)]
+    public float StrengthOnPress = 0.5f;
+    [Range(0, 1000)]
+    public int LengthOnPress = 100;
+
+    [Range(0, 1)]
+    public float StrengthOnRelease = 0.5f;
+    [Range(0, 1000)]
+    public int LengthOnRelease = 100;
 
     Renderer rend;
     Vector3 lastPosition;
@@ -39,13 +55,13 @@ public class PushButtonBehavior : TouchableBehavior
         delta.z = 0;
         if(!IsTouched && !IsTopped)
         {
-            delta.y += 0.025f;
+            delta.y += SpringBack;
         }
         position = lastPosition + delta;
-        position.y = Mathf.Min(MaxY, Mathf.Max(MinY, position.y));
+        position.y = Mathf.Min(MaximumPosition, Mathf.Max(MinimumPosition, position.y));
 
-        IsTopped = Mathf.Abs(MaxY - position.y) < ALPHA;
-        IsBottomed = Mathf.Abs(MinY - position.y) < ALPHA;
+        IsTopped = Mathf.Abs(MaximumPosition - position.y) < ALPHA;
+        IsBottomed = Mathf.Abs(MinimumPosition - position.y) < ALPHA;
 
         lastPosition = this.transform.localPosition = position;
 
@@ -57,12 +73,12 @@ public class PushButtonBehavior : TouchableBehavior
 
         if(IsOn && !wasOn && Clicked != null)
         {
-            ForFingers((f) => f.Vibrate(1f, 100));
+            ForFingers((f) => f.Vibrate(StrengthOnPress, LengthOnPress));
             Clicked.Invoke(this, EventArgs.Empty);
         }
         else if(wasOn && !IsOn && Released != null)
         {
-            ForFingers((f) => f.Vibrate(0.5f, 100));
+            ForFingers((f) => f.Vibrate(StrengthOnRelease, LengthOnRelease));
             Released.Invoke(this, EventArgs.Empty);
         }
     }

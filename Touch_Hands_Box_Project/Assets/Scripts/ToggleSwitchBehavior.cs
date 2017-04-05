@@ -9,8 +9,17 @@ public class ToggleSwitchBehavior : TouchableBehavior
 
     public event EventHandler Changed;
 
+    [Range(0, 25)]
     public float MaxThrow = 23;
+
+    [Range(0, 25)]
     public float DeadZone = 10;
+
+    [Header("Haptic feedback on value change")]
+    [Range(0, 1)]
+    public float Strength = 0.5f;
+    [Range(0, 1000)]
+    public int Length = 100;
 
     Transform visibleSphere, controlSphere;
     Renderer tip;
@@ -69,7 +78,7 @@ public class ToggleSwitchBehavior : TouchableBehavior
 
         if(wasOn != IsOn && Changed != null)
         {
-            ForFingers((f) => f.Vibrate(1f, 100));
+            ForFingers((f) => f.Vibrate(Strength, Length));
             Changed.Invoke(this, EventArgs.Empty);
         }
     }

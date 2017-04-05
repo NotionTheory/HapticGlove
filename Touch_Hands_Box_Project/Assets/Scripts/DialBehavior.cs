@@ -8,6 +8,13 @@ public class DialBehavior : TouchableBehavior
     public event EventHandler Changed;
     public int Value;
     public int NumTicks = 10;
+
+    [Header("Haptic feedback on value change")]
+    [Range(0, 1)]
+    public float Strength = 0.5f;
+    [Range(0, 1000)]
+    public int Length = 100;
+
     Transform visibleCylinder, controlCylinder;
     Renderer tab;
     void Start()
@@ -42,7 +49,7 @@ public class DialBehavior : TouchableBehavior
 
         if(Value != lastValue && Changed != null)
         {
-            ForFingers((finger) => finger.Vibrate(0.5f, 100));
+            ForFingers((finger) => finger.Vibrate(Strength, Length));
             Changed.Invoke(this, EventArgs.Empty);
         }
     }

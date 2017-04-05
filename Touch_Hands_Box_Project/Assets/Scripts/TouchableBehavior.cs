@@ -8,6 +8,8 @@ public class TouchableBehavior : MonoBehaviour
     TouchHaptics[] fingers = new TouchHaptics[10];
 
     public bool IsTouched;
+    [Range(0, 1)]
+    public float MotorStrengthOnTouch = 0.2f;
 
     protected virtual void Update()
     {
@@ -38,7 +40,7 @@ public class TouchableBehavior : MonoBehaviour
         if(hapticDevice != null)
         {
             fingers[(int)hapticDevice.finger] = hapticDevice;
-            hapticDevice.PersistentMotorValue = 0.2f;
+            hapticDevice.PersistentMotorValue = MotorStrengthOnTouch;
         }
     }
 

@@ -3,32 +3,36 @@ using UnityEngine;
 
 public class IsServerConnected : MonoBehaviour
 {
+    
     DeviceServer server;
-    Material mat;
+    IndicatorLamp lamp;
     DateTime lastConnectionAttempt = DateTime.MinValue;
     int minWait = 5;
 
     void Start()
     {
-        this.server = FindObjectOfType<DeviceServer>();
-        this.mat = GetComponent<Renderer>().material;
+        server = FindObjectOfType<DeviceServer>();
+        lamp = GetComponent<IndicatorLamp>();
     }
 
     void Update()
     {
-        if(!this.server.IsConnected)
+        if(!server.IsConnected)
         {
             var delta = DateTime.Now - lastConnectionAttempt;
             if(delta.TotalSeconds >= minWait)
             {
-                this.server.ConnectToServer();
+                server.ConnectToServer();
                 lastConnectionAttempt = DateTime.Now;
-                if(!this.server.IsConnected)
+                if(!server.IsConnected)
                 {
                     minWait *= 2;
                 }
             }
         }
-        this.mat.SetColor("_EmissionColor", this.server.IsConnected ? Color.green : Color.red);
+        if(lamp != null)
+        {
+            lamp.IsOn = server.IsConnected;
+        }
     }
 }

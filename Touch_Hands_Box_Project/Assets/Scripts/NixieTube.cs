@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
+[ExecuteInEditMode]
 public class NixieTube : MonoBehaviour
 {
     static string[] names = new[] {
@@ -16,37 +17,38 @@ public class NixieTube : MonoBehaviour
         "Nine"
     };
 
+    [Range(0, 9)]
+    public int Value;
+    int lastValue;
+    public Material OnMaterial, OffMaterial;
+
     Renderer[] digits = new Renderer[10];
-    int _digit;
-    public Material on, off;
 
     void Start()
     {
         for(int i = 0; i < names.Length; ++i)
         {
-            var child = this.transform.Find(names[i]);
-            this.digits[i] = child.GetComponent<Renderer>();
+            var child = transform.Find(names[i]);
+            digits[i] = child.GetComponent<Renderer>();
         }
-        this.Digit = 0;
+        Value = 0;
+        lastValue = -1;
     }
 
-    public int Digit
+    public void SetValue(int v)
     {
-        get
-        {
-            return this._digit;
-        }
-        set
-        {
-            this._digit = value;
-            for(int i = 0; i < digits.Length; ++i)
-            {
-                digits[i].material = (i == this._digit) ? this.on : this.off;
-            }
-        }
+        Value = v;
     }
 
     private void Update()
     {
+        if(Value != lastValue)
+        {
+            for(int i = 0; i < digits.Length; ++i)
+            {
+                digits[i].material = (i == Value) ? OnMaterial : OffMaterial;
+            }
+            lastValue = Value;
+        }
     }
 }

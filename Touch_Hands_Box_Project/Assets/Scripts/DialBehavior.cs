@@ -1,18 +1,25 @@
 ﻿using System;
 using UnityEngine;
 
+[Serializable]
+public class DialValueChanged: UnityEngine.Events.UnityEvent<int>
+{
+}
+
 public class DialBehavior : TouchableBehavior
 {
-    public event EventHandler Changed;
     public int Value;
     public int NumTicks = 10;
+    
+    public DialValueChanged ValueChanged;
 
     [Header("Haptic feedback on value change")]
     [Range(0, 1)]
     public float Strength = 0.5f;
     [Range(0, 1000)]
     public int Length = 100;
-
+    
+    
     Transform visibleCylinder, controlCylinder;
     Renderer tab;
     void Start()
@@ -45,10 +52,10 @@ public class DialBehavior : TouchableBehavior
 
         tab.material.color = Color.HSVToRGB((float)Value / NumTicks, 1f, 1f);
 
-        if(Value != lastValue && Changed != null)
+        if(Value != lastValue && ValueChanged != null)
         {
             ForFingers((finger) => finger.Vibrate(Strength, Length));
-            Changed.Invoke(this, EventArgs.Empty);
+            ValueChanged.Invoke(Value);
         }
     }
 }

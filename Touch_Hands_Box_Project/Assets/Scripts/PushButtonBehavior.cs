@@ -7,7 +7,7 @@ public class PushButtonBehavior : TouchableBehavior
     public bool IsBottomed;
     public bool IsTopped;
 
-    public event EventHandler Clicked, Released;
+    public UnityEngine.Events.UnityEvent Clicked, Released;
 
     [Range(0, 0.1f)]
     public float SpringBack = 0.025f;
@@ -72,12 +72,12 @@ public class PushButtonBehavior : TouchableBehavior
         if(IsOn && !wasOn && Clicked != null)
         {
             ForFingers((f) => f.Vibrate(StrengthOnPress, LengthOnPress));
-            Clicked.Invoke(this, EventArgs.Empty);
+            Clicked.Invoke();
         }
         else if(wasOn && !IsOn && Released != null)
         {
             ForFingers((f) => f.Vibrate(StrengthOnRelease, LengthOnRelease));
-            Released.Invoke(this, EventArgs.Empty);
+            Released.Invoke();
         }
     }
 }

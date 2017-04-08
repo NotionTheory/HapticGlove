@@ -30,4 +30,19 @@ public class IndicatorLamp : MonoBehaviour
             wasOn = IsOn;
         }
     }
+
+    public void TurnOn()
+    {
+        this.IsOn = true;
+    }
+
+    public void TurnOff()
+    {
+        this.IsOn = false;
+    }
+
+    public void Toggle()
+    {
+        this.IsOn = !this.IsOn;
+    }
 }

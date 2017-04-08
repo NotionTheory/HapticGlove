@@ -5,7 +5,7 @@ public class ToggleSwitchBehavior : TouchableBehavior
 {
     public bool IsOn;
 
-    public event EventHandler Changed;
+    public UnityEngine.Events.UnityEvent Changed;
 
     [Range(0, 25)]
     public float MaxThrow = 23;
@@ -77,7 +77,7 @@ public class ToggleSwitchBehavior : TouchableBehavior
         if(wasOn != IsOn && Changed != null)
         {
             ForFingers((f) => f.Vibrate(Strength, Length));
-            Changed.Invoke(this, EventArgs.Empty);
+            Changed.Invoke();
         }
     }
 }

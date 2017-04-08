@@ -1,7 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Touch_Hands_Box_Project.Plugins", "Touch_Hands_Box_Project.Plugins.csproj", "{B76B8D1E-EEDF-5D2A-6FC8-8E1C96921744}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Touch_Hands_Box_Project", "Touch_Hands_Box_Project.csproj", "{B4DBA436-AD0F-9E2E-C843-B4123208450F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Touch_Hands_Box_Project.Editor.Plugins", "Touch_Hands_Box_Project.Editor.Plugins.csproj", "{D762EB98-172C-E293-84E2-0B4A5FEADD68}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Touch_Hands_Box_Project.Editor", "Touch_Hands_Box_Project.Editor.csproj", "{F94DE1CD-17C6-7BE4-C907-0E9789FC14EE}"
 EndProject
@@ -11,10 +15,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B76B8D1E-EEDF-5D2A-6FC8-8E1C96921744}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B76B8D1E-EEDF-5D2A-6FC8-8E1C96921744}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B76B8D1E-EEDF-5D2A-6FC8-8E1C96921744}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B76B8D1E-EEDF-5D2A-6FC8-8E1C96921744}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B4DBA436-AD0F-9E2E-C843-B4123208450F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B4DBA436-AD0F-9E2E-C843-B4123208450F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4DBA436-AD0F-9E2E-C843-B4123208450F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4DBA436-AD0F-9E2E-C843-B4123208450F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D762EB98-172C-E293-84E2-0B4A5FEADD68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D762EB98-172C-E293-84E2-0B4A5FEADD68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D762EB98-172C-E293-84E2-0B4A5FEADD68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D762EB98-172C-E293-84E2-0B4A5FEADD68}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F94DE1CD-17C6-7BE4-C907-0E9789FC14EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F94DE1CD-17C6-7BE4-C907-0E9789FC14EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F94DE1CD-17C6-7BE4-C907-0E9789FC14EE}.Release|Any CPU.ActiveCfg = Release|Any CPU

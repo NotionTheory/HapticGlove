@@ -136,9 +136,6 @@
     <Reference Include="UnityEditor.iOS.Extensions.Common">
       <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Common.dll</HintPath>
     </Reference>
-    <Reference Include="NotionTheory.HapticGlove.Client.NETFX">
-      <HintPath>Assets\Plugins\NotionTheory.HapticGlove.Client.NETFX.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Touch_Hands_Box_Project.Plugins.csproj">

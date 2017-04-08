@@ -1,8 +1,7 @@
-﻿using UnityEngine;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 using System.Net.Sockets;
+using UnityEngine;
 
 public class DeviceServer : MonoBehaviour
 {

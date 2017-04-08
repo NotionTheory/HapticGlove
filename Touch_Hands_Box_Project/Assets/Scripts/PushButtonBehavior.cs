@@ -6,15 +6,18 @@ public class PushButtonBehavior : TouchableBehavior
     const float ALPHA = 0.002f;
     public bool IsBottomed;
     public bool IsTopped;
+    bool updateEnabled = true;
+    bool wasOn;
 
-    public UnityEngine.Events.UnityEvent Clicked, Released;
-
+    [Header("Range of Motion")]
     [Range(0, 0.1f)]
-    public float SpringBack = 0.025f;
-    
+    public float SpringBack = 0.025f;    
     public float MinimumPosition = 0.2f;
-
     public float MaximumPosition = 0.3f;
+
+    [Header("Events")]
+    public UnityEngine.Events.UnityEvent Clicked;
+    public UnityEngine.Events.UnityEvent Released;
 
     [Header("Haptic feedback")]
     [Range(0, 1)]
@@ -46,7 +49,6 @@ public class PushButtonBehavior : TouchableBehavior
     protected override void Update()
     {
         base.Update();
-        var wasOn = IsOn;
         var position = this.transform.localPosition;
         var delta = position - lastPosition;
         delta.x = 0;
@@ -58,8 +60,11 @@ public class PushButtonBehavior : TouchableBehavior
         position = lastPosition + delta;
         position.y = Mathf.Min(MaximumPosition, Mathf.Max(MinimumPosition, position.y));
 
-        IsTopped = Mathf.Abs(MaximumPosition - position.y) < ALPHA;
-        IsBottomed = Mathf.Abs(MinimumPosition - position.y) < ALPHA;
+        if(updateEnabled)
+        {
+            IsTopped = Mathf.Abs(MaximumPosition - position.y) < ALPHA;
+            IsBottomed = Mathf.Abs(MinimumPosition - position.y) < ALPHA;
+        }
 
         lastPosition = this.transform.localPosition = position;
 
@@ -69,14 +74,35 @@ public class PushButtonBehavior : TouchableBehavior
         color.b = IsTopped ? 0 : 1;
         rend.material.color = color;
 
-        if(IsOn && !wasOn && Clicked != null)
+        if(IsOn && !wasOn)
         {
             ForFingers((f) => f.Vibrate(StrengthOnPress, LengthOnPress));
-            Clicked.Invoke();
+            OnMouseDown();
         }
-        else if(wasOn && !IsOn && Released != null)
+        else if(wasOn && !IsOn)
         {
             ForFingers((f) => f.Vibrate(StrengthOnRelease, LengthOnRelease));
+            OnMouseUp();
+        }
+        wasOn = IsOn;
+    }
+
+    private void OnMouseDown()
+    {
+        updateEnabled = false;
+        IsTouched = IsBottomed = true;
+        IsTopped = false;
+        if(Clicked != null)
+        {
+            Clicked.Invoke();
+        }
+    }
+
+    private void OnMouseUp()
+    {
+        updateEnabled = true;
+        if(Released != null)
+        {
             Released.Invoke();
         }
     }

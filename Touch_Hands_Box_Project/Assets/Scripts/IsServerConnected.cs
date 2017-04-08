@@ -32,7 +32,7 @@ public class IsServerConnected : MonoBehaviour
         }
         if(lamp != null)
         {
-            lamp.IsOn = server.IsConnected;
+            lamp.IsOn = server != null && server.IsConnected;
         }
     }
 }

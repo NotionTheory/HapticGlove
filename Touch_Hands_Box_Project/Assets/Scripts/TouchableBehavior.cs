@@ -56,7 +56,7 @@ public class TouchableBehavior : MonoBehaviour
     {
         var top = collision.gameObject;
         var hapticDevice = top.GetComponentInChildren<TouchHaptics>();
-        while(top != null && hapticDevice == null)
+        while(top != null && top.transform.parent != null && hapticDevice == null)
         {
             top = top.transform.parent.gameObject;
             hapticDevice = top.GetComponentInChildren<TouchHaptics>();

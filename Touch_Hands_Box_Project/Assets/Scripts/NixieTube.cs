@@ -40,6 +40,11 @@ public class NixieTube : MonoBehaviour
         Value = v;
     }
 
+    public void AdvanceTo(int v)
+    {
+        Value = (Value + 1) % v;
+    }
+
     private void Update()
     {
         if(Value != lastValue)

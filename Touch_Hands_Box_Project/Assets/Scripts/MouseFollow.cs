@@ -38,7 +38,7 @@ public class MouseFollow : MonoBehaviour
             var deltaX = s * (x - lastX);
             var deltaY = s * (y - lastY);
             euler.x += deltaY;
-            euler.y += deltaX;
+            euler.y -= deltaX;
             cam.transform.localRotation = Quaternion.Euler(euler);
         }
         lastX = x;

@@ -91,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Resources\Gauntlet\Mesh\animController.cs" />
+    <Compile Include="Assets\Scripts\BeatDetector.cs" />
     <Compile Include="Assets\Scripts\DeviceServer.cs" />
     <Compile Include="Assets\Scripts\DialBehavior.cs" />
     <Compile Include="Assets\Scripts\DinoClaw.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="Assets\Scripts\ToggleSwitchBehavior.cs" />
     <Compile Include="Assets\Scripts\TouchHaptics.cs" />
     <Compile Include="Assets\Scripts\TouchableBehavior.cs" />
+    <Compile Include="Assets\Scripts\VMU.cs" />
     <Compile Include="Assets\SteamVR\Extras\SteamVR_GazeTracker.cs" />
     <Compile Include="Assets\SteamVR\Extras\SteamVR_LaserPointer.cs" />
     <Compile Include="Assets\SteamVR\Extras\SteamVR_Teleporter.cs" />

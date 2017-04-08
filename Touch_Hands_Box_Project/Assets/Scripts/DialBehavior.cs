@@ -11,7 +11,6 @@ public class DialBehavior : TouchableBehavior
     [Range(0, 9)]
     public int Value;
     int lastValue;
-    bool clicked;
     public int NumTicks = 10;
 
     public DialValueChanged ValueChanged;
@@ -40,10 +39,6 @@ public class DialBehavior : TouchableBehavior
         base.Update();
         var euler = this.controlCylinder.localEulerAngles;
         var recalc = true;
-        if(clicked)
-        {
-            Debug.LogFormat("start: {0} -> {1}", lastValue, Value);
-        }
         if(Value != lastValue)
         {
             Value = Value % 10;
@@ -56,16 +51,11 @@ public class DialBehavior : TouchableBehavior
         euler.x = 0;
         euler.z = 0;
         this.controlCylinder.localEulerAngles = euler;
-
-        var pre = Value;
+        
         if(recalc)
         {
             // Calculate which digit we're pointing at.
             Value = (int)Mathf.Round(euler.y * NumTicks / 360);
-            if(clicked)
-            {
-                Debug.LogFormat("calc: {0} -> {1}", pre, Value);
-            }
         }
 
         // Chunk the visible dial over there.
@@ -83,12 +73,15 @@ public class DialBehavior : TouchableBehavior
             }
         }
         lastValue = Value;
-        clicked = false;
     }
 
     private void OnMouseDown()
     {
-        clicked = true;
+        Advance();
+    }
+
+    public void Advance()
+    {
         ++Value;
     }
 }

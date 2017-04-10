@@ -13,7 +13,7 @@ public class DialBehavior : TouchableBehavior
     int lastValue;
     public int NumTicks = 10;
 
-    public DialValueChanged ValueChanged;
+    public DialValueChanged OnValueChanged;
 
     [Header("Haptic feedback on value change")]
     [Range(0, 1)]
@@ -67,9 +67,9 @@ public class DialBehavior : TouchableBehavior
         if(Value != lastValue)
         {
             ForFingers((finger) => finger.Vibrate(Strength, Length));
-            if(ValueChanged != null)
+            if(OnValueChanged != null)
             {
-                ValueChanged.Invoke(Value);
+                OnValueChanged.Invoke(Value);
             }
         }
         lastValue = Value;

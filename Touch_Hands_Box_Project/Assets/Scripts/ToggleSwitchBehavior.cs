@@ -14,9 +14,9 @@ public class ToggleSwitchBehavior : TouchableBehavior
     public float DeadZone = 10;
 
     [Header("Events")]
-    public UnityEngine.Events.UnityEvent TurnedOn;
-    public UnityEngine.Events.UnityEvent TurnedOff;
-    public UnityEngine.Events.UnityEvent Changed;
+    public UnityEngine.Events.UnityEvent OnTurnedOn;
+    public UnityEngine.Events.UnityEvent OnTurnedOff;
+    public UnityEngine.Events.UnityEvent OnChanged;
 
     [Header("Haptic feedback on value change")]
     [Range(0, 1)]
@@ -83,19 +83,19 @@ public class ToggleSwitchBehavior : TouchableBehavior
         {
             ForFingers((f) => f.Vibrate(Strength, Length));
 
-            if(IsOn && TurnedOn != null)
+            if(IsOn && OnTurnedOn != null)
             {
-                TurnedOn.Invoke();
+                OnTurnedOn.Invoke();
             }
 
-            if(!IsOn && TurnedOff != null)
+            if(!IsOn && OnTurnedOff != null)
             {
-                TurnedOff.Invoke();
+                OnTurnedOff.Invoke();
             }
 
-            if(Changed != null)
+            if(OnChanged != null)
             {
-                Changed.Invoke();
+                OnChanged.Invoke();
             }
         }
         wasOn = IsOn;

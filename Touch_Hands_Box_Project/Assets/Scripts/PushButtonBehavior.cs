@@ -16,8 +16,8 @@ public class PushButtonBehavior : TouchableBehavior
     public float MaximumPosition = 0.3f;
 
     [Header("Events")]
-    public UnityEngine.Events.UnityEvent Clicked;
-    public UnityEngine.Events.UnityEvent Released;
+    public UnityEngine.Events.UnityEvent OnClicked;
+    public UnityEngine.Events.UnityEvent OnReleased;
 
     [Header("Haptic feedback")]
     [Range(0, 1)]
@@ -92,18 +92,18 @@ public class PushButtonBehavior : TouchableBehavior
         updateEnabled = false;
         IsTouched = IsBottomed = true;
         IsTopped = false;
-        if(Clicked != null)
+        if(OnClicked != null)
         {
-            Clicked.Invoke();
+            OnClicked.Invoke();
         }
     }
 
     private void OnMouseUp()
     {
         updateEnabled = true;
-        if(Released != null)
+        if(OnReleased != null)
         {
-            Released.Invoke();
+            OnReleased.Invoke();
         }
     }
 }

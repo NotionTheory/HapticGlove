@@ -4,6 +4,7 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class NixieTube : MonoBehaviour
 {
+
     static string[] names = new[] {
         "Zero",
         "One",
@@ -21,6 +22,7 @@ public class NixieTube : MonoBehaviour
     public int Value;
     int lastValue;
     public Material OnMaterial, OffMaterial;
+    public UnityEngine.Events.UnityEvent OnCarry;
 
     Renderer[] digits = new Renderer[10];
 
@@ -43,6 +45,10 @@ public class NixieTube : MonoBehaviour
     public void AdvanceTo(int v)
     {
         Value = (Value + 1) % v;
+        if(Value == 0 && OnCarry != null)
+        {
+            OnCarry.Invoke();
+        }
     }
 
     private void Update()

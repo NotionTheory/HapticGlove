@@ -9,12 +9,14 @@ public class IndicatorLamp : MonoBehaviour
     public bool IsOn;
     bool wasOn;
     Renderer rend;
+    new Light light;
     // Use this for initialization
     void Start()
     {
         IsOn = false;
         wasOn = true;
         rend = GetComponent<Renderer>();
+        light = GetComponent<Light>();
     }
 
     // Update is called once per frame
@@ -24,7 +26,9 @@ public class IndicatorLamp : MonoBehaviour
         {
             if(IsOn != wasOn)
             {
-                rend.material = IsOn ? OnMaterial : OffMaterial;
+                var mat = IsOn ? OnMaterial : OffMaterial;
+                rend.material = mat;
+                light.color = mat.color;
             }
 
             wasOn = IsOn;

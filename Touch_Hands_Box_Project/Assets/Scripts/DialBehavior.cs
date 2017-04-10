@@ -55,7 +55,7 @@ public class DialBehavior : TouchableBehavior
         if(recalc)
         {
             // Calculate which digit we're pointing at.
-            Value = (int)Mathf.Round(euler.y * NumTicks / 360);
+            Value = ((int)Mathf.Round(euler.y * NumTicks / 360)) % NumTicks;
         }
 
         // Chunk the visible dial over there.

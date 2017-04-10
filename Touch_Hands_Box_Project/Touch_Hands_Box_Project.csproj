@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows64:19</UnityBuildTarget>
     <UnityVersion>5.5.2f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -92,6 +94,7 @@
   <ItemGroup>
     <Compile Include="Assets\Resources\Gauntlet\Mesh\animController.cs" />
     <Compile Include="Assets\Scripts\BeatDetector.cs" />
+    <Compile Include="Assets\Scripts\BeatFollower.cs" />
     <Compile Include="Assets\Scripts\DeviceServer.cs" />
     <Compile Include="Assets\Scripts\DialBehavior.cs" />
     <Compile Include="Assets\Scripts\DinoClaw.cs" />

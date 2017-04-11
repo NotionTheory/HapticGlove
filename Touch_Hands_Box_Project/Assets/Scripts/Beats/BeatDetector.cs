@@ -74,11 +74,15 @@ public class BeatDetector : MonoBehaviour
 
     public bool ViewSpectrumBeforeBandpass = true;
 
+    [Range(1, 32)]
+    public int VisualizationBandCount = 16;
+
     public BeatDetectorConfiguration Configuration;
 
     int updatesSinceLastBeat = 0;
 
     float[] frequencyDomainSlice;
+    float[] visualizationBinnedSpectrum;
     float[] binnedSpectrum;
     float[] acVals;
     float[] onsets;
@@ -135,6 +139,11 @@ public class BeatDetector : MonoBehaviour
             frequencyDomainSlice = new float[BufferSize];
         }
 
+        if(visualizationBinnedSpectrum == null || visualizationBinnedSpectrum.Length != VisualizationBandCount)
+        {
+            visualizationBinnedSpectrum = new float[VisualizationBandCount];
+        }
+
         if(binnedSpectrum == null || binnedSpectrum.Length != Configuration.BandCount)
         {
             binnedSpectrum = new float[Configuration.BandCount];
@@ -189,7 +198,10 @@ public class BeatDetector : MonoBehaviour
             ringBufferIndex %= Configuration.RingBufferSize;
             Source.GetSpectrumData(frequencyDomainSlice, 0, FFTWindow.BlackmanHarris);
 
-            BinSpectrum(ViewSpectrumBeforeBandpass);
+            if(ViewSpectrumBeforeBandpass)
+            {
+                BinSpectrum(true, visualizationBinnedSpectrum);
+            }
 
             for(int i = 0; i < BufferSize; ++i)
             {
@@ -199,7 +211,7 @@ public class BeatDetector : MonoBehaviour
                 }
             }
 
-            BinSpectrum(!ViewSpectrumBeforeBandpass);
+            BinSpectrum(!ViewSpectrumBeforeBandpass, binnedSpectrum);
 
             // calculate the value of the onset function in this frame
             float onset = 0;
@@ -327,13 +339,14 @@ public class BeatDetector : MonoBehaviour
         }
     }
 
-    private void BinSpectrum(bool emitEvent)
+    private void BinSpectrum(bool emitEvent, float[] arr)
     {
-        for(int i = 0; i < Configuration.BandCount; i++)
+        for(int i = 0; i < arr.Length; i++)
         {
             float avg = 0;
-            int lowFreq = (int)(SamplingRate / Mathf.Pow(2, Configuration.BandCount - i + 1));
-            int hiFreq = (int)(SamplingRate / Mathf.Pow(2, Configuration.BandCount - i));
+            int n = 0;
+            int lowFreq = (int)(SamplingRate / Mathf.Pow(2, arr.Length - i + 1));
+            int hiFreq = (int)(SamplingRate / Mathf.Pow(2, arr.Length - i));
             int lowBound = FrequencyIndex(lowFreq);
             int hiBound = FrequencyIndex(hiFreq);
             for(int j = lowBound; j <= hiBound; j++)
@@ -341,12 +354,12 @@ public class BeatDetector : MonoBehaviour
                 avg += frequencyDomainSlice[j];
             }
             avg /= (hiBound - lowBound + 1);
-            binnedSpectrum[i] = avg;
+            arr[i] = avg;
         }
 
         if(emitEvent && OnSpectrum != null)
         {
-            OnSpectrum.Invoke(binnedSpectrum);
+            OnSpectrum.Invoke(arr);
         }
     }
 
@@ -358,11 +371,18 @@ public class BeatDetector : MonoBehaviour
         }
     }
 
+
+    private int _bufferSize, _lastBufferMagnitude = -1;
     int BufferSize
     {
         get
         {
-            return (int)Mathf.Pow(2, Configuration.BufferMagnitude);
+            if(Configuration.BufferMagnitude != _lastBufferMagnitude)
+            {
+                _bufferSize = (int)Mathf.Pow(2, Configuration.BufferMagnitude);
+                _lastBufferMagnitude = Configuration.BufferMagnitude;
+            }
+            return _bufferSize;
         }
     }
 

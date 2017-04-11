@@ -43,5 +43,29 @@ public class MouseFollow : MonoBehaviour
         }
         lastX = x;
         lastY = y;
+
+        Vector3 velocity = new Vector3(),
+            drive = cam.transform.localRotation * Vector3.forward,
+            strafe = cam.transform.localRotation * Vector3.right;
+        if(Input.GetKey(KeyCode.W))
+        {
+            velocity += drive;
+        }
+        else if(Input.GetKey(KeyCode.S)){
+            velocity -= drive;
+        }
+
+        if(Input.GetKey(KeyCode.D))
+        {
+            velocity += strafe;
+        }
+        else if(Input.GetKey(KeyCode.A))
+        {
+            velocity -= strafe;
+        }
+        velocity.y = 0;
+        velocity.Normalize();
+        velocity *= Time.deltaTime;
+        cam.transform.localPosition += velocity;
     }
 }

@@ -161,13 +161,20 @@ void loop(void)
         #ifdef DEBUG
             if(!wasConnected)
             {
-                Serial.println(F("New device connected."))
+                Serial.println(F("New device connected."));
             }
         #endif
         for(Finger* f = fingers; f < fingers + NUM_FINGERS; ++f)
         {
             setMotor(f, gatt.getCharInt8(f->motor.charIdx));
             f->sensor.value = (uint8_t)(analogRead(f->sensor.pin) >> 2);
+            #ifdef DEBUG
+              Serial.print(F("Sensor "));
+              Serial.print(f->sensor.name);
+              Serial.print(F(" = "));
+              Serial.print(f->sensor.value);
+              Serial.println();
+            #endif
             gatt.setChar(f->sensor.charIdx, f->sensor.value);
         }
     }
@@ -242,7 +249,7 @@ void setup(void)
         // Setup the characteristic for receiving the motor state. We use the `Write without Response` property because the host PC doesn't care when the write operation finishes, we just want it to happen as fast as possible.
         f->motor.charIdx = addChar( f->motor.name, INPUT_PROPERTIES );
 
-        #if DEBUG
+        #ifdef DEBUG
             Serial.print(F("sensor name: "));
             Serial.print(f->sensor.name);
             Serial.print(F("+"));

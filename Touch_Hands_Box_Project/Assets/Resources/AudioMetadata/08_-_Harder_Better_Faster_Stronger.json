@@ -1,8 +1,8 @@
 {
     "BufferMagnitude": 10,
-    "BandCount": 12,
-    "BandPassLow": 17,
-    "BandPassHigh": 100,
+    "BandCount": 32,
+    "BandPassLow": 8,
+    "BandPassHigh": 42,
     "RingBufferSize": 120,
     "BlipDelayLen": 16,
     "Sensitivity": 0.10000000149011612

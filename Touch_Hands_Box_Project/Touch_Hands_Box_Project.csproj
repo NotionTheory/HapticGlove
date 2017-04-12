@@ -102,9 +102,9 @@
     <Compile Include="Assets\Scripts\ToggleSwitchBehavior.cs" />
     <Compile Include="Assets\Scripts\TouchHaptics.cs" />
     <Compile Include="Assets\Scripts\TouchableBehavior.cs" />
-    <Compile Include="Assets\Scripts\VMU.cs" />
     <Compile Include="Assets\Scripts\Beats\BeatDetector.cs" />
     <Compile Include="Assets\Scripts\Beats\BeatFollower.cs" />
+    <Compile Include="Assets\Scripts\Beats\VMU.cs" />
     <Compile Include="Assets\SteamVR\Extras\SteamVR_GazeTracker.cs" />
     <Compile Include="Assets\SteamVR\Extras\SteamVR_LaserPointer.cs" />
     <Compile Include="Assets\SteamVR\Extras\SteamVR_Teleporter.cs" />

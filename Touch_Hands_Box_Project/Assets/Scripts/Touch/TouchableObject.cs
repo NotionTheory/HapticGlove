@@ -1,13 +1,13 @@
 ﻿using System;
 using UnityEngine;
 
-public class TouchableBehavior : MonoBehaviour
+public class TouchableObject : MonoBehaviour
 {
-    TouchHaptics[] fingers = new TouchHaptics[10];
+    HapticFinger[] fingers = new HapticFinger[10];
 
     public bool IsTouched;
     [Range(0, 1)]
-    public float MotorStrengthOnTouch = 0.2f;
+    public float MotorStrengthOnTouch = 0.5f;
 
     protected virtual void Update()
     {
@@ -21,7 +21,7 @@ public class TouchableBehavior : MonoBehaviour
         }
     }
 
-    protected void ForFingers(Action<TouchHaptics> act)
+    protected void ForFingers(Action<HapticFinger> act)
     {
         for(int i = 0; i < fingers.Length; ++i)
         {
@@ -34,32 +34,32 @@ public class TouchableBehavior : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        TouchHaptics hapticDevice = FindFinger(collision);
+        HapticFinger hapticDevice = FindFinger(collision);
         if(hapticDevice != null)
         {
             fingers[(int)hapticDevice.finger] = hapticDevice;
-            hapticDevice.PersistentMotorValue = MotorStrengthOnTouch;
+            hapticDevice.MotorValue = MotorStrengthOnTouch;
         }
     }
 
     private void OnCollisionExit(Collision collision)
     {
-        TouchHaptics hapticDevice = FindFinger(collision);
+        HapticFinger hapticDevice = FindFinger(collision);
         if(hapticDevice != null)
         {
             fingers[(int)hapticDevice.finger] = null;
-            hapticDevice.PersistentMotorValue = 0;
+            hapticDevice.MotorValue = 0;
         }
     }
 
-    private static TouchHaptics FindFinger(Collision collision)
+    private static HapticFinger FindFinger(Collision collision)
     {
         var top = collision.gameObject;
-        var hapticDevice = top.GetComponentInChildren<TouchHaptics>();
+        var hapticDevice = top.GetComponentInChildren<HapticFinger>();
         while(top != null && top.transform.parent != null && hapticDevice == null)
         {
             top = top.transform.parent.gameObject;
-            hapticDevice = top.GetComponentInChildren<TouchHaptics>();
+            hapticDevice = top.GetComponentInChildren<HapticFinger>();
         }
 
         return hapticDevice;

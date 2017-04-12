@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class PushButtonBehavior : TouchableBehavior
+public class PushButtonBehavior : TouchableObject
 {
     const float ALPHA = 0.002f;
     public bool IsBottomed;
@@ -76,12 +76,10 @@ public class PushButtonBehavior : TouchableBehavior
 
         if(IsOn && !wasOn)
         {
-            ForFingers((f) => f.Vibrate(StrengthOnPress, LengthOnPress));
             OnMouseDown();
         }
         else if(wasOn && !IsOn)
         {
-            ForFingers((f) => f.Vibrate(StrengthOnRelease, LengthOnRelease));
             OnMouseUp();
         }
         wasOn = IsOn;

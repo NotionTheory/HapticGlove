@@ -6,7 +6,7 @@ public class DialValueChanged : UnityEngine.Events.UnityEvent<int>
 {
 }
 
-public class DialBehavior : TouchableBehavior
+public class DialBehavior : TouchableObject
 {
     [Range(0, 9)]
     public int Value;
@@ -51,7 +51,7 @@ public class DialBehavior : TouchableBehavior
         euler.x = 0;
         euler.z = 0;
         this.controlCylinder.localEulerAngles = euler;
-        
+
         if(recalc)
         {
             // Calculate which digit we're pointing at.
@@ -64,13 +64,9 @@ public class DialBehavior : TouchableBehavior
 
         tab.material.color = Color.HSVToRGB((float)Value / NumTicks, 1f, 1f);
 
-        if(Value != lastValue)
+        if(Value != lastValue && OnValueChanged != null)
         {
-            ForFingers((finger) => finger.Vibrate(Strength, Length));
-            if(OnValueChanged != null)
-            {
-                OnValueChanged.Invoke(Value);
-            }
+            OnValueChanged.Invoke(Value);
         }
         lastValue = Value;
     }

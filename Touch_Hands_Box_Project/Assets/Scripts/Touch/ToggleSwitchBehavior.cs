@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class ToggleSwitchBehavior : TouchableBehavior
+public class ToggleSwitchBehavior : TouchableObject
 {
     public bool IsOn;
     bool wasOn;
@@ -81,8 +81,6 @@ public class ToggleSwitchBehavior : TouchableBehavior
 
         if(IsOn != wasOn)
         {
-            ForFingers((f) => f.Vibrate(Strength, Length));
-
             if(IsOn && OnTurnedOn != null)
             {
                 OnTurnedOn.Invoke();

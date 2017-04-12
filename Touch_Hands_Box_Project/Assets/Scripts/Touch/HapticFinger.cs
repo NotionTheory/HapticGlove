@@ -2,20 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TouchHaptics : MonoBehaviour
+public class HapticFinger : MonoBehaviour
 {
-    private class HapticFrame
-    {
-        public float strength;
-        public float duration;
-
-        public HapticFrame(float strength, float duration)
-        {
-            this.strength = strength;
-            this.duration = duration;
-        }
-    }
-
     public enum Fingers {
         LeftThumb,
         LeftIndex,
@@ -29,14 +17,10 @@ public class TouchHaptics : MonoBehaviour
         RightPinky
     }
 
-    [Range(0f, 1f)]
-    public float PersistentMotorValue = 0f;
-    
     public Fingers finger = 0;
 
     DeviceServer server;
     Animation anim;
-    Queue<HapticFrame> sequence = new Queue<HapticFrame>();
 
     private void Start()
     {
@@ -59,6 +43,15 @@ public class TouchHaptics : MonoBehaviour
                 server.motors[index] = Mathf.Max(0f, Mathf.Min(1f, value));
             }
         }
+        get
+        {
+            int index = (int)finger;
+            if(server != null && 0 <= index && index < server.motors.Length)
+            {
+                return server.motors[index];
+            }
+            return -1;
+        }
     }
 
     public float FingerValue
@@ -74,15 +67,9 @@ public class TouchHaptics : MonoBehaviour
         }
     }
 
-    public void Vibrate(float strength, float duration)
-    {
-        sequence.Enqueue(new HapticFrame(strength, duration));
-    }
-
     private void Update()
     {
         UpdateFingerValue();
-        UpdateMotorValue();
     }
 
     private void UpdateFingerValue()
@@ -95,24 +82,6 @@ public class TouchHaptics : MonoBehaviour
                 state.normalizedTime = FingerValue;
                 state.speed = 0;
                 anim.Play();
-            }
-        }
-    }
-
-    private void UpdateMotorValue()
-    {
-        if(sequence.Count == 0)
-        {
-            MotorValue = PersistentMotorValue;
-        }
-        else
-        {
-            var cur = sequence.Peek();
-            MotorValue = cur.strength;
-            cur.duration -= Time.deltaTime;
-            if(cur.duration <= 0)
-            {
-                sequence.Dequeue();
             }
         }
     }

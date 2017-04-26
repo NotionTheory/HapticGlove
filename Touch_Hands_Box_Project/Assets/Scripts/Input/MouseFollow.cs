@@ -9,21 +9,27 @@ public class MouseFollow : MonoBehaviour
     const float g = f/2;
     const float s = 0.5f;
     Camera cam;
-    float z = 1.15f, lastX, lastY;
+    float z = 1.15f;
     Vector3 euler;
+    public float deltaX, deltaY;
     // Use this for initialization
     void Start()
     {
         cam = FindObjectOfType<Camera>();
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     // Update is called once per frame
     void Update()
     {
-        var m = cam.projectionMatrix.inverse;
+        if(Input.GetMouseButton(0))
+        {
+            euler.x += Input.GetAxis("Mouse Y");
+            euler.y += Input.GetAxis("Mouse X");
+            cam.transform.localRotation = Quaternion.Euler(euler);
+        }
+
         var p = Input.mousePosition;
-        var x = p.x;
-        var y = p.y;
         p.x *= f / Screen.width;
         p.y *= f / Screen.height;
         p.x -= g;
@@ -31,18 +37,8 @@ public class MouseFollow : MonoBehaviour
         p *= -1;
         z -= Input.mouseScrollDelta.y * 0.005f;
         p.z = z;
-        p = m.MultiplyPoint(p);
+        p = cam.projectionMatrix.inverse.MultiplyPoint(p);
         this.transform.localPosition = p;
-        if(Input.GetMouseButton(0))
-        {
-            var deltaX = s * (x - lastX);
-            var deltaY = s * (y - lastY);
-            euler.x += deltaY;
-            euler.y -= deltaX;
-            cam.transform.localRotation = Quaternion.Euler(euler);
-        }
-        lastX = x;
-        lastY = y;
 
         Vector3 velocity = new Vector3(),
             drive = cam.transform.localRotation * Vector3.forward,
